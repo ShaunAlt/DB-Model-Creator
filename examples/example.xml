@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8">
+<database>
+    <type>mssql</type>
+    <orm>python-sqlalchemy</orm>
+    <tables>
+        <table>
+            <name>Users</name>
+            <trigger-update>true</trigger-update>
+            <description>
+                Contains a collection of all users in the database.
+            </description>
+            <columns>
+                <column>
+                    <name>user_id</name>
+                    <type>int</type>
+                    <primary-key>true</primary-key>
+                    <identity>true</identity>
+                    <description>
+                        Unique identifier for each user.
+                    </description>
+                </column>
+                <column>
+                    <name>user_name_first</name>
+                    <type>nvarchar(50)</type>
+                    <nullable>false</nullable>
+                    <description>
+                        First name of the user.
+                    </description>
+                </column>
+                <column>
+                    <name>user_name_last</name>
+                    <type>nvarchar(50)</type>
+                    <nullable>false</nullable>
+                    <description>
+                        Last name of the user.
+                    </description>
+                </column>
+            </columns>
+            <constants></constants>
+            <methods>
+                <method>
+                    <type>instance</type>
+                    <name>get_id</name>
+                    <params></params>
+                    <returns>int</returns>
+                    <description>
+                        Gets the id of the current user.
+                    </description>
+                </method>
+                <method>
+                    <type>instance</type>
+                    <name>get_name</name>
+                    <params></params>
+                    <returns>str</returns>
+                    <description>
+                        Gets the full name of the current user.
+                    </description>
+                </method>
+            </methods>
+            <properties>
+                <property>
+                    <name>orders</name>
+                    <returns>list</returns>
+                    <description>
+                        All orders associated with the current user.
+                    </description>
+                </property>
+                <property>
+                    <name>username</name>
+                    <returns>str</returns>
+                    <description>
+                        Username of the current user.
+                    </description>
+                </property>
+            </properties>
+        </table>
+        <table>
+            <name>Orders</name>
+            <trigger-update>true</trigger-update>
+            <description>
+                Contains a collection of all orders in the database.
+            </description>
+            <columns>
+                <column>
+                    <name>order_id</name>
+                    <type>bigint</type>
+                    <primary-key>true</primary-key>
+                    <identity>true</identity>
+                    <description>
+                        Unique identifier for each order.
+                    </description>
+                </column>
+                <column>
+                    <name>order_dt</name>
+                    <type>datetime</type>
+                    <nullable>false</nullable>
+                    <description>
+                        Date/Time at which the order was created.
+                    </description>
+                </column>
+            </columns>
+            <constants></constants>
+            <methods>
+                <method>
+                    <type>instance</type>
+                    <name>get_id</name>
+                    <params></params>
+                    <returns>int</returns>
+                    <description>
+                        Gets the id of the current order.
+                    </description>
+                </method>
+            </methods>
+            <properties>
+                <property>
+                    <name>users</name>
+                    <returns>list</returns>
+                    <description>
+                        All users associated with the current order.
+                    </description>
+                </property>
+            </properties>
+        </table>
+        <table>
+            <name>Users_Orders</name>
+            <trigger-update>true</trigger-update>
+            <description>
+                Contains a collection of all orders associated to each user.
+            </description>
+            <columns>
+                <column>
+                    <name>user_id</name>
+                    <type>int</type>
+                    <foreign-key>Users.user_id</foreign-key>
+                    <primary-key>true</primary-key>
+                    <description>
+                        The user that the order is associated with.
+                    </description>
+                </column>
+                <column>
+                    <name>order_id</name>
+                    <type>bigint</type>
+                    <foreign-key>Orders.order_id</foriegn-key>
+                    <primary-key>true</primary-key>
+                    <description>
+                        The order that the user is associated with.
+                    </description>
+                </column>
+            </columns>
+            <constants></constants>
+            <methods></methods>
+            <properties></properties>
+        </table>
+    </tables>
+    <views>
+        <view>
+            <name>Users_Number_Orders</name>
+            <description>
+                Contains the number of orders each user is associated with.
+            </description>
+            <columns>
+                <column>
+                    <name>user_id</name>
+                    <type>int</type>
+                    <nullable>false</nullable>
+                    <description>
+                        The user that the order tally is being calculated for.
+                    </description>
+                </column>
+                <column>
+                    <name>number_orders</name>
+                    <type>int</type>
+                    <nullable>false</nullable>
+                    <description>
+                        The number of orders associated to the current user.
+                    </description>
+                </column>
+            </columns>
+        </view>
+    </views>
+</database>
