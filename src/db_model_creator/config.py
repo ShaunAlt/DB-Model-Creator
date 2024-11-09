@@ -15,12 +15,131 @@ package.
 # =============================================================================
 
 # used for creating enumerators
-from enum import Enum
+from enum import IntEnum
 
 # used for type-hinting
 from typing import (
+    Any, # any type
     List, # used for type-hinting lists
 )
+
+
+# =============================================================================
+# Object to String Converter
+# =============================================================================
+def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
+    '''
+    Object to String Converter
+    -
+    Converts a single object to a single or multiple line string. Used by the
+    `OBJ().__repr__`, `OBJ.__str__` and `OBJ.debug` methods.
+
+    Parameters
+    -
+    - obj : `Any`
+        - Object being converted to a string.
+    - lvl : `OBJ.Verbosity_Level`
+        - Verbosity level with which to output the data.
+
+    Returns
+    -
+    - `str`
+        - String representation of the given object.
+    '''
+
+    # initialize variables
+    output: str = '' # string being produced
+
+    # identify datatype
+    if obj is None: # none type
+        output = str(obj)
+    elif isinstance(obj, type): # object type
+        output = obj.__name__
+    elif isinstance(obj, int): # integer
+        output = str(obj)
+    elif isinstance(obj, float): # float
+        output = str(obj)
+    elif isinstance(obj, complex): # complex number
+        output = str(obj)
+    elif isinstance(obj, str): # string
+        if lvl == OBJ.Verbosity_Level.SHORT: output = f'"{obj}"'
+        elif lvl in [OBJ.Verbosity_Level.LONG, OBJ.Verbosity_Level.ALL]:
+            output = f'"\n\t\t' + obj.replace('\n', '\n\t\t') + '\n\t"'
+    elif isinstance(obj, bool): # boolean
+        output = str(obj)
+    elif isinstance(obj, dict): # dictionary
+        if lvl == OBJ.Verbosity_Level.SHORT: output = str(obj)
+        elif lvl in [OBJ.Verbosity_Level.LONG, OBJ.Verbosity_Level.ALL]:
+            output = (
+                'dict(\n\t\t' \
+                + ',\n\t\t'.join(
+                    (
+                        f'#{i} {key}: ' \
+                        + to_str(val, lvl - 1).replace('\n', '\n\t')
+                    )
+                    for i, (key, val) in enumerate(obj.items())
+                )
+                + '\n\t}'
+            )
+    elif isinstance(obj, ( # sequence data types
+            bytes,
+            bytearray,
+            memoryview,
+            list,
+            tuple,
+            set,
+            frozenset,
+    )):
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            output = ','.join([str(x) for x in obj])
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            output = (
+                f'{obj.__class__.__name__}(\n\t\t' \
+                + ',\n\t\t'.join([
+                    f'{i}: {str(x)}'
+                    for i, x in enumerate(list(obj)[:20])
+                ])
+            )
+            if len(obj) > 20: output += f',\n\t\t... + {len(obj) - 20} items'
+            output += '\n\t)'
+        else:
+            output = (
+                f'{obj.__class__.__name__}(\n\t\t' \
+                + ',\n\t\t'.join([
+                    (
+                        f'#{i}: ' \
+                        + to_str(
+                            x,
+                            OBJ.Verbosity_Level.LONG
+                        ).replace('\n', '\n\t')
+                    )
+                    for i, x in enumerate(obj)
+                ]) \
+                + '\n\t)'
+            )
+    elif isinstance(obj, range): # range object
+        output = str(obj)
+    elif callable(obj): # function
+        output = obj.__name__
+    elif isinstance(obj, OBJ): # custom object
+        if lvl in [OBJ.Verbosity_Level.SHORT, OBJ.Verbosity_Level.LONG]:
+            output = str(obj)
+        else: output = repr(obj)
+    else: # unknown object type
+        if lvl in [OBJ.Verbosity_Level.SHORT, OBJ.Verbosity_Level.LONG]:
+            output = f'Unknown Object Type: {obj}'
+        else: output = f'Unknown Object Type: {obj!r}'
+
+    # single-line output additional editing
+    if lvl == OBJ.Verbosity_Level.SHORT:
+        # prevent multiple lines
+        output = output.replace('\n', '\\n')
+
+        # cap length at 100 characters
+        if (len(output) > 100):
+            output = f'{output[:97]}... + {len(output) - 97}'
+
+    return output
 
 
 # =============================================================================
@@ -39,7 +158,7 @@ class OBJ(object):
 
     Constants
     -
-    - Verbosity_Level : `Enum`
+    - Verbosity_Level : `IntEnum`
         - Contains the different verbosity levels that can be used to get data
             from the current object for debugging and/or logging purposes.
 
@@ -77,7 +196,7 @@ class OBJ(object):
 
     # ===========================
     # Constant - Verbosity Levels
-    class Verbosity_Level(Enum):
+    class Verbosity_Level(IntEnum):
         ''' Contains the different verbosity levels that can be used to get
             data from the current object for debugging and/or logging
             purposes. '''
