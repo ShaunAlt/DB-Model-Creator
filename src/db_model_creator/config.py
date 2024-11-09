@@ -231,8 +231,39 @@ class OBJ(object):
             - Official string representation of the current object.
         '''
 
-        # TODO
-        raise NotImplementedError('OBJ().__repr__() has not been defined')
+        # initialize data
+        data_labels: List[str] # collection of object data labels
+        data_strings: List[str] # collection of object data labels + values
+        label: str # item from `data_labels`
+        value: str # item to add to `data_strings`
+
+        # get object data
+        data_labels = self._get_data(OBJ.Verbosity_Level.LONG)
+
+        # construct data strings for each data point
+        data_strings = []
+        for label in data_labels:
+            value = ''
+            try:
+                value = (
+                    f'{label} = ' \
+                    + (
+                        to_str(
+                            getattr(self, label),
+                            OBJ.Verbosity_Level.LONG
+                        ).replace('\n', '\n\t')
+                    )
+                )
+            except Exception as e:
+                value = (f'{label} = {e}')
+            data_strings.append(value)
+
+        # create overall data string
+        return (
+            f'<{self.__class__.__name__}\n\t' \
+            + ',\n\t'.join(data_strings) \
+            + f'\n/{self.__class__.__name__}>'
+        )
 
     # ==============================================
     # Method - Informal String Representation Method
@@ -254,8 +285,34 @@ class OBJ(object):
             - Informal string representation of the current object.
         '''
 
-        # TODO
-        raise NotImplementedError('OBJ().__str__() has not been defined')
+        # initialize data
+        data_labels: List[str] # collection of object data labels
+        data_strings: List[str] # collection of object data labels + values
+        label: str # item from `data_labels`
+        value: str # item to add to `data_strings`
+
+        # get object data
+        data_labels = self._get_data(OBJ.Verbosity_Level.SHORT)
+
+        # construct data strings for each data point
+        data_strings = []
+        for label in data_labels:
+            value = ''
+            try:
+                value = (
+                    f'{label} = ' \
+                    + to_str(getattr(self, label), OBJ.Verbosity_Level.SHORT)
+                )
+            except Exception as e:
+                value = (f'{label} = {e}')
+            data_strings.append(value)
+
+        # create overall data string
+        return (
+            f'<{self.__class__.__name__} :: ' \
+            + ', '.join(data_strings) \
+            + f' />'
+        )
 
     # =================
     # Method - Get Data
@@ -307,9 +364,39 @@ class OBJ(object):
             - Multi-line debug string representation of the current object.
         '''
 
-        # TODO
-        raise NotImplementedError(
-            f'OBJ().debug(indent = {indent}) has not been defined'
+        # initialize data
+        data_labels: List[str] # collection of object data labels
+        data_strings: List[str] # collection of object data labels + values
+        label: str # item from `data_labels`
+        t: str = '\t' * indent # additional indentation
+        value: str # item to add to `data_strings`
+
+        # get object data
+        data_labels = self._get_data(OBJ.Verbosity_Level.ALL)
+
+        # construct data strings for each data point
+        data_strings = []
+        for label in data_labels:
+            value = ''
+            try:
+                value = (
+                    f'{label} = ' \
+                    + (
+                        to_str(
+                            getattr(self, label),
+                            OBJ.Verbosity_Level.ALL
+                        ).replace('\n', f'\n\t{t}')
+                    )
+                )
+            except Exception as e:
+                value = (f'{label} = {e}')
+            data_strings.append(value)
+
+        # create overall data string
+        return (
+            f'{t}<{self.__class__.__name__}\n\t' \
+            + f',\n\t{t}'.join(data_strings) \
+            + f'\n{t}/{self.__class__.__name__}>'
         )
 
     # =========================
