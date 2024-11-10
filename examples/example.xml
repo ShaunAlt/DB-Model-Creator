@@ -6,97 +6,105 @@
         <table>
             <name>Users</name>
             <trigger-update>true</trigger-update>
-            <description>
+            <desc>
                 Contains a collection of all users in the database.
-            </description>
+            </desc>
             <columns>
                 <column>
                     <name>user_id</name>
                     <type>int</type>
                     <primary-key>true</primary-key>
                     <identity>true</identity>
-                    <description>
+                    <desc>
                         Unique identifier for each user.
-                    </description>
+                    </desc>
                 </column>
                 <column>
                     <name>user_name_first</name>
                     <type>nvarchar(50)</type>
                     <nullable>false</nullable>
-                    <description>
+                    <desc>
                         First name of the user.
-                    </description>
+                    </desc>
                 </column>
                 <column>
                     <name>user_name_last</name>
                     <type>nvarchar(50)</type>
                     <nullable>false</nullable>
-                    <description>
+                    <desc>
                         Last name of the user.
-                    </description>
+                    </desc>
                 </column>
             </columns>
-            <constants></constants>
+            <constants>
+                <const>
+                    <name>TEST_USER_ID</name>
+                    <type>int | null</type>
+                    <desc>
+                        ID of the user that is used for testing purposes.
+                    </desc>
+                </const>
+            </constants>
             <methods>
                 <method>
                     <type>instance</type>
                     <name>get_id</name>
                     <params></params>
                     <returns>int</returns>
-                    <description>
+                    <desc>
                         Gets the id of the current user.
-                    </description>
+                    </desc>
                 </method>
                 <method>
                     <type>instance</type>
                     <name>get_name</name>
                     <params></params>
                     <returns>str</returns>
-                    <description>
+                    <desc>
                         Gets the full name of the current user.
-                    </description>
+                    </desc>
                 </method>
             </methods>
             <properties>
                 <property>
                     <name>orders</name>
                     <returns>list</returns>
-                    <description>
+                    <desc>
                         All orders associated with the current user.
-                    </description>
+                    </desc>
                 </property>
                 <property>
                     <name>username</name>
                     <returns>str</returns>
-                    <description>
+                    <desc>
                         Username of the current user.
-                    </description>
+                    </desc>
                 </property>
             </properties>
         </table>
         <table>
             <name>Orders</name>
             <trigger-update>true</trigger-update>
-            <description>
+            <desc>
                 Contains a collection of all orders in the database.
-            </description>
+            </desc>
             <columns>
                 <column>
                     <name>order_id</name>
                     <type>bigint</type>
                     <primary-key>true</primary-key>
                     <identity>true</identity>
-                    <description>
+                    <desc>
                         Unique identifier for each order.
-                    </description>
+                    </desc>
                 </column>
                 <column>
                     <name>order_dt</name>
                     <type>datetime</type>
                     <nullable>false</nullable>
-                    <description>
+                    <desc>
                         Date/Time at which the order was created.
-                    </description>
+                    </desc>
                 </column>
             </columns>
             <constants></constants>
@@ -106,45 +114,45 @@
                     <name>get_id</name>
                     <params></params>
                     <returns>int</returns>
-                    <description>
+                    <desc>
                         Gets the id of the current order.
-                    </description>
+                    </desc>
                 </method>
             </methods>
             <properties>
                 <property>
                     <name>users</name>
                     <returns>list</returns>
-                    <description>
+                    <desc>
                         All users associated with the current order.
-                    </description>
+                    </desc>
                 </property>
             </properties>
         </table>
         <table>
             <name>Users_Orders</name>
             <trigger-update>true</trigger-update>
-            <description>
+            <desc>
                 Contains a collection of all orders associated to each user.
-            </description>
+            </desc>
             <columns>
                 <column>
                     <name>user_id</name>
                     <type>int</type>
                     <foreign-key>Users.user_id</foreign-key>
                     <primary-key>true</primary-key>
-                    <description>
+                    <desc>
                         The user that the order is associated with.
-                    </description>
+                    </desc>
                 </column>
                 <column>
                     <name>order_id</name>
                     <type>bigint</type>
                     <foreign-key>Orders.order_id</foriegn-key>
                     <primary-key>true</primary-key>
-                    <description>
+                    <desc>
                         The order that the user is associated with.
-                    </description>
+                    </desc>
                 </column>
             </columns>
             <constants></constants>
@@ -155,27 +163,47 @@
     <views>
         <view>
             <name>Users_Number_Orders</name>
-            <description>
+            <desc>
                 Contains the number of orders each user is associated with.
-            </description>
+            </desc>
             <columns>
                 <column>
                     <name>user_id</name>
                     <type>int</type>
                     <nullable>false</nullable>
-                    <description>
+                    <desc>
                         The user that the order tally is being calculated for.
-                    </description>
+                    </desc>
                 </column>
                 <column>
                     <name>number_orders</name>
                     <type>int</type>
                     <nullable>false</nullable>
-                    <description>
+                    <desc>
                         The number of orders associated to the current user.
-                    </description>
+                    </desc>
                 </column>
             </columns>
+            <constants></constants>
+            <methods>
+                <method>
+                    <type>static</type>
+                    <name>get_num_orders</name>
+                    <params>
+                        <param>
+                            <name>user_id</name>
+                            <type>int</type>
+                            <desc>
+                                ID of the user to get the number of orders for.
+                            </desc>
+                        </param>
+                    </params>
+                    <returns>int</returns>
+                    <desc>
+                    </desc>
+                </method>
+            </methods>
+            <properties></properties>
         </view>
     </views>
 </database>
