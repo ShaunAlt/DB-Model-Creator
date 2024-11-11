@@ -351,6 +351,124 @@ class Value_Desc(Value):
         ''' A re-formatted version of the original value. '''
         return str(self._data).strip()
 
+# ==============================
+# Value Definition - Foreign Key
+class Value_Fk(Value):
+    '''
+    Value Definition - Foreign Key
+    -
+    Contains the string representation of a particular foreign key constraint
+    in the database.
+
+    Attributes
+    -
+    - _data : `str`
+        - Original value.
+    
+    Static Attributes
+    -
+    - TABLES : `list[str]`
+        - Collection of all table in the database (so that types can
+            reference that ORM object).
+
+    Methods
+    -
+    - __init__(data) : `None`
+        - Constructor Method.
+        - Creates a new `Value_Fk` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `Value`
+        - `OBJ` Instance Method.
+    - update_static(tables) : `None`
+        - Static Method.
+        - Updates the `TABLES` static attribute with the provided tables.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not the data is valid.
+    - value : `str`
+        - Readonly.
+        - A re-formatted version of the original data.
+    '''
+
+    # ====================
+    # Static - Table Names
+    TABLES: List[None] = []
+    ''' Collection of all tables in the database (so that types can
+        reference that ORM object). '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        '''
+        Whether or not the data is valid.
+        
+        Requirements
+        - Should contain the table and column names of the primary key that the
+            foreign key should be associated with.
+        '''
+
+        # get original data
+        data: str = str(self._data).strip()
+
+        # validate it contains 2 period-delimited strings
+        if len(data.split('.')) != 2: return False
+
+        # get the table and column names
+        table_name, column_name = data.split('.')
+
+        # check if table and column names exist in the tables
+        # if (
+        #     (table_name not in Value_Fk.TABLES)
+        #     or (column_name not in Value_Type.TABLE_COLUMNS[table_name])
+        # ): return False
+        raise NotImplementedError(
+            f'Value_Fk(data = {self._data}).valid not fully defined'
+        )
+        
+    # ================
+    # Property - Value
+    @property
+    def value(self) -> str:
+        ''' A re-formatted version of the original value. '''
+        return str(self._data).strip()
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        data: List[str] = super()._get_data(lvl)
+        if lvl == OBJ.Verbosity_Level.ALL:
+            data += ['TABLES']
+        return data
+    
+    # ====================================
+    # Method - Update Table and View Names
+    @staticmethod
+    def update_static(tables: None, views: None) -> None:
+        '''
+        Update Table and View Names
+        -
+        Updates the `TABLES` static attribute with the provided tables.
+
+        Parameters
+        -
+        - tables : `TODO`
+            - Collection of all tables in the database.
+
+        Returns
+        -
+        None
+        '''
+
+        raise NotImplementedError(
+            f'Value_Fk.update_static(tables = {tables}) not had the ' \
+            + 'functionality defined.'
+        )
+
 # =======================
 # Value Definition - Name
 class Value_Name(Value):
@@ -448,7 +566,7 @@ class Value_Type(Value):
         - `OBJ` Instance Method.
     - duplicate() : `Value`
         - `OBJ` Instance Method.
-    - update_names(tables, views) : `None`
+    - update_static(tables, views) : `None`
         - Static Method.
         - Updates the `TABLE_NAMES` and `VIEW_NAMES` static attributes with
             the provided tables and views.
@@ -586,8 +704,35 @@ class Value_Type(Value):
         if lvl != OBJ.Verbosity_Level.SHORT:
             data += ['_lang']
         if lvl == OBJ.Verbosity_Level.ALL:
-            data += ['_tablenames', '_viewnames']
+            data += ['TABLE_NAMES', 'VIEW_NAMES']
         return data
+    
+    # ====================================
+    # Method - Update Table and View Names
+    @staticmethod
+    def update_static(tables: None, views: None) -> None:
+        '''
+        Update Table and View Names
+        -
+        Updates the `TABLE_NAMES` and `VIEW_NAMES` static attributes with
+        the provided tables and views.
+
+        Parameters
+        -
+        - tables : `TODO`
+            - Collection of all tables in the database.
+        - views : `TODO`
+            - Collection of all views in the database.
+
+        Returns
+        -
+        None
+        '''
+
+        raise NotImplementedError(
+            f'Value_Type.update_static(tables = {tables}, views = {views}) ' \
+            + 'not had the functionality defined.'
+        )
 
 
 # =============================================================================
