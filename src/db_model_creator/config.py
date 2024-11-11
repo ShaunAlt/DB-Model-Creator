@@ -75,7 +75,12 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
                 + ',\n\t\t'.join(
                     (
                         f'#{i} {key}: ' \
-                        + to_str(val, lvl - 1).replace('\n', '\n\t')
+                        + (
+                            to_str(
+                                val,
+                                OBJ.Verbosity_Level(lvl - 1)
+                            ).replace('\n', '\n\t')
+                        )
                     )
                     for i, (key, val) in enumerate(obj.items())
                 )
