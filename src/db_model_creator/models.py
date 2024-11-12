@@ -347,12 +347,14 @@ class ObjData_Constant(ObjData):
         - Description of the constant.
     - _name : `Value_Name`
         - Name of the constant.
+    - _title : `Value_Title`
+        - Commented title of the constant.
     - _type : `Value_Type`
         - Datatype of the constant.
 
     Methods
     -
-    - __init__(name, type_, lang, desc, default=None) : `None`
+    - __init__(name, type_, lang, desc, title, default=None) : `None`
         - Constructor Method.
         - Creates a new `ObjData_Constant` object.
     - _get_data(lvl) : `List[str]`
@@ -374,6 +376,9 @@ class ObjData_Constant(ObjData):
     - valid_name : `bool`
         - Readonly.
         - Whether or not the component name is valid.
+    - valid_title : `bool`
+        - Readonly.
+        - Whether or not the component title is valid.
     - valid_type : `bool`
         - Readonly.
         - Whether or not the component return type is valid.
@@ -386,6 +391,9 @@ class ObjData_Constant(ObjData):
     - value_name : `str`
         - Readonly.
         - Re-formatted string representation of the component name.
+    - value_title : `str`
+        - Readonly.
+        - Re-formatted string representation of the component title.
     - value_type : `str`
         - Readonly.
         - Re-formatted string representation of the component return datatype.
@@ -399,6 +407,7 @@ class ObjData_Constant(ObjData):
             type_: str,
             lang: Database_Lang,
             desc: str,
+            title: str,
             default: Optional[str] = None
     ) -> None:
         '''
@@ -416,6 +425,8 @@ class ObjData_Constant(ObjData):
             - ORM language.
         - desc : `str`
             - Description of the constant.
+        - title : `str`
+            - Commented title of the constant.
         - default : `str | None`
             - Default value of the constant. Defaults to `None`, meaning an
                 error will be used instead of the default value.
@@ -430,15 +441,17 @@ class ObjData_Constant(ObjData):
 
         # initialize attributes
         self._default = Value_Default(default) if default else None
-        ''' Default value of the property. Defaults to `None`, meaning an
+        ''' Default value of the constant. Defaults to `None`, meaning an
             error will be used instead of the default value. '''
+        self._title = Value_Title(title)
+        ''' Commented title of the constant. '''
 
     # ================
     # Property - Valid
     @property
     def valid(self) -> bool:
         ''' Whether or not all attributes are valid. '''
-        return super().valid and self.valid_default
+        return super().valid and self.valid_default and self.valid_title
 
     # ================================
     # Property - Valid - Default Value
@@ -449,6 +462,13 @@ class ObjData_Constant(ObjData):
             (self._default is None)
             or (self._default.valid)
         )
+    
+    # ========================
+    # Property - Valid - Title
+    @property
+    def valid_title(self) -> bool:
+        ''' Whether or not the component title is valid. '''
+        return self._title.valid
 
     # ================================
     # Property - Value - Default Value
@@ -457,6 +477,13 @@ class ObjData_Constant(ObjData):
         ''' Re-formatted string representation of the component default
             value. '''
         return self._default.value if self._default else None
+    
+    # ========================
+    # Property - Value - Title
+    @property
+    def value_title(self) -> Optional[str]:
+        ''' Re-formatted string representation of the component title. '''
+        return self._title.value
 
     # =================
     # Method - Get Data
@@ -470,13 +497,18 @@ class ObjData_Constant(ObjData):
         elif lvl == OBJ.Verbosity_Level.LONG:
             data.extend([
                 'valid_default',
+                'valid_title',
                 'value_default',
+                'value_title',
             ])
         else:
             data.extend([
                 '_default',
+                '_title',
                 'valid_default',
+                'valid_title',
                 'value_default',
+                'value_title',
             ])
 
         return data
@@ -489,6 +521,7 @@ class ObjData_Constant(ObjData):
             type_ = self._type._data,
             lang = self._type._lang,
             desc = self._desc._data,
+            title = self._title._data,
             default = self._default._data if self._default else None
         )
 
@@ -510,12 +543,14 @@ class ObjData_Method(ObjData):
         - Name of the method.
     - _params : `list[ObjData_MethodParam]`
         - Collection of parameters for the method.
+    - _title : `Value_Title`
+        - Commented title of the method.
     - _type : `Value_Type`
         - Datatype of the method.
 
     Methods
     -
-    - __init__(name, type_, lang, desc, method_type, params) : `None`
+    - __init__(name, type_, lang, desc, method_type, params, title) : `None`
         - Constructor Method.
         - Creates a new `ObjData_Method` object.
     - _get_data(lvl) : `List[str]`
@@ -543,6 +578,9 @@ class ObjData_Method(ObjData):
     - valid_params : `bool`
         - Readonly.
         - Whether or not the component parameters are valid.
+    - valid_title : `bool`
+        - Readonly.
+        - Whether or not the component title is valid.
     - valid_type : `bool`
         - Readonly.
         - Whether or not the component return type is valid.
@@ -552,6 +590,9 @@ class ObjData_Method(ObjData):
     - value_name : `str`
         - Readonly.
         - Re-formatted string representation of the component name.
+    - value_title : `str`
+        - Readonly.
+        - Re-formatted string representation of the component title.
     - value_type : `str`
         - Readonly.
         - Re-formatted string representation of the component return datatype.
@@ -566,7 +607,8 @@ class ObjData_Method(ObjData):
             lang: Database_Lang,
             desc: str,
             method_type: TYPES_METHOD,
-            params: list['ObjData_MethodParam']
+            params: list['ObjData_MethodParam'],
+            title: str
     ) -> None:
         '''
         `ObjData_Method` Constructor
@@ -587,6 +629,8 @@ class ObjData_Method(ObjData):
             - Type of method being created.
         - params : `list[ObjData_MethodParam]`
             - Collection of parameters for the method.
+        - title : `str`
+            - Commented title of the method.
 
         Returns
         -
@@ -601,6 +645,8 @@ class ObjData_Method(ObjData):
         ''' Type of method being created. '''
         self._params = params
         ''' Collection of parameters for the method. '''
+        self._title = Value_Title(title)
+        ''' Commented title of the method. '''
 
     # ======================
     # Property - Method Type
@@ -629,6 +675,20 @@ class ObjData_Method(ObjData):
     def valid_params(self) -> bool:
         ''' Whether or not the component parameters are valid. '''
         return all(param.valid for param in self._params)
+    
+    # ========================
+    # Property - Valid - Title
+    @property
+    def valid_title(self) -> bool:
+        ''' Whether or not the component title is valid. '''
+        return self._title.valid
+    
+    # ========================
+    # Property - Value - Title
+    @property
+    def value_title(self) -> str:
+        ''' Re-formatted string representation of the component title. '''
+        return self._title.value
 
     # =================
     # Method - Get Data
@@ -643,14 +703,19 @@ class ObjData_Method(ObjData):
             data.extend([
                 'method_type',
                 'params',
+                'valid_title',
+                'value_title',
             ])
         else:
             data.extend([
                 '_method_type',
                 '_params',
+                '_title',
                 'method_type',
                 'params',
                 'valid_params',
+                'valid_title',
+                'value_title',
             ])
 
         return data
@@ -664,7 +729,8 @@ class ObjData_Method(ObjData):
             lang = self._type._lang,
             desc = self._desc._data,
             method_type = self.method_type,
-            params = [param.duplicate() for param in self.params]
+            params = [param.duplicate() for param in self.params],
+            title = self._title._data
         )
 
 # =========================================
@@ -850,12 +916,14 @@ class ObjData_Property(ObjData):
         - Description of the property.
     - _name : `Value_Name`
         - Name of the property.
+    - _title : `Value_Title`
+        - Commented title of the property.
     - _type : `Value_Type`
         - Datatype of the property.
 
     Methods
     -
-    - __init__(name, type_, lang, desc, default=None) : `None`
+    - __init__(name, type_, lang, desc, title, default=None) : `None`
         - Constructor Method.
         - Creates a new `ObjData_Property` object.
     - _get_data(lvl) : `List[str]`
@@ -877,6 +945,9 @@ class ObjData_Property(ObjData):
     - valid_name : `bool`
         - Readonly.
         - Whether or not the component name is valid.
+    - valid_title : `bool`
+        - Readonly.
+        - Whether or not the component title is valid.
     - valid_type : `bool`
         - Readonly.
         - Whether or not the component return type is valid.
@@ -889,6 +960,9 @@ class ObjData_Property(ObjData):
     - value_name : `str`
         - Readonly.
         - Re-formatted string representation of the component name.
+    - value_title : `str`
+        - Readonly.
+        - Re-formatted string representation of the component title.
     - value_type : `str`
         - Readonly.
         - Re-formatted string representation of the component return datatype.
@@ -902,6 +976,7 @@ class ObjData_Property(ObjData):
             type_: str,
             lang: Database_Lang,
             desc: str,
+            title: str,
             default: Optional[str] = None
     ) -> None:
         '''
@@ -919,6 +994,8 @@ class ObjData_Property(ObjData):
             - ORM language.
         - desc : `str`
             - Description of the property.
+        - title : `str`
+            - Commented title of the property.
         - default : `str | None`
             - Default value of the property. Defaults to `None`, meaning an
                 error will be used instead of the default return value.
@@ -935,13 +1012,15 @@ class ObjData_Property(ObjData):
         self._default = Value_Default(default) if default else None
         ''' Default value of the property. Defaults to `None`, meaning an
             error will be used instead of the default return value. '''
+        self._title = Value_Title(title)
+        ''' Commented title of the property. '''
 
     # ================
     # Property - Valid
     @property
     def valid(self) -> bool:
         ''' Whether or not all attributes are valid. '''
-        return super().valid and self.valid_default
+        return super().valid and self.valid_default and self.valid_title
 
     # ================================
     # Property - Valid - Default Value
@@ -952,7 +1031,14 @@ class ObjData_Property(ObjData):
             (self._default is None)
             or (self._default.valid)
         )
-
+    
+    # ========================
+    # Property - Valid - Title
+    @property
+    def valid_title(self) -> bool:
+        ''' Whether or not the component title is valid. '''
+        return self._title.valid
+    
     # ================================
     # Property - Value - Default Value
     @property
@@ -960,6 +1046,13 @@ class ObjData_Property(ObjData):
         ''' Re-formatted string representation of the component default
             value. '''
         return self._default.value if self._default else None
+
+    # ========================
+    # Property - Value - Title
+    @property
+    def value_title(self) -> Optional[str]:
+        ''' Re-formatted string representation of the component title. '''
+        return self._title.value
 
     # =================
     # Method - Get Data
@@ -973,13 +1066,18 @@ class ObjData_Property(ObjData):
         elif lvl == OBJ.Verbosity_Level.LONG:
             data.extend([
                 'valid_default',
+                'valid_title',
                 'value_default',
+                'value_title',
             ])
         else:
             data.extend([
                 '_default',
+                '_title',
                 'valid_default',
+                'valid_title',
                 'value_default',
+                'value_title',
             ])
 
         return data
@@ -992,6 +1090,7 @@ class ObjData_Property(ObjData):
             type_ = self._type._data,
             lang = self._type._lang,
             desc = self._desc._data,
+            title = self._title._data,
             default = self._default._data if self._default else None
         )
 
@@ -1376,6 +1475,70 @@ class Value_Name(Value):
             "^[a-zA-Z_][a-zA-Z0-9_]*$",
             str(self._data).strip()
         ) is not None
+    
+    # ================
+    # Property - Value
+    @property
+    def value(self) -> str:
+        ''' A re-formatted version of the original value. '''
+        return str(self._data).strip()
+
+# ========================
+# Value Definition - Title
+class Value_Title(Value):
+    '''
+    Value Definition - Title
+    -
+    Contains the commented title of a particular component within the overall
+    database (e.g. constant title comment, property title comment).
+
+    Attributes
+    -
+    - _data : `str`
+        - Original value.
+    
+    Static Attributes
+    -
+    None
+
+    Methods
+    -
+    - __init__(data) : `None`
+        - Constructor Method.
+        - Creates a new `Value_Title` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `Value`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not the data is valid.
+    - value : `str`
+        - Readonly.
+        - A re-formatted version of the original data.
+    '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        '''
+        Whether or not the data is valid.
+        
+        Requirements
+        - Single Line String
+        '''
+
+        # get data
+        data = str(self._data).strip()
+
+        return (
+            ('\n' not in data)
+            and ('\r' not in data)
+        )
     
     # ================
     # Property - Value
