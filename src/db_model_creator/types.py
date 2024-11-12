@@ -21,6 +21,33 @@ from enum import Enum
 # Types Models
 # =============================================================================
 
+# =================
+# Method Types Enum
+class TYPES_METHOD(Enum):
+    '''
+    Collection of all valid method types (e.g. "instance", "static") that can
+    be used when creating ORM object methods.
+    '''
+
+    # =================
+    # Class Method Type
+    CLASS = 'class'
+    ''' Class Method. This type allows the method to access the class it is
+        defined in. '''
+
+    # ====================
+    # Instance Method Type
+    INSTANCE = 'instance'
+    ''' Instance Method. This type allows the method to access a particular
+        instance of the class it is defined in. '''
+
+    # ==================
+    # Static Method Type
+    STATIC = 'static'
+    ''' Static Method. This method has no special accessors, and does not
+        depend on the class it is defined in, nor any particular instance of
+        that class. '''
+
 # ==================
 # Python3 Types Enum
 class TYPES_PYTHON3(Enum):

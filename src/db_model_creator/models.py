@@ -21,6 +21,7 @@ from .config import (
 
 # used for pre-defined data types
 from .types import (
+    TYPES_METHOD, # method types (e.g. instance, static)
     TYPES_PYTHON3, # DatabaseLang.PYTHON3 data types
 )
 
@@ -33,6 +34,7 @@ import regex as re
 # used for type hinting
 from typing import (
     List,
+    Optional,
     Type,
 )
 
@@ -143,6 +145,856 @@ class Database_Type(Enum):
     MSSQL = 'mssql'
     ''' Microsoft SQL Server. '''
 
+# ======================
+# Object Data Definition
+class ObjData(OBJ):
+    '''
+    Object Data Definition
+    -
+    Contains the data of a particular component within an ORM object. Used by
+    specific object data definition child objects for added functionality.
+
+    Attributes
+    -
+    - _desc : `Value_Desc`
+        - Description of the component.
+    - _name : `Value_Name`
+        - Name of the component.
+    - _type : `Value_Type`
+        - Return type of the component.
+    
+    Static Attributes
+    -
+    None
+
+    Methods
+    -
+    - __init__(name, type_, lang, desc) : `None`
+        - Constructor Method.
+        - Creates a new `ObjData` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `ObjData`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not all attributes are valid.
+    - valid_desc : `bool`
+        - Readonly.
+        - Whether or not the component description is valid.
+    - valid_name : `bool`
+        - Readonly.
+        - Whether or not the component name is valid.
+    - valid_type : `bool`
+        - Readonly.
+        - Whether or not the component return type is valid.
+    - value_desc : `str`
+        - Readonly.
+        - Re-formatted string representation of the component description.
+    - value_name : `str`
+        - Readonly.
+        - Re-formatted string representation of the component name.
+    - value_type : `str`
+        - Readonly.
+        - Re-formatted string representation of the component return datatype.
+    '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            lang: Database_Lang,
+            desc: str
+    ) -> None:
+        '''
+        `ObjData` Constructor
+        -
+        Creates a new `ObjData` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the component.
+        - type_ : `str`
+            - Return type of the component.
+        - lang : `Database_Lang`
+            - ORM language.
+        - desc : `str`
+            - Description of the component.
+
+        Returns
+        -
+        None
+        '''
+
+        # set attributes
+        self._desc = Value_Desc(desc)
+        ''' Description of the component. '''
+        self._name = Value_Name(name)
+        ''' Name of the component. '''
+        self._type = Value_Type(type_, lang)
+        ''' Return type of the component. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all attributes are valid. '''
+        return self.valid_desc and self.valid_name and self.valid_type
+
+    # ==============================
+    # Property - Valid - Description
+    @property
+    def valid_desc(self) -> bool:
+        ''' Whether or not the component description is valid. '''
+        return self._desc.valid
+
+    # =======================
+    # Property - Valid - Name
+    @property
+    def valid_name(self) -> bool:
+        ''' Whether or not the component name is valid. '''
+        return self._name.valid
+
+    # =======================
+    # Property - Valid - Type
+    @property
+    def valid_type(self) -> bool:
+        ''' Whether or not the component return type is valid. '''
+        return self._type.valid
+
+    # ==============================
+    # Property - Value - Description
+    @property
+    def value_desc(self) -> str:
+        ''' Re-formatted string representation of the component
+            description. '''
+        return self._desc.value
+    
+    # =======================
+    # Property - Value - Name
+    @property
+    def value_name(self) -> str:
+        ''' Re-formatted string representation of the component name. '''
+        return self._name.value
+
+    # =======================
+    # Property - Value - Type
+    @property
+    def value_type(self) -> str:
+        ''' Re-formatted string representation of the component return
+            datatype. '''
+        return self._type.value
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            return ['value_name', 'value_type', 'valid']
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            return [
+                'valid',
+                'valid_desc',
+                'valid_name',
+                'valid_type',
+                'value_name',
+                'value_type',
+                'value_desc',
+            ]
+        else:
+            return [
+                '_desc',
+                '_name',
+                '_type',
+                'valid',
+                'valid_desc',
+                'valid_name',
+                'valid_type',
+                'value_name',
+                'value_type',
+                'value_desc',
+            ]
+
+    # =========================
+    # Method - Duplicate Object
+    def duplicate(self) -> 'ObjData':
+        return ObjData(
+            name = self._name._data,
+            type_ = self._type._data,
+            lang = self._type._lang,
+            desc = self._desc._data
+        )
+
+# =================================
+# Object Data Definition - Constant
+class ObjData_Constant(ObjData):
+    '''
+    Object Data Definition - Constant
+    -
+    Contains the information about an individual constant within an ORM object.
+
+    Attributes
+    -
+    - _default : `Value_Default | None`
+        - Default value of the constant. Defaults to `None`, meaning an error
+            will be used instead of the default value.
+    - _desc : `Value_Desc`
+        - Description of the constant.
+    - _name : `Value_Name`
+        - Name of the constant.
+    - _type : `Value_Type`
+        - Datatype of the constant.
+
+    Methods
+    -
+    - __init__(name, type_, lang, desc, default=None) : `None`
+        - Constructor Method.
+        - Creates a new `ObjData_Constant` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `ObjData_Constant`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not all attributes are valid.
+    - valid_default : `bool`
+        - Readonly.
+        - Whether or not the component default value is valid.
+    - valid_desc : `bool`
+        - Readonly.
+        - Whether or not the component description is valid.
+    - valid_name : `bool`
+        - Readonly.
+        - Whether or not the component name is valid.
+    - valid_type : `bool`
+        - Readonly.
+        - Whether or not the component return type is valid.
+    - value_default : `str`
+        - Readonly.
+        - Re-formatted string representation of the component default value.
+    - value_desc : `str | None`
+        - Readonly.
+        - Re-formatted string representation of the component description.
+    - value_name : `str`
+        - Readonly.
+        - Re-formatted string representation of the component name.
+    - value_type : `str`
+        - Readonly.
+        - Re-formatted string representation of the component return datatype.
+    '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            lang: Database_Lang,
+            desc: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        `ObjData_Constant` Constructor
+        -
+        Creates a new `ObjData_Constant` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the constant.
+        - type_ : `str`
+            - Datatype of the constant.
+        - lang : `Database_Lang`
+            - ORM language.
+        - desc : `str`
+            - Description of the constant.
+        - default : `str | None`
+            - Default value of the constant. Defaults to `None`, meaning an
+                error will be used instead of the default value.
+
+        Returns
+        -
+        None
+        '''
+
+        # initialize parent object data
+        super().__init__(name, type_, lang, desc)
+
+        # initialize attributes
+        self._default = Value_Default(default) if default else None
+        ''' Default value of the property. Defaults to `None`, meaning an
+            error will be used instead of the default value. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all attributes are valid. '''
+        return super().valid and self.valid_default
+
+    # ================================
+    # Property - Valid - Default Value
+    @property
+    def valid_default(self) -> bool:
+        ''' Whether or not the component default value is valid. '''
+        return (
+            (self._default is None)
+            or (self._default.valid)
+        )
+
+    # ================================
+    # Property - Value - Default Value
+    @property
+    def value_default(self) -> Optional[str]:
+        ''' Re-formatted string representation of the component default
+            value. '''
+        return self._default.value if self._default else None
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        # get parent data
+        data = super()._get_data(lvl)
+
+        # add additional attributes
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            data.append('value_default')
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            data.extend([
+                'valid_default',
+                'value_default',
+            ])
+        else:
+            data.extend([
+                '_default',
+                'valid_default',
+                'value_default',
+            ])
+
+        return data
+
+    # =========================
+    # Method - Duplicate Object
+    def duplicate(self) -> 'ObjData_Constant':
+        return ObjData_Constant(
+            name = self._name._data,
+            type_ = self._type._data,
+            lang = self._type._lang,
+            desc = self._desc._data,
+            default = self._default._data if self._default else None
+        )
+
+# ===============================
+# Object Data Definition - Method
+class ObjData_Method(ObjData):
+    '''
+    Object Data Definition - Method
+    -
+    Contains the information about an individual method within an ORM object.
+
+    Attributes
+    -
+    - _desc : `Value_Desc`
+        - Description of the method.
+    - _method_type : `TYPES_METHOD`
+        - Type of method being created.
+    - _name : `Value_Name`
+        - Name of the method.
+    - _params : `list[ObjData_MethodParam]`
+        - Collection of parameters for the method.
+    - _type : `Value_Type`
+        - Datatype of the method.
+
+    Methods
+    -
+    - __init__(name, type_, lang, desc, method_type, params) : `None`
+        - Constructor Method.
+        - Creates a new `ObjData_Method` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `ObjData_Method`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - method_type : `TYPES_METHOD`
+        - Readonly.
+        - Type of method being created.
+    - params : `list[ObjData_MethodParam]`
+        - Readonly.
+        - Collection of parameters for the method.
+    - valid : `bool`
+        - Readonly.
+        - Whether or not all attributes are valid.
+    - valid_desc : `bool`
+        - Readonly.
+        - Whether or not the component description is valid.
+    - valid_name : `bool`
+        - Readonly.
+        - Whether or not the component name is valid.
+    - valid_params : `bool`
+        - Readonly.
+        - Whether or not the component parameters are valid.
+    - valid_type : `bool`
+        - Readonly.
+        - Whether or not the component return type is valid.
+    - value_desc : `str | None`
+        - Readonly.
+        - Re-formatted string representation of the component description.
+    - value_name : `str`
+        - Readonly.
+        - Re-formatted string representation of the component name.
+    - value_type : `str`
+        - Readonly.
+        - Re-formatted string representation of the component return datatype.
+    '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            lang: Database_Lang,
+            desc: str,
+            method_type: TYPES_METHOD,
+            params: list['ObjData_MethodParam']
+    ) -> None:
+        '''
+        `ObjData_Method` Constructor
+        -
+        Creates a new `ObjData_Method` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the method parameter.
+        - type_ : `str`
+            - Datatype of the method parameter.
+        - lang : `Database_Lang`
+            - ORM language.
+        - desc : `str`
+            - Description of the method parameter.
+        - method_type : `TYPES_METHOD`
+            - Type of method being created.
+        - params : `list[ObjData_MethodParam]`
+            - Collection of parameters for the method.
+
+        Returns
+        -
+        None
+        '''
+
+        # initialize parent object data
+        super().__init__(name, type_, lang, desc)
+
+        # initialize attributes
+        self._method_type = method_type
+        ''' Type of method being created. '''
+        self._params = params
+        ''' Collection of parameters for the method. '''
+
+    # ======================
+    # Property - Method Type
+    @property
+    def method_type(self) -> TYPES_METHOD:
+        ''' Type of method being created. '''
+        return self._method_type
+    
+    # ============================
+    # Property - Method Parameters
+    @property
+    def params(self) -> List['ObjData_MethodParam']:
+        ''' Collection of parameters for the method. '''
+        return self._params
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all attributes are valid. '''
+        return super().valid and self.valid_params
+    
+    # ====================================
+    # Property - Valid - Method Parameters
+    @property
+    def valid_params(self) -> bool:
+        ''' Whether or not the component parameters are valid. '''
+        return all(param.valid for param in self._params)
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        # get parent data
+        data = super()._get_data(lvl)
+
+        # add additional attributes
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            data.append('method_type')
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            data.extend([
+                'method_type',
+                'params',
+            ])
+        else:
+            data.extend([
+                '_method_type',
+                '_params',
+                'method_type',
+                'params',
+                'valid_params',
+            ])
+
+        return data
+
+    # =========================
+    # Method - Duplicate Object
+    def duplicate(self) -> 'ObjData_Method':
+        return ObjData_Method(
+            name = self._name._data,
+            type_ = self._type._data,
+            lang = self._type._lang,
+            desc = self._desc._data,
+            method_type = self.method_type,
+            params = [param.duplicate() for param in self.params]
+        )
+
+# =========================================
+# Object Data Definition - Method Parameter
+class ObjData_MethodParam(ObjData):
+    '''
+    Object Data Definition - Method Parameter
+    -
+    Contains the information about an individual method parameter within an ORM
+    object.
+
+    Attributes
+    -
+    - _default : `Value_Default | None`
+        - Default value of the method parameter. Defaults to `None`, meaning
+            the method parameter is a positional argument instead of a keyword
+            argument.
+    - _desc : `Value_Desc`
+        - Description of the method parameter.
+    - _name : `Value_Name`
+        - Name of the method parameter.
+    - _type : `Value_Type`
+        - Datatype of the method parameter.
+
+    Methods
+    -
+    - __init__(name, type_, lang, desc, default=None) : `None`
+        - Constructor Method.
+        - Creates a new `ObjData_MethodParam` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `ObjData_MethodParam`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not all attributes are valid.
+    - valid_default : `bool`
+        - Readonly.
+        - Whether or not the component default value is valid.
+    - valid_desc : `bool`
+        - Readonly.
+        - Whether or not the component description is valid.
+    - valid_name : `bool`
+        - Readonly.
+        - Whether or not the component name is valid.
+    - valid_type : `bool`
+        - Readonly.
+        - Whether or not the component return type is valid.
+    - value_default : `str`
+        - Readonly.
+        - Re-formatted string representation of the component default value.
+    - value_desc : `str | None`
+        - Readonly.
+        - Re-formatted string representation of the component description.
+    - value_name : `str`
+        - Readonly.
+        - Re-formatted string representation of the component name.
+    - value_type : `str`
+        - Readonly.
+        - Re-formatted string representation of the component return datatype.
+    '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            lang: Database_Lang,
+            desc: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        `ObjData_MethodParam` Constructor
+        -
+        Creates a new `ObjData_MethodParam` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the method parameter.
+        - type_ : `str`
+            - Datatype of the method parameter.
+        - lang : `Database_Lang`
+            - ORM language.
+        - desc : `str`
+            - Description of the method parameter.
+        - default : `str | None`
+            - Default value of the method parameter. Defaults to `None`,
+                meaning the method parameter is a positional argument instead
+                of a keyword argument.
+
+        Returns
+        -
+        None
+        '''
+
+        # initialize parent object data
+        super().__init__(name, type_, lang, desc)
+
+        # initialize attributes
+        self._default = Value_Default(default) if default else None
+        '''  Default value of the method parameter. Defaults to `None`, meaning
+            the method parameter is a positional argument instead of a keyword
+            argument. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all attributes are valid. '''
+        return super().valid and self.valid_default
+
+    # ================================
+    # Property - Valid - Default Value
+    @property
+    def valid_default(self) -> bool:
+        ''' Whether or not the component default value is valid. '''
+        return (
+            (self._default is None)
+            or (self._default.valid)
+        )
+
+    # ================================
+    # Property - Value - Default Value
+    @property
+    def value_default(self) -> Optional[str]:
+        ''' Re-formatted string representation of the component default
+            value. '''
+        return self._default.value if self._default else None
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        # get parent data
+        data = super()._get_data(lvl)
+
+        # add additional attributes
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            data.append('value_default')
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            data.extend([
+                'valid_default',
+                'value_default',
+            ])
+        else:
+            data.extend([
+                '_default',
+                'valid_default',
+                'value_default',
+            ])
+
+        return data
+
+    # =========================
+    # Method - Duplicate Object
+    def duplicate(self) -> 'ObjData_MethodParam':
+        return ObjData_MethodParam(
+            name = self._name._data,
+            type_ = self._type._data,
+            lang = self._type._lang,
+            desc = self._desc._data,
+            default = self._default._data if self._default else None
+        )
+
+# =================================
+# Object Data Definition - Property
+class ObjData_Property(ObjData):
+    '''
+    Object Data Definition - Property
+    -
+    Contains the information about an individual property within an ORM object.
+
+    Attributes
+    -
+    - _default : `Value_Default | None`
+        - Default value of the property. Defaults to `None`, meaning an error
+            will be used instead of the default return value.
+    - _desc : `Value_Desc`
+        - Description of the property.
+    - _name : `Value_Name`
+        - Name of the property.
+    - _type : `Value_Type`
+        - Datatype of the property.
+
+    Methods
+    -
+    - __init__(name, type_, lang, desc, default=None) : `None`
+        - Constructor Method.
+        - Creates a new `ObjData_Property` object.
+    - _get_data(lvl) : `List[str]`
+        - `OBJ` Instance Method.
+    - duplicate() : `ObjData_Property`
+        - `OBJ` Instance Method.
+
+    Properties
+    -
+    - valid : `bool`
+        - Readonly.
+        - Whether or not all attributes are valid.
+    - valid_default : `bool`
+        - Readonly.
+        - Whether or not the component default value is valid.
+    - valid_desc : `bool`
+        - Readonly.
+        - Whether or not the component description is valid.
+    - valid_name : `bool`
+        - Readonly.
+        - Whether or not the component name is valid.
+    - valid_type : `bool`
+        - Readonly.
+        - Whether or not the component return type is valid.
+    - value_default : `str`
+        - Readonly.
+        - Re-formatted string representation of the component default value.
+    - value_desc : `str | None`
+        - Readonly.
+        - Re-formatted string representation of the component description.
+    - value_name : `str`
+        - Readonly.
+        - Re-formatted string representation of the component name.
+    - value_type : `str`
+        - Readonly.
+        - Re-formatted string representation of the component return datatype.
+    '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            lang: Database_Lang,
+            desc: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        `ObjData_Property` Constructor
+        -
+        Creates a new `ObjData_Property` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the property.
+        - type_ : `str`
+            - Datatype of the property.
+        - lang : `Database_Lang`
+            - ORM language.
+        - desc : `str`
+            - Description of the property.
+        - default : `str | None`
+            - Default value of the property. Defaults to `None`, meaning an
+                error will be used instead of the default return value.
+
+        Returns
+        -
+        None
+        '''
+
+        # initialize parent object data
+        super().__init__(name, type_, lang, desc)
+
+        # initialize attributes
+        self._default = Value_Default(default) if default else None
+        ''' Default value of the property. Defaults to `None`, meaning an
+            error will be used instead of the default return value. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all attributes are valid. '''
+        return super().valid and self.valid_default
+
+    # ================================
+    # Property - Valid - Default Value
+    @property
+    def valid_default(self) -> bool:
+        ''' Whether or not the component default value is valid. '''
+        return (
+            (self._default is None)
+            or (self._default.valid)
+        )
+
+    # ================================
+    # Property - Value - Default Value
+    @property
+    def value_default(self) -> Optional[str]:
+        ''' Re-formatted string representation of the component default
+            value. '''
+        return self._default.value if self._default else None
+
+    # =================
+    # Method - Get Data
+    def _get_data(self, lvl: OBJ.Verbosity_Level) -> List[str]:
+        # get parent data
+        data = super()._get_data(lvl)
+
+        # add additional attributes
+        if lvl == OBJ.Verbosity_Level.SHORT:
+            data.append('value_default')
+        elif lvl == OBJ.Verbosity_Level.LONG:
+            data.extend([
+                'valid_default',
+                'value_default',
+            ])
+        else:
+            data.extend([
+                '_default',
+                'valid_default',
+                'value_default',
+            ])
+
+        return data
+
+    # =========================
+    # Method - Duplicate Object
+    def duplicate(self) -> 'ObjData_Property':
+        return ObjData_Property(
+            name = self._name._data,
+            type_ = self._type._data,
+            lang = self._type._lang,
+            desc = self._desc._data,
+            default = self._default._data if self._default else None
+        )
+
 # ================
 # Value Definition
 class Value(OBJ):
@@ -237,7 +1089,7 @@ class Value(OBJ):
 
 # ================================
 # Value Definition - Default Value
-class Value_DefVal(Value):
+class Value_Default(Value):
     '''
     Value Definition - Default Value
     -
@@ -257,7 +1109,7 @@ class Value_DefVal(Value):
     -
     - __init__(data) : `None`
         - Constructor Method.
-        - Creates a new `Value_DefVal` object.
+        - Creates a new `Value_Default` object.
     - _get_data(lvl) : `List[str]`
         - `OBJ` Instance Method.
     - duplicate() : `Value`
