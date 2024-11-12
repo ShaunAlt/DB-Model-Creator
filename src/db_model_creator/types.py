@@ -47,6 +47,30 @@ class TYPES_METHOD(Enum):
     ''' Static Method. This method has no special accessors, and does not
         depend on the class it is defined in, nor any particular instance of
         that class. '''
+    
+# ================
+# MSSQL Types Enum
+class TYPES_MSSQL(Enum):
+    '''
+    Collection of all valid types for the MSSQL database.
+    
+    Information: https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16
+    '''
+
+    BIGINT = 'bigint'
+    ''' 8-byte signed integer. '''
+
+    BIT = 'bit'
+    ''' Integer data type that can store `1`, `0`, or `NULL`. '''
+
+    INT = 'int'
+    ''' 4-byte signed integer. '''
+
+    SMALLINT = 'smallint'
+    ''' 2-byte signed integer. '''
+
+    TINYINT = 'tinyint'
+    ''' 1-byte unsigned integer. '''
 
 # ==================
 # Python3 Types Enum

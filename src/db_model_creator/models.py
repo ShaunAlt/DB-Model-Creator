@@ -1094,6 +1094,15 @@ class ObjData_Property(ObjData):
             default = self._default._data if self._default else None
         )
 
+# ==============================
+# ORM Object Definition - Column
+
+# =============================
+# ORM Object Definition - Table
+
+# ============================
+# ORM Object Definition - View
+
 # ================
 # Value Definition
 class Value(OBJ):
