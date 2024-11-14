@@ -211,9 +211,9 @@ class OBJ(object):
     -
     - __repr__() : `str`
     - __str__() : `str`
-    - Debug(indent=0) : `str`
-    - Duplicate() : `OBJ`
-    - GetData(lvl) : `List[str]` << abstract >>
+    - Debug(indent : `int` = 0) : `str`
+    - Duplicate() : `OBJ` << abstract >>
+    - GetData(lvl : `VerbosityLevel`) : `List<str>` << abstract >>
     '''
 
     # ==============================================
@@ -417,7 +417,7 @@ class OBJ(object):
 
         Returns
         -
-        - `list[str]`
+        - `List<str>`
             - A collection of the names of all attributes and properties that
                 should be retrieved from the current object instance.
         '''
