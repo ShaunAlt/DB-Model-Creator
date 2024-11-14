@@ -25,6 +25,7 @@ from .component_values import (
 
 # generic objects
 from .generic_objects import (
+    MethodType, # method types
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
 )
@@ -296,6 +297,65 @@ class ObjComp_Constant(ObjComp):
     - Write(comment : `bool`) : `str` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            desc: str,
+            title: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        Object Constant Constructor
+        -
+        Creates a new `ObjComp_Constant` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the object constant.
+        - type_ : `str`
+            - Return type of the object constant.
+        - desc : `str`
+            - Description of the object constant.
+        - title : `str`
+            - Comment title of the object constant.
+        - default : `str | None`
+            - Default value of the object constant, if required.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            type_ = type_,
+            desc = desc,
+            default = default,
+            title = title
+        )
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ObjComp_Constant':
+        return ObjComp_Constant(
+            name = self._name.data,
+            type_ = self._type.data,
+            desc = self._desc.data,
+            title = self._title.data if self._title else '',
+            default = self._default.data if self._default else None
+        )
+
+    # ===================
+    # Method - Write Data
+    def Write(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ObjComp_Constant.Write(comment = {comment}) not defined'
+        )
+
 
 # =============================================================================
 # Object Component - Method
@@ -320,6 +380,95 @@ class ObjComp_Method(ObjComp):
     - Write(comment : `bool`) : `str` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            desc: str,
+            title: str,
+            methodtype: MethodType,
+            params: List['ObjComp_MethodParam'],
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        Object Property Constructor
+        -
+        Creates a new `ObjComp_Property` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the object property.
+        - type_ : `str`
+            - Return type of the object property.
+        - desc : `str`
+            - Description of the object property.
+        - title : `str`
+            - Comment title of the object property.
+        - default : `str | None`
+            - Default value of the object property, if required.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            type_ = type_,
+            desc = desc,
+            default = default,
+            title = title
+        )
+
+        # set fields
+        self._method_type = methodtype
+        ''' Type of method this object represents. '''
+        self._params = params
+        ''' Collection of parameters for the current method. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        return all([
+            self.valid_default,
+            self.valid_desc,
+            self.valid_name,
+            self.valid_params,
+            self.valid_title,
+            self.valid_type,
+        ])
+
+    # ====================================
+    # Property - Valid - Method Parameters
+    @property
+    def valid_params(self) -> bool:
+        ''' Whether or not the method parameters are valid. '''
+        return all([param.valid for param in self._params])
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ObjComp_Method':
+        return ObjComp_Method(
+            name = self._name.data,
+            type_ = self._type.data,
+            desc = self._desc.data,
+            title = self._title.data if self._title else '',
+            methodtype = self._method_type,
+            params = [param.Duplicate() for param in self._params],
+            default = self._default.data if self._default else None
+        )
+
+    # ===================
+    # Method - Write Data
+    def Write(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ObjComp_Method.Write(comment = {comment}) not defined'
+        )
+
 
 # =============================================================================
 # Object Component - Method Parameter
@@ -342,6 +491,61 @@ class ObjComp_MethodParam(ObjComp):
     - Write(comment : `bool`) : `str` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            desc: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        Object Method Parameter Constructor
+        -
+        Creates a new `ObjComp_MethodParam` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the method parameter.
+        - type_ : `str`
+            - Return type of the method parameter.
+        - desc : `str`
+            - Description of the method parameter.
+        - default : `str | None`
+            - Default value of the method parameter, if required.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            type_ = type_,
+            desc = desc,
+            default = default,
+            title = None
+        )
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ObjComp_MethodParam':
+        return ObjComp_MethodParam(
+            name = self._name.data,
+            type_ = self._type.data,
+            desc = self._desc.data,
+            default = self._default.data if self._default else None
+        )
+
+    # ===================
+    # Method - Write Data
+    def Write(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ObjComp_MethodParam.Write(comment = {comment}) not defined'
+        )
+
 
 # =============================================================================
 # Object Component - Property
@@ -362,6 +566,65 @@ class ObjComp_Property(ObjComp):
     - ObjComp_Property(...) << constructor >>
     - Write(comment : `bool`) : `str` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            desc: str,
+            title: str,
+            default: Optional[str] = None
+    ) -> None:
+        '''
+        Object Property Constructor
+        -
+        Creates a new `ObjComp_Property` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the object property.
+        - type_ : `str`
+            - Return type of the object property.
+        - desc : `str`
+            - Description of the object property.
+        - title : `str`
+            - Comment title of the object property.
+        - default : `str | None`
+            - Default value of the object property, if required.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            type_ = type_,
+            desc = desc,
+            default = default,
+            title = title
+        )
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ObjComp_Property':
+        return ObjComp_Property(
+            name = self._name.data,
+            type_ = self._type.data,
+            desc = self._desc.data,
+            title = self._title.data if self._title else '',
+            default = self._default.data if self._default else None
+        )
+
+    # ===================
+    # Method - Write Data
+    def Write(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ObjComp_Property.Write(comment = {comment}) not defined'
+        )
 
 
 # =============================================================================
