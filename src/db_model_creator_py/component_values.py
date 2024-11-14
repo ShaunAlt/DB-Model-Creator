@@ -26,6 +26,12 @@ from .supported_languages import (
     LangOrm, # supported ORM languages
 )
 
+# used for type-hinting
+from typing import (
+    List, # list type-hint
+    Optional, # optional datatype
+)
+
 
 # =============================================================================
 # Abstract Component Value
@@ -53,6 +59,119 @@ class CompValue(OBJ):
     - LoadData(...) << static >>
     - Validate() : `bool` << abstract >>
     '''
+
+    # =============
+    # Static Fields
+    lang_db: Optional[LangDb] = None
+    ''' Database Language (e.g. MSSQL). '''
+    lang_orm: Optional[LangOrm] = None
+    ''' ORM Language (e.g. Python-SQLAlchemy). '''
+    tables: List[ORM_Table] = []
+    ''' All tables in the database model. '''
+    views: List[ORM_View] = []
+    ''' ALl views in the database model. '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Abstract Component Value Constructor
+        -
+        Creates a new `CompValue` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component value data.
+
+        Returns
+        -
+        None
+        '''
+
+        # set data
+        self._data: str = data
+        ''' Original component value data. '''
+
+    # ===============
+    # Property - Data
+    @property
+    def data(self) -> str:
+        ''' Original component value data. '''
+        return self._data
+    
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue':
+        return CompValue(data = self.data)
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        if lvl == VerbosityLevel.SHORT:
+            return ['data']
+        elif lvl == VerbosityLevel.LONG:
+            return ['data']
+        else:
+            return ['_data', 'data']
+        
+    # =========================
+    # Method - Load Static Data
+    @staticmethod
+    def LoadData(
+            lang_db: LangDb,
+            lang_orm: LangOrm,
+            tables: List[ORM_Table],
+            views: List[ORM_View]
+    ) -> None:
+        '''
+        Load Static Data
+        -
+        Loads the static data for the `CompValue` objects.
+
+        Parameters
+        -
+        - lang_db : `LangDb`
+            - Database Language (e.g. MSSQL).
+        - lang_orm : `LangOrm`
+            - ORM Language (e.g. Python-SQLAlchemy).
+        - tables : `List<ORM_Table>`
+            - All tables in the database model.
+        - views : `List<ORM_View>`
+            - All views in the database model.
+
+        Returns
+        -
+        None
+        '''
+
+        # set static values
+        CompValue.lang_db = lang_db
+        CompValue.lang_orm = lang_orm
+        CompValue.tables = tables
+        CompValue.views = views
+
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        '''
+        Validate Data
+        -
+        Validates the data for the particular component value.
+
+        Parameters
+        -
+        None
+
+        Returns
+        -
+        - `bool`
+            - Whether or not the component value is valid.
+        '''
+
+        raise NotImplementedError(
+            f'CompValue().Validate() not implemented in {self.__class__}'
+        )
 
 
 # =============================================================================
@@ -184,6 +303,17 @@ class CompValue_Type(CompValue):
     - Duplicate() : `CompValue_Type` << override >>
     - Validate() : `bool` << override >>
     '''
+
+
+# =============================================================================
+# Back-Reference Import
+# =============================================================================
+
+# orm objects
+from .orm_objects import (
+    ORM_Table, # ORM table object
+    ORM_View, # ORM view object
+)
 
 
 # =============================================================================
