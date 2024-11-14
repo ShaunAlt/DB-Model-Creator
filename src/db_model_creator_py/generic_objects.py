@@ -151,24 +151,6 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
 
 
 # =============================================================================
-# Column Types Enum
-# =============================================================================
-class ColumnType(Enum):
-    '''
-    Column Types Enum
-    -
-    Collection of all valid column types supported by the different database
-    languages.
-
-    Column Type Information:
-    - [MSSQL Column Types](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16)
-    '''
-
-    BIGINT = 'bigint'
-    ''' 8-byte signed integer. Supported by MSSQL. '''
-
-
-# =============================================================================
 # Method Types Enum
 # =============================================================================
 class MethodType(Enum):

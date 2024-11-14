@@ -16,7 +16,6 @@ component (e.g. the name of a parameter, the description of a constant).
 
 # generic objects
 from .generic_objects import (
-    ColumnType, # column datatypes
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
 )

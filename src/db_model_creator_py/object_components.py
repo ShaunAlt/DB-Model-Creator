@@ -16,7 +16,6 @@ objects (e.g. constants, properties).
 
 # generic objects
 from .generic_objects import (
-    ColumnType, # column datatypes
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
 )

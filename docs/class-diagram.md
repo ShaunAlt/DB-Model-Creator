@@ -78,11 +78,6 @@ classDiagram
     CompValue --|> CompValue_Type
 
     namespace Generic-Objects {
-        %% Collection of valid Column Types
-        class ColumnType {
-            << enumeration >>
-        }
-
         %% Collection of valid Method Types
         class MethodType {
             << enumeration >>
@@ -196,7 +191,7 @@ classDiagram
             - _nullable : bool
             - _pk : bool
             - _title : CompValue_Title
-            - _type : ColumnType
+            - _type : str
             - _unique : bool
             - lang_db : LangDb | None << static >>
             - lang_orm : LangOrm | None << static >>
@@ -204,7 +199,7 @@ classDiagram
             + Duplicate() ORM_Column << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
             + LoadData(lang_db : LangDb, lang_orm : LangOrm) << static >>
-            + ORM_Column(name : str, type_ : ColumnType, title : str, desc : str, nullable : bool = False, pk : bool = False, identity : bool = False, fk : str | None = None, unique : bool = False) << constructor >>
+            + ORM_Column(name : str, type_ : str, title : str, desc : str, nullable : bool = False, pk : bool = False, identity : bool = False, fk : str | None = None, unique : bool = False) << constructor >>
             + WriteDb(comment : bool) str
             + WriteOrm(comment : bool) str
         }
