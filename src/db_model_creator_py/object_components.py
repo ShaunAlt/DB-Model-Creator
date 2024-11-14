@@ -14,6 +14,15 @@ objects (e.g. constants, properties).
 # Imports
 # =============================================================================
 
+# component values
+from .component_values import (
+    CompValue_Default, # default component value
+    CompValue_Desc, # component description
+    CompValue_Name, # component name
+    CompValue_Title, # component comment title
+    CompValue_Type, # component return type
+)
+
 # generic objects
 from .generic_objects import (
     OBJ, # base object model
@@ -24,6 +33,12 @@ from .generic_objects import (
 from .supported_languages import (
     LangDb, # supported database languages
     LangOrm, # supported ORM languages
+)
+
+# used for type-hinting
+from typing import (
+    List, # list type-hint
+    Optional, # nullable datatype
 )
 
 
@@ -59,6 +74,206 @@ class ObjComp(OBJ):
     - ObjComp(...) << constructor >>
     - Write(comment : `bool`) : `str` << abstract >>
     '''
+
+    # =============
+    # Static Fields
+    lang_orm: Optional[LangOrm] = None
+    ''' ORM Language the object component will be created in. '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            desc: str,
+            default: Optional[str] = None,
+            title: Optional[str] = None
+    ) -> None:
+        '''
+        Object Component Constructor
+        -
+        Creates a new `ObjComp` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the object component.
+        - type_ : `str`
+            - Return type of the object component.
+        - desc : `str`
+            - Description of the object component.
+        - default : `str | None`
+            - Default value of the object component, if required.
+        - title : `str | None`
+            - Comment title of the object component, if required.
+
+        Returns
+        -
+        None
+        '''
+
+        # set fields
+        self._default = CompValue_Default(default) if default else None
+        ''' Default value of the object component, if required. '''
+        self._desc = CompValue_Desc(desc)
+        ''' Description of the object component. '''
+        self._name = CompValue_Name(name)
+        ''' Name of the object component. '''
+        self._title = CompValue_Title(title) if title else None
+        ''' Comment title of the object component, if required. '''
+        self._type = CompValue_Type(type_)
+        ''' Return type of the object component. '''
+
+    # ================
+    # Property - Valid
+    @property
+    def valid(self) -> bool:
+        ''' Whether or not all data in the component is valid. '''
+        return all([
+            self.valid_default,
+            self.valid_desc,
+            self.valid_name,
+            self.valid_title,
+            self.valid_type,
+        ])
+
+    # ================================
+    # Property - Valid - Default Value
+    @property
+    def valid_default(self) -> bool:
+        ''' Whether or not the default value of the component is valid. '''
+        return (
+            (self._default is None)
+            or (self._default.Validate())
+        )
+    
+    # ==============================
+    # Property - Valid - Description
+    @property
+    def valid_desc(self) -> bool:
+        ''' Whether or not the description of the component is valid. '''
+        return self._desc.Validate()
+    
+    # =======================
+    # Property - Valid - Name
+    @property
+    def valid_name(self) -> bool:
+        ''' Whether or not the name of the component is valid. '''
+        return self._name.Validate()
+    
+    # ================================
+    # Property - Valid - Comment Title
+    @property
+    def valid_title(self) -> bool:
+        ''' Whether or not the comment title of the component is valid. '''
+        return (
+            (self._title is None)
+            or (self._title.Validate())
+        )
+    
+    # ==============================
+    # Property - Valid - Return Type
+    @property
+    def valid_type(self) -> bool:
+        ''' Whether or not the return type of the component is valid. '''
+        return self._type.Validate()
+    
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ObjComp':
+        return ObjComp(
+            name = self._name.data,
+            type_ = self._type.data,
+            desc = self._desc.data,
+            default = self._default.data if self._default else None,
+            title = self._title.data if self._title else None
+        )
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        if lvl == VerbosityLevel.SHORT:
+            return ['lang_orm', 'valid']
+        elif lvl == VerbosityLevel.LONG:
+            return [
+                '_default',
+                '_desc',
+                '_name',
+                '_title',
+                '_type',
+                'lang_orm',
+                'valid',
+                'valid_default',
+                'valid_desc',
+                'valid_name',
+                'valid_title',
+                'valid_type',
+            ]
+        else:
+            return [
+                '_default',
+                '_desc',
+                '_name',
+                '_title',
+                '_type',
+                'lang_orm',
+                'valid',
+                'valid_default',
+                'valid_desc',
+                'valid_name',
+                'valid_title',
+                'valid_type',
+            ]
+
+    # =========================
+    # Method - Load Static Data
+    @staticmethod
+    def LoadData(lang_orm: LangOrm) -> None:
+        '''
+        Load Static Data
+        -
+        Loads the static data for all object components.
+
+        Parameters
+        -
+        - lang_orm : `LangOrm`
+            - ORM language the object component will be created in.
+
+        Returns
+        -
+        None
+        '''
+
+        # set orm language
+        ObjComp.lang_orm = lang_orm
+
+    # ===================
+    # Method - Write Data
+    def Write(self, comment: bool) -> str:
+        '''
+        Write Data
+        -
+        Writes the source code for the current object component in the
+        required ORM language.
+
+        Parameters
+        -
+        - comment : `bool`
+            - Whether to write the comment for the object component, or the
+                actual code.
+
+        Returns
+        -
+        - `str`
+            - String containing the object component formatted for the ORM
+                language.
+        '''
+
+        raise NotImplementedError(
+            f'ObjComp().Write(comment = {comment}) not defined in ' \
+            + f'{self.__class__}'
+        )
 
 
 # =============================================================================
