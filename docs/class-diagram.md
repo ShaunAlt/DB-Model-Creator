@@ -67,6 +67,9 @@ classDiagram
     }
     OBJ --|> CompValue
     CompValue --> LangDb : lang_db
+    CompValue --> LangOrm : lang_orm
+    CompValue --> ORM_Table : tables
+    CompValue --> ORM_View : views
     CompValue --|> CompValue_Default
     CompValue --|> CompValue_Desc
     CompValue --|> CompValue_Fk
@@ -170,10 +173,18 @@ classDiagram
         }
     }
     OBJ --|> ObjComp
+    ObjComp --> CompValue_Default : _default
+    ObjComp --> CompValue_Desc : _desc
+    ObjComp --> CompValue_Name : _name
+    ObjComp --> CompValue_Title : _title
+    ObjComp --> CompValue_Type : _type
+    ObjComp --> LangOrm : lang_orm
     ObjComp --|> ObjComp_Constant
     ObjComp --|> ObjComp_Method
     ObjComp --|> ObjComp_MethodParam
     ObjComp --|> ObjComp_Property
+    ObjComp_Method --> MethodType : _method_type
+    ObjComp_Method --> ObjComp_MethodParam : _params
 
     namespace ORM-Objects {
         %% ORM Table / View Column
@@ -241,7 +252,25 @@ classDiagram
         }
     }
     OBJ --|> ORM_Column
+    ORM_Column --> CompValue_Desc : _desc
+    ORM_Column --> CompValue_Fk : _fk
+    ORM_Column --> CompValue_Name : _name
+    ORM_Column --> CompValue_Title : _title
+    ORM_Column --> ColumnType : _type
+    ORM_Column --> LangDb : lang_db
+    ORM_Column --> LangOrm : lang_orm
     OBJ --|> ORM_TV
+    ORM_TV --> ORM_Column : _cols
+    ORM_TV --> ObjComp_Constant : _constants
+    ORM_TV --> CompValue_Desc : _desc
+    ORM_TV --> ObjComp_Method : _methods
+    ORM_TV --> CompValue_Name : _name
+    ORM_TV --> ObjComp_Properties : _props
+    ORM_TV --> CompValue_Title : _title
+    ORM_TV --> LangDb : lang_db
+    ORM_TV --> LangOrm : lang_orm
+    ORM_TV --> ORM_Table : tables
+    ORM_TV --> ORM_View : views
     ORM_TV --|> ORM_Table
     ORM_TV --|> ORM_View
 
@@ -260,6 +289,4 @@ classDiagram
     }
     note for LangDb "Add Database and ORM languages as required
     to these enumerators to extend functionality and support."
-
-    %% Comment
 ```
