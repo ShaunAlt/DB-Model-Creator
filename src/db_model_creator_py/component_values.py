@@ -170,7 +170,7 @@ class CompValue(OBJ):
         '''
 
         raise NotImplementedError(
-            f'CompValue().Validate() not implemented in {self.__class__}'
+            f'CompValue().Validate() not defined in {self.__class__}'
         )
 
 
@@ -194,6 +194,36 @@ class CompValue_Default(CompValue):
     - Duplicate() : `CompValue_Default` << override >>
     - Validate() : `bool` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Default Value - Constructor
+        -
+        Creates a new `CompValue_Default` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component default value data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Default':
+        return CompValue_Default(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Default.Validate() not defined')
 
 
 # =============================================================================
