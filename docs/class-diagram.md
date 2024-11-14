@@ -217,7 +217,7 @@ classDiagram
             # _desc : CompValue_Desc
             # _methods : List~ObjComp_Method~
             # _name : CompValue_Name
-            # _props : List~ObjComp_Properties~
+            # _props : List~ObjComp_Property~
             # _title : CompValue_Title
             # lang_db : LangDb | None << static >>
             # lang_orm : LangOrm | None << static >>
@@ -227,7 +227,7 @@ classDiagram
             + Duplicate() ORM_TV << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
             + LoadData(lang_db : LangDb, lang_orm : LangOrm, tables : List~ORM_Table~, views : List~ORM_View~) << static >>
-            + ORM_TV(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Properties~) << constructor >>
+            + ORM_TV(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
             + WriteDb(comment : bool) str << virtual >>
             + WriteOrm(comment : bool) str << virtual >>
         }
@@ -238,7 +238,7 @@ classDiagram
 
             + Duplicate() ORM_Table << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
-            + ORM_Table(name : str, title : str, desc : str, trigger_update : bool, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Properties~) << constructor >>
+            + ORM_Table(name : str, title : str, desc : str, trigger_update : bool, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
             + WriteDb(comment : bool) str << override >>
             + WriteOrm(comment : bool) str << override >>
         }
@@ -246,7 +246,7 @@ classDiagram
         %% ORM View
         class ORM_View {
             + Duplicate() ORM_View << override >>
-            + ORM_View(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Properties~) << constructor >>
+            + ORM_View(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
             + WriteDb(comment : bool) str << override >>
             + WriteOrm(comment : bool) str << override >>
         }
@@ -265,7 +265,7 @@ classDiagram
     ORM_TV --> CompValue_Desc : _desc
     ORM_TV --> ObjComp_Method : _methods
     ORM_TV --> CompValue_Name : _name
-    ORM_TV --> ObjComp_Properties : _props
+    ORM_TV --> ObjComp_Property : _props
     ORM_TV --> CompValue_Title : _title
     ORM_TV --> LangDb : lang_db
     ORM_TV --> LangOrm : lang_orm
