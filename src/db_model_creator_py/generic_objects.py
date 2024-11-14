@@ -1,12 +1,12 @@
 # =============================================================================
-# Database Model Creator - Configuration
+# Database Model Creator - Generic Objects
 # Created by: Shaun Altmann
 # =============================================================================
 '''
-Databsase Model Creator - Configuration
+Databsase Model Creator - Generic Objects
 -
-Contains all of the key definitions that are used across the rest of this
-package.
+Contains the generic objects that are implemented by the objects in the rest of
+this package.
 '''
 # =============================================================================
 
