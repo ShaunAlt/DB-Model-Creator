@@ -15,7 +15,10 @@ package.
 # =============================================================================
 
 # used for creating enumerators
-from enum import IntEnum
+from enum import (
+    Enum, # regular enumerator
+    IntEnum, # enumerator for integers
+)
 
 # used for type-hinting
 from typing import (
@@ -27,7 +30,7 @@ from typing import (
 # =============================================================================
 # Object to String Converter
 # =============================================================================
-def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
+def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
     '''
     Object to String Converter
     -
@@ -38,7 +41,7 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
     -
     - obj : `Any`
         - Object being converted to a string.
-    - lvl : `OBJ.Verbosity_Level`
+    - lvl : `VerbosityLevel`
         - Verbosity level with which to output the data.
 
     Returns
@@ -62,14 +65,14 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
     elif isinstance(obj, complex): # complex number
         output = str(obj)
     elif isinstance(obj, str): # string
-        if lvl == OBJ.Verbosity_Level.SHORT: output = f'"{obj}"'
-        elif lvl in [OBJ.Verbosity_Level.LONG, OBJ.Verbosity_Level.ALL]:
+        if lvl == VerbosityLevel.SHORT: output = f'"{obj}"'
+        elif lvl in [VerbosityLevel.LONG, VerbosityLevel.ALL]:
             output = f'"\n\t\t' + obj.replace('\n', '\n\t\t') + '\n\t"'
     elif isinstance(obj, bool): # boolean
         output = str(obj)
     elif isinstance(obj, dict): # dictionary
-        if lvl == OBJ.Verbosity_Level.SHORT: output = str(obj)
-        elif lvl in [OBJ.Verbosity_Level.LONG, OBJ.Verbosity_Level.ALL]:
+        if lvl == VerbosityLevel.SHORT: output = str(obj)
+        elif lvl in [VerbosityLevel.LONG, VerbosityLevel.ALL]:
             output = (
                 'dict(\n\t\t' \
                 + ',\n\t\t'.join(
@@ -78,7 +81,7 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
                         + (
                             to_str(
                                 val,
-                                OBJ.Verbosity_Level(lvl - 1)
+                                VerbosityLevel(lvl - 1)
                             ).replace('\n', '\n\t')
                         )
                     )
@@ -95,9 +98,9 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
             set,
             frozenset,
     )):
-        if lvl == OBJ.Verbosity_Level.SHORT:
+        if lvl == VerbosityLevel.SHORT:
             output = ','.join([str(x) for x in obj])
-        elif lvl == OBJ.Verbosity_Level.LONG:
+        elif lvl == VerbosityLevel.LONG:
             output = (
                 f'{obj.__class__.__name__}(\n\t\t' \
                 + ',\n\t\t'.join([
@@ -115,7 +118,7 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
                         f'#{i}: ' \
                         + to_str(
                             x,
-                            OBJ.Verbosity_Level.LONG
+                            VerbosityLevel.LONG
                         ).replace('\n', '\n\t')
                     )
                     for i, x in enumerate(obj)
@@ -127,16 +130,16 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
     elif callable(obj): # function
         output = obj.__name__
     elif isinstance(obj, OBJ): # custom object
-        if lvl in [OBJ.Verbosity_Level.SHORT, OBJ.Verbosity_Level.LONG]:
+        if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
             output = str(obj)
         else: output = repr(obj)
     else: # unknown object type
-        if lvl in [OBJ.Verbosity_Level.SHORT, OBJ.Verbosity_Level.LONG]:
+        if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
             output = f'Unknown Object Type: {obj}'
         else: output = f'Unknown Object Type: {obj!r}'
 
     # single-line output additional editing
-    if lvl == OBJ.Verbosity_Level.SHORT:
+    if lvl == VerbosityLevel.SHORT:
         # prevent multiple lines
         output = output.replace('\n', '\\n')
 
@@ -145,6 +148,49 @@ def to_str(obj: Any, lvl: 'OBJ.Verbosity_Level') -> str:
             output = f'{output[:97]}... + {len(output) - 97}'
 
     return output
+
+
+# =============================================================================
+# Column Types Enum
+# =============================================================================
+class ColumnType(Enum):
+    '''
+    Column Types Enum
+    -
+    Collection of all valid column types supported by the different database
+    languages.
+
+    Column Type Information:
+    - [MSSQL Column Types](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16)
+    '''
+
+    BIGINT = 'bigint'
+    ''' 8-byte signed integer. Supported by MSSQL. '''
+
+
+# =============================================================================
+# Method Types Enum
+# =============================================================================
+class MethodType(Enum):
+    '''
+    Method Types Enum
+    -
+    Collection of all valid method types (e.g. "instance", "static") that can
+    be used when creating ORM object methods.
+    '''
+
+    CLASS = 'class'
+    ''' Class Method. This type allows the method to access the class it is
+        defined in. '''
+
+    INSTANCE = 'instance'
+    ''' Instance Method. This type allows the method to access a particular
+        instance of the class it is defined in. '''
+
+    STATIC = 'static'
+    ''' Static Method. This method has no special accessors, and does not
+        depend on the class it is defined in, nor any particular instance of
+        that class. '''
 
 
 # =============================================================================
@@ -157,65 +203,18 @@ class OBJ(object):
     Base object definition for all other objects in the package. Contains
     basic methods used for debugging purposes.
 
-    Attributes
+    Fields
     -
     None
-
-    Constants
-    -
-    - Verbosity_Level : `IntEnum`
-        - Contains the different verbosity levels that can be used to get data
-            from the current object for debugging and/or logging purposes.
 
     Methods
     -
     - __repr__() : `str`
-        - Official String Representation Method.
-        - Called by the `repr` built-in function, this computes the "official"
-            string representation of the current object.
     - __str__() : `str`
-        - Informal String Representation Method.
-        - Called by the `str`, `__format__`, and `print` built-in functions,
-            this computes the "informal" or nicely printable string
-            representation of the current object.
-    - _get_data(lvl) : `List[str]`
-        - Instance Method.
-        - Returns a list of attribute / property values that the object should
-            contain, which can be used by debugging functions to produce a
-            pretty output of the current object instance.
-    - debug(indent=0) : `str`
-        - Instance Method.
-        - Creates a multi-line string representation of the current object
-            instance, including all attribute / property values (using the
-            `OBJ.Verbosity_Level.ALL` level).
-    - duplicate() : `OBJ`
-        - Instance Method.
-        - Creates a duplicate of the current object, however with entirely new
-            references to all attribute and property values, meaning that the
-            duplicate created is entirely independent from the original.
-
-    Properties
-    -
-    None
+    - Debug(indent=0) : `str`
+    - Duplicate() : `OBJ`
+    - GetData(lvl) : `List[str]` << abstract >>
     '''
-
-    # ===========================
-    # Constant - Verbosity Levels
-    class Verbosity_Level(IntEnum):
-        ''' Contains the different verbosity levels that can be used to get
-            data from the current object for debugging and/or logging
-            purposes. '''
-
-        SHORT = 0
-        ''' Shortest verbosity level, get only a couple of data points. Used
-            for single-line string representations of the current object. '''
-        LONG = 1
-        ''' Long verbosity level, get most data points. Used for multi-line
-            string representations of the current object. '''
-        ALL = 2
-        ''' Very detailed verbosity level, get all data points. Used for
-            debug strings that include the all instance data in the object in a
-            very lone multi-line string. '''
 
     # ==============================================
     # Method - Official String Representation Method
@@ -243,7 +242,7 @@ class OBJ(object):
         value: str # item to add to `data_strings`
 
         # get object data
-        data_labels = self._get_data(OBJ.Verbosity_Level.LONG)
+        data_labels = self.GetData(VerbosityLevel.LONG)
 
         # construct data strings for each data point
         data_strings = []
@@ -255,7 +254,7 @@ class OBJ(object):
                     + (
                         to_str(
                             getattr(self, label),
-                            OBJ.Verbosity_Level.LONG
+                            VerbosityLevel.LONG
                         ).replace('\n', '\n\t')
                     )
                 )
@@ -297,7 +296,7 @@ class OBJ(object):
         value: str # item to add to `data_strings`
 
         # get object data
-        data_labels = self._get_data(OBJ.Verbosity_Level.SHORT)
+        data_labels = self.GetData(VerbosityLevel.SHORT)
 
         # construct data strings for each data point
         data_strings = []
@@ -306,7 +305,7 @@ class OBJ(object):
             try:
                 value = (
                     f'{label} = ' \
-                    + to_str(getattr(self, label), OBJ.Verbosity_Level.SHORT)
+                    + to_str(getattr(self, label), VerbosityLevel.SHORT)
                 )
             except Exception as e:
                 value = (f'{label} = {e}')
@@ -319,43 +318,15 @@ class OBJ(object):
             + f' />'
         )
 
-    # =================
-    # Method - Get Data
-    def _get_data(self, lvl: 'OBJ.Verbosity_Level') -> List[str]:
-        '''
-        Get Data
-        -
-        Returns a list of attribute / property values that the object should
-        contain, which can be used by debugging functions to produce a pretty
-        output of the current object instance.
-
-        Parameters
-        -
-        - lvl : `OBJ.Verbosity_Level`
-            - The level of verbosity.
-
-        Returns
-        -
-        - `list[str]`
-            - A collection of the names of all attributes and properties that
-                should be retrieved from the current object instance.
-        '''
-
-        # This method should be overridden in subclasses
-        raise NotImplementedError(
-            f'OBJ()._get_data(lvl = {lvl}) has not been defined in ' \
-            + f'{self.__class__}'
-        )
-
     # =====================
     # Method - Debug Object
-    def debug(self, indent: int = 0) -> str:
+    def Debug(self, indent: int = 0) -> str:
         '''
         Debug Object
         -
         Creates a multi-line string representation of the current object
         instance, including all attribute / property values (using the
-        `OBJ.Verbosity_Level.ALL` level).
+        `VerbosityLevel.ALL` level).
 
         Parameters
         -
@@ -377,7 +348,7 @@ class OBJ(object):
         value: str # item to add to `data_strings`
 
         # get object data
-        data_labels = self._get_data(OBJ.Verbosity_Level.ALL)
+        data_labels = self.GetData(VerbosityLevel.ALL)
 
         # construct data strings for each data point
         data_strings = []
@@ -389,7 +360,7 @@ class OBJ(object):
                     + (
                         to_str(
                             getattr(self, label),
-                            OBJ.Verbosity_Level.ALL
+                            VerbosityLevel.ALL
                         ).replace('\n', f'\n\t{t}')
                     )
                 )
@@ -406,7 +377,7 @@ class OBJ(object):
 
     # =========================
     # Method - Duplicate Object
-    def duplicate(self) -> 'OBJ':
+    def Duplicate(self) -> 'OBJ':
         '''
         Duplicate Object
         -
@@ -426,8 +397,60 @@ class OBJ(object):
 
         # this method should be overridden in subclasses
         raise NotImplementedError(
-            f'OBJ().duplicate() has not been defined in {self.__class__}'
+            f'OBJ().Duplicate() has not been defined in {self.__class__}'
         )
+
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: 'VerbosityLevel') -> List[str]:
+        '''
+        Get Data
+        -
+        Returns a list of attribute / property values that the object should
+        contain, which can be used by debugging functions to produce a pretty
+        output of the current object instance.
+
+        Parameters
+        -
+        - lvl : `VerbosityLevel`
+            - The level of verbosity.
+
+        Returns
+        -
+        - `list[str]`
+            - A collection of the names of all attributes and properties that
+                should be retrieved from the current object instance.
+        '''
+
+        # This method should be overridden in subclasses
+        raise NotImplementedError(
+            f'OBJ().GetData(lvl = {lvl}) has not been defined in ' \
+            + f'{self.__class__}'
+        )
+
+
+# =============================================================================
+# Verbosity Levels Enum
+# =============================================================================
+class VerbosityLevel(IntEnum):
+    '''
+    Verbosity Levels Enum
+    -
+    Contains the different verbosity levels that can be used to get
+    data from the current object for debugging and/or logging
+    purposes.
+    '''
+
+    SHORT = 0
+    ''' Shortest verbosity level, get only a couple of data points. Used
+        for single-line string representations of the current object. '''
+    LONG = 1
+    ''' Long verbosity level, get most data points. Used for multi-line
+        string representations of the current object. '''
+    ALL = 2
+    ''' Very detailed verbosity level, get all data points. Used for
+        debug strings that include the all instance data in the object in a
+        very lone multi-line string. '''
 
 
 # =============================================================================
