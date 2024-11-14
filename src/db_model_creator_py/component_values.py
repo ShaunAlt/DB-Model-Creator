@@ -247,6 +247,37 @@ class CompValue_Desc(CompValue):
     - Validate() : `bool` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Description - Constructor
+        -
+        Creates a new `CompValue_Desc` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component description data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Desc':
+        return CompValue_Desc(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Desc.Validate() not defined')
+
+
 
 # =============================================================================
 # Component Value - Foreign Key
@@ -267,6 +298,37 @@ class CompValue_Fk(CompValue):
     - Duplicate() : `CompValue_Fk` << override >>
     - Validate() : `bool` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Foreign Key - Constructor
+        -
+        Creates a new `CompValue_Fk` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original column foreign key data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Fk':
+        return CompValue_Fk(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Fk.Validate() not defined')
+
 
 
 # =============================================================================
@@ -290,13 +352,44 @@ class CompValue_Name(CompValue):
     - Validate() : `bool` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Name - Constructor
+        -
+        Creates a new `CompValue_Name` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component name data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Name':
+        return CompValue_Name(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Name.Validate() not defined')
+
+
 
 # =============================================================================
-# Component Value - Title
+# Component Value - Comment Title
 # =============================================================================
 class CompValue_Title(CompValue):
     '''
-    Component Value - Title
+    Component Value - Comment Title
     -
     Contains the comment title for an object component (e.g. method title,
     property comment title).
@@ -311,6 +404,37 @@ class CompValue_Title(CompValue):
     - Duplicate() : `CompValue_Title` << override >>
     - Validate() : `bool` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Comment Title - Constructor
+        -
+        Creates a new `CompValue_Title` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component comment title data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Title':
+        return CompValue_Title(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Title.Validate() not defined')
+
 
 
 # =============================================================================
@@ -333,6 +457,37 @@ class CompValue_Type(CompValue):
     - Duplicate() : `CompValue_Type` << override >>
     - Validate() : `bool` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(self, data: str) -> None:
+        '''
+        Component Value - Return Type - Constructor
+        -
+        Creates a new `CompValue_Type` object.
+
+        Parameters
+        -
+        - data : `str`
+            - Original component return type data.
+
+        Returns
+        -
+        - None
+        '''
+
+        super().__init__(data = data)
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'CompValue_Type':
+        return CompValue_Type(data = self.data)
+    
+    # ======================
+    # Method - Validate Data
+    def Validate(self) -> bool:
+        raise NotImplementedError('CompValue_Type.Validate() not defined')
+
 
 
 # =============================================================================
