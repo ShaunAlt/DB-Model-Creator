@@ -599,6 +599,115 @@ class ORM_Table(ORM_TV):
     - WriteOrm(comment : `bool`) : `str` << override >>
     '''
 
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            title: str,
+            desc: str,
+            trigger_update: bool,
+            cols: List['ORM_Column'],
+            constants: List['ObjComp_Constant'],
+            methods: List['ObjComp_Method'],
+            props: List['ObjComp_Property']
+    ) -> None:
+        '''
+        ORM Table Constructor
+        -
+        Creates a new `ORM_Table` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the table.
+        - title : `str`
+            - Comment title of the table.
+        - desc : `str`
+            - Description of the table.
+        - trigger_update : `bool`
+            - Whether or not an update trigger and table should be created to
+                track the data changes in this table.
+        - cols : `List<ORM_Column>`
+            - Collection of columns in the table.
+        - constants : `List<ObjComp_Constant>`
+            - Collection of constants in the table ORM object.
+        - methods : `List<ObjComp_Method>`
+            - Collection of methods in the table ORM object.
+        - props : `List<ObjComp_Property>`
+            - Collection of properties in the table ORM object.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            title = title,
+            desc = desc,
+            cols = cols,
+            constants = constants,
+            methods = methods,
+            props = props
+        )
+
+        # set fields
+        self._trigger_update = trigger_update
+        ''' Whether or not an update trigger and table should be created to
+            track the data changes in this table. '''
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ORM_Table':
+        return ORM_Table(
+            name = self.name,
+            title = self._title.data,
+            desc = self._desc.data,
+            trigger_update = self._trigger_update,
+            cols = [col.Duplicate() for col in self._cols],
+            constants = [constant.Duplicate() for constant in self._constants],
+            methods = [method.Duplicate() for method in self._methods],
+            props = [prop.Duplicate() for prop in self._props]
+        )
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        data = super().GetData(lvl)
+        if lvl == VerbosityLevel.SHORT:
+            pass
+        elif lvl == VerbosityLevel.LONG:
+            data.extend([
+                '_trigger_update',
+            ])
+        else:
+            data.extend([
+                '_trigger_update',
+            ])
+        return data
+    
+    # =================
+    # Method - Validate
+    def Validate(self) -> bool:
+        raise NotImplementedError(
+            'ORM_Table().Validate() not defined'
+        )
+
+    # ============================
+    # Method - Write Database Code
+    def WriteDb(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_Table().WriteDb(comment = {comment}) not defined'
+        )
+
+    # =======================
+    # Method - Write ORM Code
+    def WriteOrm(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_Table().WriteOrm(comment = {comment}) not defined'
+        )
+
 
 # =============================================================================
 # ORM View
@@ -622,6 +731,101 @@ class ORM_View(ORM_TV):
     - WriteDb(comment : `bool`) : `str` << override >>
     - WriteOrm(comment : `bool`) : `str` << override >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            title: str,
+            desc: str,
+            cols: List['ORM_Column'],
+            constants: List['ObjComp_Constant'],
+            methods: List['ObjComp_Method'],
+            props: List['ObjComp_Property']
+    ) -> None:
+        '''
+        ORM View Constructor
+        -
+        Creates a new `ORM_View` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the view.
+        - title : `str`
+            - Comment title of the view.
+        - desc : `str`
+            - Description of the view.
+        - cols : `List<ORM_Column>`
+            - Collection of columns in the view.
+        - constants : `List<ObjComp_Constant>`
+            - Collection of constants in the view ORM object.
+        - methods : `List<ObjComp_Method>`
+            - Collection of methods in the view ORM object.
+        - props : `List<ObjComp_Property>`
+            - Collection of properties in the view ORM object.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            title = title,
+            desc = desc,
+            cols = cols,
+            constants = constants,
+            methods = methods,
+            props = props
+        )
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ORM_View':
+        return ORM_View(
+            name = self.name,
+            title = self._title.data,
+            desc = self._desc.data,
+            cols = [col.Duplicate() for col in self._cols],
+            constants = [constant.Duplicate() for constant in self._constants],
+            methods = [method.Duplicate() for method in self._methods],
+            props = [prop.Duplicate() for prop in self._props]
+        )
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        data = super().GetData(lvl)
+        if lvl == VerbosityLevel.SHORT:
+            pass
+        elif lvl == VerbosityLevel.LONG:
+            pass
+        else:
+            pass
+        return data
+    
+    # =================
+    # Method - Validate
+    def Validate(self) -> bool:
+        raise NotImplementedError(
+            'ORM_View().Validate() not defined'
+        )
+
+    # ============================
+    # Method - Write Database Code
+    def WriteDb(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_View().WriteDb(comment = {comment}) not defined'
+        )
+
+    # =======================
+    # Method - Write ORM Code
+    def WriteOrm(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_View().WriteOrm(comment = {comment}) not defined'
+        )
 
 
 # =============================================================================
