@@ -182,26 +182,42 @@ classDiagram
     ObjComp_Method --> ObjComp_MethodParam : _params
 
     namespace ORM-Objects {
+        %% Abstract ORM Object
+        class ORM {
+            << abstract >>
+            # _desc : CompValue_Desc
+            # _name : CompValue_Name
+            # _title : CompValue_Title
+            # lang_db : LangDb | None << static >>
+            # lang_orm : LangOrm | None << static >>
+            + name : str << readonly >>
+            # tables : List~ORM_Table~ << static >>
+            # views : List~ORM_View~ << static >>
+
+            + Duplicate() ORM << override >>
+            # GetData(lvl : VerbosityLevel) List~str~ << override >>
+            + LoadData(lang_db : LangDb, lang_orm : LangOrm, tables : List~ORM_Table~, views : List~ORM_View~) << static >>
+            + ORM(name : str, title : str, desc : str) << constructor >>
+            + Validate() bool << abstract >>
+            + WriteDb(comment : bool) str << abstract >>
+            + WriteOrm(comment : bool) str << abstract >>
+        }
+
         %% ORM Table / View Column
         class ORM_Column {
-            - _desc : CompValue_Desc
             - _fk : CompValue_Fk | None
             - _identity : bool
-            - _name : CompValue_Name
             - _nullable : bool
             - _pk : bool
-            - _title : CompValue_Title
             - _type : str
             - _unique : bool
-            - lang_db : LangDb | None << static >>
-            - lang_orm : LangOrm | None << static >>
 
             + Duplicate() ORM_Column << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
-            + LoadData(lang_db : LangDb, lang_orm : LangOrm) << static >>
             + ORM_Column(name : str, type_ : str, title : str, desc : str, nullable : bool = False, pk : bool = False, identity : bool = False, fk : str | None = None, unique : bool = False) << constructor >>
-            + WriteDb(comment : bool) str
-            + WriteOrm(comment : bool) str
+            + Validate() bool << override >>
+            + WriteDb(comment : bool) str << override >>
+            + WriteOrm(comment : bool) str << override >>
         }
 
         %% ORM Table / View Abstract Parent
@@ -209,22 +225,15 @@ classDiagram
             << abstract >>
             # _cols : List~ORM_Column~
             # _constants : List~ObjComp_Constant~
-            # _desc : CompValue_Desc
             # _methods : List~ObjComp_Method~
-            # _name : CompValue_Name
             # _props : List~ObjComp_Property~
-            # _title : CompValue_Title
-            # lang_db : LangDb | None << static >>
-            # lang_orm : LangOrm | None << static >>
-            # tables : List~ORM_Table~ << static >>
-            # views : List~ORM_View~ << static >>
 
             + Duplicate() ORM_TV << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
-            + LoadData(lang_db : LangDb, lang_orm : LangOrm, tables : List~ORM_Table~, views : List~ORM_View~) << static >>
             + ORM_TV(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
-            + WriteDb(comment : bool) str << virtual >>
-            + WriteOrm(comment : bool) str << virtual >>
+            + Validate() bool << override >>
+            + WriteDb(comment : bool) str << override >>
+            + WriteOrm(comment : bool) str << override >>
         }
 
         %% ORM Table
@@ -234,6 +243,7 @@ classDiagram
             + Duplicate() ORM_Table << override >>
             # GetData(lvl : VerbosityLevel) List~str~ << override >>
             + ORM_Table(name : str, title : str, desc : str, trigger_update : bool, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
+            + Validate() bool << override >>
             + WriteDb(comment : bool) str << override >>
             + WriteOrm(comment : bool) str << override >>
         }
@@ -242,30 +252,27 @@ classDiagram
         class ORM_View {
             + Duplicate() ORM_View << override >>
             + ORM_View(name : str, title : str, desc : str, cols : List~ORM_Column~, constants : List~ObjComp_Constant~, methods : List~ObjComp_Method~, props : List~ObjComp_Property~) << constructor >>
+            + Validate() bool << override >>
             + WriteDb(comment : bool) str << override >>
             + WriteOrm(comment : bool) str << override >>
         }
     }
-    OBJ --|> ORM_Column
-    ORM_Column --> CompValue_Desc : _desc
+    OBJ --|> ORM
+    ORM --|> ORM_Column
+    ORM --> CompValue_Desc : _desc
+    ORM --> CompValue_Name : _name
+    ORM --> CompValue_Title : _title
+    ORM --> LangDb : lang_db
+    ORM --> LangOrm : lang_orm
+    ORM --> ORM_Table : tables
+    ORM --> ORM_View : views
     ORM_Column --> CompValue_Fk : _fk
-    ORM_Column --> CompValue_Name : _name
-    ORM_Column --> CompValue_Title : _title
     ORM_Column --> ColumnType : _type
-    ORM_Column --> LangDb : lang_db
-    ORM_Column --> LangOrm : lang_orm
-    OBJ --|> ORM_TV
+    ORM --|> ORM_TV
     ORM_TV --> ORM_Column : _cols
     ORM_TV --> ObjComp_Constant : _constants
-    ORM_TV --> CompValue_Desc : _desc
     ORM_TV --> ObjComp_Method : _methods
-    ORM_TV --> CompValue_Name : _name
     ORM_TV --> ObjComp_Property : _props
-    ORM_TV --> CompValue_Title : _title
-    ORM_TV --> LangDb : lang_db
-    ORM_TV --> LangOrm : lang_orm
-    ORM_TV --> ORM_Table : tables
-    ORM_TV --> ORM_View : views
     ORM_TV --|> ORM_Table
     ORM_TV --|> ORM_View
 
