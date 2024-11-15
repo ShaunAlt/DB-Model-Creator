@@ -32,7 +32,6 @@ from .generic_objects import (
 
 # supported languagges
 from .supported_languages import (
-    LangDb, # supported database languages
     LangOrm, # supported ORM languages
 )
 
