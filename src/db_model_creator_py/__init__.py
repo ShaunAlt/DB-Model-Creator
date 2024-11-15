@@ -15,7 +15,7 @@ the database model.
 # =============================================================================
 
 # used for creating the database model
-from .models import Database
+from .database import Database
 
 
 # =============================================================================
