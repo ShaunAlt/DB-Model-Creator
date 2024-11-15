@@ -28,6 +28,13 @@ from .generic_objects import (
     VerbosityLevel, # verbosity levels
 )
 
+# object components
+from .object_components import (
+    ObjComp_Constant, # object constant
+    ObjComp_Method, # object method
+    ObjComp_Property, # object property
+)
+
 # supported languagges
 from .supported_languages import (
     LangDb, # supported database languages
@@ -432,7 +439,7 @@ class ORM_Column(ORM):
 # =============================================================================
 # ORM Table / View Abstract Parent
 # =============================================================================
-class ORM_TV(OBJ):
+class ORM_TV(ORM):
     '''
     ORM Table / View Abstract Parent
     -
@@ -443,25 +450,130 @@ class ORM_TV(OBJ):
     -
     - _cols : `List<ORM_Column>`
     - _constants : `List<ObjComp_Constant>`
-    - _desc : `CompValue_Desc`
     - _methods : `List<ObjComp_Method>`
-    - _name : `CompValue_Name`
     - _props : `List<ObjComp_Property>`
-    - _title : `CompValue_Title`
-    - lang_db : `LangDb | None` << static >>
-    - lang_orm : `LangOrm | None` << static >>
-    - tables : `List<ORM_Table>` << static >>
-    - views : `List<ORM_View>` << static >>
 
     Methods
     -
     - Duplicate() : `ORM_TV` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
-    - LoadData(...) : `None` << static >>
     - ORM_TV(...) << constructor >>
     - WriteDb(comment : `bool`) : `str` << virtual >>
     - WriteOrm(comment : `bool`) : `str` << virtual >>
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            title: str,
+            desc: str,
+            cols: List['ORM_Column'],
+            constants: List['ObjComp_Constant'],
+            methods: List['ObjComp_Method'],
+            props: List['ObjComp_Property']
+    ) -> None:
+        '''
+        ORM Table / View Constructor
+        -
+        Creates a new `ORM_TV` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Name of the table / view.
+        - title : `str`
+            - Comment title of the table / view.
+        - desc : `str`
+            - Description of the table / view.
+        - cols : `List<ORM_Column>`
+            - Collection of columns in the table / view.
+        - constants : `List<ObjComp_Constant>`
+            - Collection of constants in the table / view ORM object.
+        - methods : `List<ObjComp_Method>`
+            - Collection of methods in the table / view ORM object.
+        - props : `List<ObjComp_Property>`
+            - Collection of properties in the table / view ORM object.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            title = title,
+            desc = desc
+        )
+
+        # set fields
+        self._cols = cols
+        ''' Collection of columns in the table / view. '''
+        self._constants = constants
+        ''' Collection of constants in the table / view ORM object. '''
+        self._methods = methods
+        ''' Collection of methods in the table / view ORM object. '''
+        self._props = props
+        ''' Collection of properties in the table / view ORM object. '''
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ORM_TV':
+        return ORM_TV(
+            name = self.name,
+            title = self._title.data,
+            desc = self._desc.data,
+            cols = [col.Duplicate() for col in self._cols],
+            constants = [constant.Duplicate() for constant in self._constants],
+            methods = [method.Duplicate() for method in self._methods],
+            props = [prop.Duplicate() for prop in self._props]
+        )
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        data = super().GetData(lvl)
+        if lvl == VerbosityLevel.SHORT:
+            pass
+        elif lvl == VerbosityLevel.LONG:
+            data.extend([
+                '_cols',
+                '_constants',
+                '_methods',
+                '_props',
+            ])
+        else:
+            data.extend([
+                '_cols',
+                '_constants',
+                '_methods',
+                '_props',
+            ])
+        return data
+    
+    # =================
+    # Method - Validate
+    def Validate(self) -> bool:
+        raise NotImplementedError(
+            f'ORM_TV().Validate() not defined in {self.__class__}'
+        )
+
+    # ============================
+    # Method - Write Database Code
+    def WriteDb(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_TV().WriteDb(comment = {comment}) not defined in ' \
+            + f'{self.__class__}'
+        )
+
+    # =======================
+    # Method - Write ORM Code
+    def WriteOrm(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_TV().WriteOrm(comment = {comment}) not defined in ' \
+            + f'{self.__class__}'
+        )
 
 
 # =============================================================================
