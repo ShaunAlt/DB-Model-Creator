@@ -78,6 +78,14 @@ classDiagram
     CompValue --|> CompValue_Type
 
     namespace Generic-Objects {
+        %% Collection of supported File Types to read from
+        class FileType {
+            << enumeration >>
+            JSON
+            XML
+            YAML
+        }
+
         %% Collection of valid Method Types
         class MethodType {
             << enumeration >>
@@ -108,6 +116,8 @@ classDiagram
     languages is required."
     note for ColumnType "This needs to be extended to include a list of all
     possible column types for the supported orm and database languages."
+    note for FileType "Add more lines here to extend support to reading the
+    database model from other file types."
 
     namespace Object-Components {
         %% Abstract Object Component Object
@@ -291,4 +301,31 @@ classDiagram
     }
     note for LangDb "Add Database and ORM languages as required
     to these enumerators to extend functionality and support."
+
+    class Database {
+        - _file_name : str
+        - _file_type : FileType
+        - _prefix_orm_table : str
+        - _prefix_orm_view : str
+        - _save_dir_db : str
+        - _save_dir_orm : str
+        - _tables : List~ORM_Table~
+        - _views : List~ORM_View~
+
+        + Database(file_name : str, prefix_orm_table : str = 'DB_', prefix_orm_view : str = 'VW_', save_dir_db : str = 'output/database/', save_dir_orm : str = 'output/orm') << constructor >>
+        + Read()
+        + Read_JSON()
+        + Read_XML()
+        + Read_YAML()
+        + Validate()
+        + Write()
+        + Write_DB_MSSQL()
+        + Write_ORM_PYTHON()
+    }
+    note for Database "Add more Read_* and Write_* methods to extend the
+    support to more languages."
+    OBJ --|> Database
+    Database --> FileType : _file_type
+    Database --> ORM_Table : _tables
+    Database --> ORM_View : _views
 ```
