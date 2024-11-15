@@ -4,6 +4,94 @@ Created by: Shaun Altmann
 ``` mermaid
 classDiagram
     namespace Component-Values {
+        class CompValue { << abstract >> }
+        class CompValue_Default
+        class CompValue_Desc
+        class CompValue_Fk
+        class CompValue_Name
+        class CompValue_Title
+        class CompValue_Type
+    }
+    OBJ --|> CompValue
+    CompValue --> LangDb : lang_db
+    CompValue --> LangOrm : lang_orm
+    CompValue --> ORM_Table : tables
+    CompValue --> ORM_View : views
+    CompValue --|> CompValue_Default
+    CompValue --|> CompValue_Desc
+    CompValue --|> CompValue_Fk
+    CompValue --|> CompValue_Name
+    CompValue --|> CompValue_Title
+    CompValue --|> CompValue_Type
+
+    namespace Generic-Objects {
+        class FileType { << enumeration >> }
+        class MethodType { << enumeration >> }
+        class OBJ { << abstract >> }
+        class VerbosityLevel { << enumeration >> }
+    }
+
+    namespace Object-Components {
+        class ObjComp { << abstract >> }
+        class ObjComp_Constant
+        class ObjComp_Method
+        class ObjComp_MethodParam
+        class ObjComp_Property
+    }
+    OBJ --|> ObjComp
+    ObjComp --> CompValue_Default : _default
+    ObjComp --> CompValue_Desc : _desc
+    ObjComp --> CompValue_Name : _name
+    ObjComp --> CompValue_Title : _title
+    ObjComp --> CompValue_Type : _type
+    ObjComp --> LangOrm : lang_orm
+    ObjComp --|> ObjComp_Constant
+    ObjComp --|> ObjComp_Method
+    ObjComp --|> ObjComp_MethodParam
+    ObjComp --|> ObjComp_Property
+    ObjComp_Method --> MethodType : _method_type
+    ObjComp_Method --> ObjComp_MethodParam : _params
+
+    namespace ORM-Objects {
+        class ORM { << abstract >> }
+        class ORM_Column
+        class ORM_TV { << abstract >> }
+        class ORM_Table
+        class ORM_View
+    }
+    OBJ --|> ORM
+    ORM --|> ORM_Column
+    ORM --> CompValue_Desc : _desc
+    ORM --> CompValue_Name : _name
+    ORM --> CompValue_Title : _title
+    ORM --> LangDb : lang_db
+    ORM --> LangOrm : lang_orm
+    ORM --> ORM_Table : tables
+    ORM --> ORM_View : views
+    ORM_Column --> CompValue_Fk : _fk
+    ORM --|> ORM_TV
+    ORM_TV --> ORM_Column : _cols
+    ORM_TV --> ObjComp_Constant : _constants
+    ORM_TV --> ObjComp_Method : _methods
+    ORM_TV --> ObjComp_Property : _props
+    ORM_TV --|> ORM_Table
+    ORM_TV --|> ORM_View
+
+    namespace Supported-Languages {
+        class LangDb { << enumeration >> }
+        class LangOrm { << enumeration >> }
+    }
+
+    class Database
+    OBJ --|> Database
+    Database --> FileType : _file_type
+    Database --> ORM_Table : _tables
+    Database --> ORM_View : _views
+```
+
+``` mermaid
+classDiagram
+    namespace Component-Values {
         %% Abstract Component Value Object
         class CompValue {
             << abstract class >>
