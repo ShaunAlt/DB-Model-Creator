@@ -14,6 +14,11 @@ this package.
 # Imports
 # =============================================================================
 
+# used for custom errors
+from .errors import (
+    AbstractError, # abstract method error
+)
+
 # used for creating enumerators
 from enum import (
     Enum, # regular enumerator
@@ -148,6 +153,27 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
             output = f'{output[:97]}... + {len(output) - 97}'
 
     return output
+
+
+# =============================================================================
+# File Types Enum
+# =============================================================================
+class FileType(Enum):
+    '''
+    File Types Enum
+    -
+    Collection of all valid file types that the database model can be read
+    from.
+    '''
+
+    JSON = 'json'
+    ''' JSON Format (.json). '''
+
+    XML = 'xml'
+    ''' XML Format (.xml). '''
+
+    YAML = 'yaml'
+    ''' YAML Format (.yaml). '''
 
 
 # =============================================================================
@@ -378,7 +404,7 @@ class OBJ(object):
         '''
 
         # this method should be overridden in subclasses
-        raise NotImplementedError(
+        raise AbstractError(
             f'OBJ().Duplicate() has not been defined in {self.__class__}'
         )
 
@@ -405,7 +431,7 @@ class OBJ(object):
         '''
 
         # This method should be overridden in subclasses
-        raise NotImplementedError(
+        raise AbstractError(
             f'OBJ().GetData(lvl = {lvl}) has not been defined in ' \
             + f'{self.__class__}'
         )

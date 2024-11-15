@@ -23,6 +23,12 @@ from .component_values import (
     CompValue_Type, # component return type
 )
 
+# custom error definitions
+from .errors import (
+    AbstractError, # abstract method error
+    UndefFuncError, # undefined functionality error
+)
+
 # generic objects
 from .generic_objects import (
     MethodType, # method types
@@ -270,7 +276,7 @@ class ObjComp(OBJ):
                 language.
         '''
 
-        raise NotImplementedError(
+        raise AbstractError(
             f'ObjComp().Write(comment = {comment}) not defined in ' \
             + f'{self.__class__}'
         )
@@ -351,7 +357,7 @@ class ObjComp_Constant(ObjComp):
     # ===================
     # Method - Write Data
     def Write(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ObjComp_Constant.Write(comment = {comment}) not defined'
         )
 
@@ -464,7 +470,7 @@ class ObjComp_Method(ObjComp):
     # ===================
     # Method - Write Data
     def Write(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ObjComp_Method.Write(comment = {comment}) not defined'
         )
 
@@ -541,7 +547,7 @@ class ObjComp_MethodParam(ObjComp):
     # ===================
     # Method - Write Data
     def Write(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ObjComp_MethodParam.Write(comment = {comment}) not defined'
         )
 
@@ -621,7 +627,7 @@ class ObjComp_Property(ObjComp):
     # ===================
     # Method - Write Data
     def Write(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ObjComp_Property.Write(comment = {comment}) not defined'
         )
 

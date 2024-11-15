@@ -14,6 +14,12 @@ component (e.g. the name of a parameter, the description of a constant).
 # Imports
 # =============================================================================
 
+# custom errors
+from .errors import (
+    AbstractError, # abstract method error
+    UndefFuncError, # undefined functionality error
+)
+
 # generic objects
 from .generic_objects import (
     OBJ, # base object model
@@ -169,7 +175,7 @@ class CompValue(OBJ):
             - Whether or not the component value is valid.
         '''
 
-        raise NotImplementedError(
+        raise AbstractError(
             f'CompValue().Validate() not defined in {self.__class__}'
         )
 
@@ -223,7 +229,7 @@ class CompValue_Default(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Default.Validate() not defined')
+        raise UndefFuncError('CompValue_Default.Validate() not defined')
 
 
 # =============================================================================
@@ -275,7 +281,7 @@ class CompValue_Desc(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Desc.Validate() not defined')
+        raise UndefFuncError('CompValue_Desc.Validate() not defined')
 
 
 
@@ -327,7 +333,7 @@ class CompValue_Fk(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Fk.Validate() not defined')
+        raise UndefFuncError('CompValue_Fk.Validate() not defined')
 
 
 
@@ -380,7 +386,7 @@ class CompValue_Name(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Name.Validate() not defined')
+        raise UndefFuncError('CompValue_Name.Validate() not defined')
 
 
 
@@ -433,7 +439,7 @@ class CompValue_Title(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Title.Validate() not defined')
+        raise UndefFuncError('CompValue_Title.Validate() not defined')
 
 
 
@@ -486,7 +492,7 @@ class CompValue_Type(CompValue):
     # ======================
     # Method - Validate Data
     def Validate(self) -> bool:
-        raise NotImplementedError('CompValue_Type.Validate() not defined')
+        raise UndefFuncError('CompValue_Type.Validate() not defined')
 
 
 

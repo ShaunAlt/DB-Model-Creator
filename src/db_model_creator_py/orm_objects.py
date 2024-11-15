@@ -22,6 +22,12 @@ from .component_values import (
     CompValue_Title, # object comment title
 )
 
+# custom errors
+from .errors import (
+    AbstractError, # abstract method error
+    UndefFuncError, # undefined functionality error
+)
+
 # generic objects
 from .generic_objects import (
     OBJ, # base object model
@@ -217,7 +223,7 @@ class ORM(OBJ):
             - Whether or not the object data is valid.
         '''
 
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM().Validate() not defined in {self.__class__}'
         )
     
@@ -241,7 +247,7 @@ class ORM(OBJ):
             - String of the ORM object code in the database language.
         '''
 
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM().WriteDb(comment = {comment}) not defined in ' \
             + f'{self.__class__}'
         )
@@ -266,7 +272,7 @@ class ORM(OBJ):
             - String of the ORM object code in the ORM language.
         '''
 
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM().WriteOrm(comment = {comment}) not defined in ' \
             + f'{self.__class__}'
         )
@@ -419,19 +425,19 @@ class ORM_Column(ORM):
     # =================
     # Method - Validate
     def Validate(self) -> bool:
-        raise NotImplementedError('ORM_Column().Validate() not defined')
+        raise UndefFuncError('ORM_Column().Validate() not defined')
 
     # ============================
     # Method - Write Database Code
     def WriteDb(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_Column().WriteDb(comment = {comment}) not defined'
         )
 
     # =======================
     # Method - Write ORM Code
     def WriteOrm(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_Column().WriteOrm(comment = {comment}) not defined'
         )
 
@@ -555,14 +561,14 @@ class ORM_TV(ORM):
     # =================
     # Method - Validate
     def Validate(self) -> bool:
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM_TV().Validate() not defined in {self.__class__}'
         )
 
     # ============================
     # Method - Write Database Code
     def WriteDb(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM_TV().WriteDb(comment = {comment}) not defined in ' \
             + f'{self.__class__}'
         )
@@ -570,7 +576,7 @@ class ORM_TV(ORM):
     # =======================
     # Method - Write ORM Code
     def WriteOrm(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise AbstractError(
             f'ORM_TV().WriteOrm(comment = {comment}) not defined in ' \
             + f'{self.__class__}'
         )
@@ -690,21 +696,21 @@ class ORM_Table(ORM_TV):
     # =================
     # Method - Validate
     def Validate(self) -> bool:
-        raise NotImplementedError(
+        raise UndefFuncError(
             'ORM_Table().Validate() not defined'
         )
 
     # ============================
     # Method - Write Database Code
     def WriteDb(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_Table().WriteDb(comment = {comment}) not defined'
         )
 
     # =======================
     # Method - Write ORM Code
     def WriteOrm(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_Table().WriteOrm(comment = {comment}) not defined'
         )
 
@@ -809,21 +815,21 @@ class ORM_View(ORM_TV):
     # =================
     # Method - Validate
     def Validate(self) -> bool:
-        raise NotImplementedError(
+        raise UndefFuncError(
             'ORM_View().Validate() not defined'
         )
 
     # ============================
     # Method - Write Database Code
     def WriteDb(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_View().WriteDb(comment = {comment}) not defined'
         )
 
     # =======================
     # Method - Write ORM Code
     def WriteOrm(self, comment: bool) -> str:
-        raise NotImplementedError(
+        raise UndefFuncError(
             f'ORM_View().WriteOrm(comment = {comment}) not defined'
         )
 
