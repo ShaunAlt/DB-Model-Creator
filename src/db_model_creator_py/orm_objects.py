@@ -268,7 +268,7 @@ class ORM(OBJ):
 # =============================================================================
 # ORM Column
 # =============================================================================
-class ORM_Column(OBJ):
+class ORM_Column(ORM):
     '''
     ORM Column
     -
@@ -277,27 +277,156 @@ class ORM_Column(OBJ):
 
     Fields
     -
-    - _desc : `CompValue_Desc`
     - _fk : `CompValue_Fk | None`
     - _identity : `bool`
-    - _name : `CompValue_Name`
     - _nullable : `bool`
     - _pk : `bool`
-    - _title : `CompValue_Title`
-    - _type : `ColumnType`
+    - _type : `str`
     - _unique : `bool`
-    - lang_db : `LangDb | None` << static >>
-    - lang_orm : `LangOrm | None` << static >>
 
     Methods
     -
     - Duplicate() : `ORM_Column` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
-    - LoadData(lang_db : `LangDb`, lang_orm : `LangOrm`) : `None` << static >>
     - ORM_Column(...) << constructor >>
     - WriteDb(comment : `bool`) : `str`
     - WriteOrm(comment : `bool`) : `str`
     '''
+
+    # ====================
+    # Method - Constructor
+    def __init__(
+            self,
+            name: str,
+            type_: str,
+            title: str,
+            desc: str,
+            nullable: bool = False,
+            pk: bool = False,
+            identity: bool = False,
+            fk: Optional[str] = None,
+            unique: bool = False
+    ) -> None:
+        '''
+        ORM Column Constructor
+        -
+        Creates a new `ORM_Column` object.
+
+        Parameters
+        -
+        - name : `str`
+            - Column name.
+        - type_ : `str`
+            - Database datatype of the column.
+        - title : `str`
+            - Comment title of the column.
+        - desc : `str`
+            - Description of the column.
+        - nullable : `bool`
+            - Whether or not `NULL` values are allowed in the column. Defaults
+                to `False`, meaning the column is `NOT NULL`.
+        - pk : `bool`
+            - Whether or not the column is a primary key.
+        - identity : `bool`
+            - Whether or not the column is an auto-incrementing identity
+                column.
+        - fk : `str | None`
+            - Defaults to `None`, meaning the column does not have a foreign
+                key constraint. If not `None`, should contain the table and
+                column name of the primary key that this column references.
+        - unique : `bool`
+            - Whether or not the column has a unique key constraint. Defaults
+                to `False`, meaning the column is not unique.
+
+        Returns
+        -
+        None
+        '''
+
+        super().__init__(
+            name = name,
+            title = title,
+            desc = desc
+        )
+
+        # set fields
+        self._fk = CompValue_Fk(fk) if fk else None
+        ''' Defaults to `None`, meaning the column does not have a foreign
+            key constraint. If not `None`, should contain the table and
+            column name of the primary key that this column references. '''
+        self._identity = identity
+        ''' Whether or not the column is an auto-incrementing identity
+            column. '''
+        self._nullable = nullable
+        ''' Whether or not `NULL` values are allowed in the column. Defaults
+            to `False`, meaning the column is `NOT NULL`. '''
+        self._pk = pk
+        ''' Whether or not the column is a primary key. '''
+        self._type = type_
+        ''' Database datatype of the column. '''
+        self._unique = unique
+        ''' Whether or not the column has a unique key constraint. Defaults
+            to `False`, meaning the column is not unique. '''
+
+    # =========================
+    # Method - Duplicate Object
+    def Duplicate(self) -> 'ORM_Column':
+        return ORM_Column(
+            name = self.name,
+            type_ = self._type,
+            title = self._title.data,
+            desc = self._desc.data,
+            nullable = self._nullable,
+            pk = self._pk,
+            identity = self._identity,
+            fk = self._fk.data if self._fk else None,
+            unique = self._unique
+        )
+    
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        data = super().GetData(lvl)
+        if lvl == VerbosityLevel.SHORT:
+            data.extend(['_type'])
+        elif lvl == VerbosityLevel.LONG:
+            data.extend([
+                '_fk',
+                '_identity',
+                '_nullable',
+                '_pk',
+                '_type',
+                '_unique',
+            ])
+        else:
+            data.extend([
+                '_fk',
+                '_identity',
+                '_nullable',
+                '_pk',
+                '_type',
+                '_unique',
+            ])
+        return data
+    
+    # =================
+    # Method - Validate
+    def Validate(self) -> bool:
+        raise NotImplementedError('ORM_Column().Validate() not defined')
+
+    # ============================
+    # Method - Write Database Code
+    def WriteDb(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_Column().WriteDb(comment = {comment}) not defined'
+        )
+
+    # =======================
+    # Method - Write ORM Code
+    def WriteOrm(self, comment: bool) -> str:
+        raise NotImplementedError(
+            f'ORM_Column().WriteOrm(comment = {comment}) not defined'
+        )
 
 
 # =============================================================================
