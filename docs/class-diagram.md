@@ -305,6 +305,8 @@ classDiagram
     class Database {
         - _file_name : str
         - _file_type : FileType
+        - _lang_db : LangDb | None
+        - _lang_orm : LangOrm | None
         - _prefix_orm_table : str
         - _prefix_orm_view : str
         - _save_dir_db : str
@@ -314,13 +316,13 @@ classDiagram
 
         + Database(file_name : str, prefix_orm_table : str = 'DB_', prefix_orm_view : str = 'VW_', save_dir_db : str = 'output/database/', save_dir_orm : str = 'output/orm') << constructor >>
         + Read()
-        + Read_JSON()
-        + Read_XML()
-        + Read_YAML()
+        - Read_JSON()
+        - Read_XML()
+        - Read_YAML()
         + Validate()
         + Write()
-        + Write_DB_MSSQL()
-        + Write_ORM_PYTHON()
+        - Write_DB_MSSQL()
+        - Write_ORM_PYTHON()
     }
     note for Database "Add more Read_* and Write_* methods to extend the
     support to more languages."
