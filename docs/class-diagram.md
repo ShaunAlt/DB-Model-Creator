@@ -1,6 +1,7 @@
 # DB Model Creator Class Diagram
 Created by: Shaun Altmann
 
+## Class Dependencies / References Diagram
 ``` mermaid
 classDiagram
     namespace Component-Values {
@@ -89,6 +90,7 @@ classDiagram
     Database --> ORM_View : _views
 ```
 
+## Advanced Class Dependencies / References Diagram
 ``` mermaid
 classDiagram
     namespace Component-Values {
