@@ -1,0 +1,6 @@
+lang_db: "mssql"
+lang_orm: "python-sqlalchemy"
+tables:
+  - table1: "See "
+views:
+  - view1: "See"
