@@ -286,7 +286,7 @@ views:
 To create a column for a particular table or view in the database model, you
 will need to create a column object with the following values:
 | Data Label | Purpose | Example Value |
-| :---: | | :--- | :--- |
+| :---: | :--- | :--- |
 | name | Column name (as it appears in the database). | `name = "user_id"` |
 | type_ | Column data type (database language). | `type_ = "bigint"` |
 | title | Column comment title, used in a comment block when defining the column. | `title = "User ID"` |
@@ -387,7 +387,7 @@ columns:
 To create a constant for a particular ORM object in the database model, you
 will need to create a constant object with the following values:
 | Data Label | Purpose | Example Value |
-| :---: | | :--- | :--- |
+| :---: | :--- | :--- |
 | name | Variable name of the ORM object constant. | `name = "CONSTANT_1"` |
 | type_ | Data type of the ORM object constant. | `type_ = "str"` |
 | desc | Description of the ORM object constant. | `desc = "A short description about this constant."` |
@@ -435,7 +435,7 @@ constants:
 To create a method for a particular ORM object in the database model, you will
 need to create a method object with the following values:
 | Data Label | Purpose | Example Value |
-| :---: | | :--- | :--- |
+| :---: | :--- | :--- |
 | name | Name of the method in the ORM object. | `name = "GetId"` |
 | type_ | Return datatype of the method. | `type_ = "int"` |
 | desc | Description of the method. | `desc = "Get the ID of the current user."` |
@@ -501,7 +501,7 @@ To create a parameter for a particular method within an ORM object in the
 database model, you will need to create a method parameter object with the
 following values:
 | Data Label | Purpose | Example Value |
-| :---: | | :--- | :--- |
+| :---: | :--- | :--- |
 | name | Parameter name. | `name = "add_one"` |
 | type_ | Parameter data type (in the ORM language). | `type_ = "bool"` |
 | desc | Parameter description. | `desc = "Flag for whether or not to add 1 to the value."` |
@@ -545,7 +545,7 @@ params:
 To create a property for a particular ORM object in the database model, you
 will need to create a property object with the following values:
 | Data Label | Purpose | Example Value |
-| :---: | | :--- | :--- |
+| :---: | :--- | :--- |
 | name | Name of the ORM property. | `name = "id"` |
 | type_ | Return data type of the ORM property (in the ORM language). | `type_ = "int"` |
 | desc | Description of the ORM property. | `desc = "ID of the current user as an integer."` |
