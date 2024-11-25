@@ -1,6 +1,113 @@
 lang_db: "mssql"
 lang_orm: "python-sqlalchemy"
 tables:
-  - table1: "See "
+    -
+        - name: "Users"
+        - title: "User Accounts"
+        - desc: "Contains all of the user accounts for the application."
+        - trigger_update: "1"
+		- columns:
+			-
+				- name: "user_id"
+				- type_: "bigint"
+				- title: "User ID"
+				- desc: "Primary Key Identifier for all Users."
+				- pk: "True"
+				- identity: "True"
+			-
+				- name: "status_id"
+				- type_: "tinyint"
+				- title: "User Status"
+				- desc: "Status of the User."
+				- nullable: "False"
+				- fk: "Statuses.status_id"
+			-
+				- name: "username"
+				- type_: "nvarchar(100)"
+				- title: "User Username"
+				- desc: "Username of the current user (must be unique)."
+				- nullable: "False"
+				- unique: "True"
+        - constants:
+			-
+				- name: "STATUS_ACTIVE"
+				- type_: "int"
+				- desc: "Contains the active status ID."
+				- title: "Active Status"
+				- default: 1 # OPTIONAL
+        - methods:
+			-
+				- name: "GetId"
+				- type_: "int"
+				- desc: "Get the ID of the current user."
+				- title: "Get ID"
+				- methodtype: "instance" # OPTIONAL
+				- params:
+					-
+						- name: "add_one"
+						- type_: "bool"
+						- desc: "Flag for whether or not to add 1 to the value."
+						- default: "False"
+				- default: "0" # OPTIONAL
+        - props:
+			-
+				- name: "id"
+				- type_: "int"
+				- desc: "ID of the current user as an integer."
+				- title: "User ID"
+				- default: "0"
 views:
-  - view1: "See"
+    -
+        - name: "Users"
+        - title: "User Accounts"
+        - desc: "Contains all of the user accounts for the application."
+		- columns:
+			-
+				- name: "user_id"
+				- type_: "bigint"
+				- title: "User ID"
+				- desc: "Primary Key Identifier for all Users."
+				- pk: "True"
+				- identity: "True"
+			-
+				- name: "status_id"
+				- type_: "tinyint"
+				- title: "User Status"
+				- desc: "Status of the User."
+				- nullable: "False"
+				- fk: "Statuses.status_id"
+			-
+				- name: "username"
+				- type_: "nvarchar(100)"
+				- title: "User Username"
+				- desc: "Username of the current user (must be unique)."
+				- nullable: "False"
+				- unique: "True"
+        - constants:
+			-
+				- name: "STATUS_ACTIVE"
+				- type_: "int"
+				- desc: "Contains the active status ID."
+				- title: "Active Status"
+				- default: 1 # OPTIONAL
+        - methods:
+			-
+				- name: "GetId"
+				- type_: "int"
+				- desc: "Get the ID of the current user."
+				- title: "Get ID"
+				- methodtype: "instance" # OPTIONAL
+				- params:
+					-
+						- name: "add_one"
+						- type_: "bool"
+						- desc: "Flag for whether or not to add 1 to the value."
+						- default: "False"
+				- default: "0" # OPTIONAL
+        - props:
+			-
+				- name: "id"
+				- type_: "int"
+				- desc: "ID of the current user as an integer."
+				- title: "User ID"
+				- default: "0"
