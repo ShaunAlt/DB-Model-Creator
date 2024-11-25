@@ -99,7 +99,8 @@ To create an individual table in the database model, you will need to create a
 table object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | :--- | :--- |
-| name | Name of the table is it would appear in the database | `name = "Users"` |
+| name | Name of the ORM object used to represent the table. | `name = "DB_User"` |
+| tablename | Name of the table is it would appear in the database | `tablename = "Users"` |
 | title | Comment title for the table. This should be only a couple of keywords that describe the purpose of the table | `title = "User Accounts"` |
 | desc | Long-winded description of the table. This should be a single paragraph explaining the purpose of the table. | `desc = "Contains all of the user accounts for the application."` |
 | trigger_update | Boolean flag indicating whether or not the table should have an Update table created for it. An update table is a table with the same name (with `UPDATE_` prefixed) with a trigger which stores any data changes to the original table in the update table. | `trigger_update = True` |
@@ -112,7 +113,8 @@ table object with the following values:
 ``` json file=example.json
 "tables": [
     {
-        "name": "Users",
+        "name": "DB_User",
+        "tablename": "Users",
         "title": "User Accounts",
         "desc": "Contains all of the user accounts for the application.",
         "trigger_update": "1",
@@ -144,7 +146,8 @@ table object with the following values:
 ``` xml file=example.xml
 <tables>
     <table>
-        <name>Users</name>
+        <name>DB_User</name>
+        <tablename>Users</tablename>
         <title>User Accounts</title>
         <desc>Contains all of the user accounts for the application.</desc>
         <trigger_update>1</trigger_update>
@@ -176,7 +179,8 @@ table object with the following values:
 ``` yaml file=example.yaml
 tables:
     -
-        - name: "Users"
+        - name: "DB_User"
+        - tablename: "Users"
         - title: "User Accounts"
         - desc: "Contains all of the user accounts for the application."
         - trigger_update: "1"
@@ -195,7 +199,8 @@ To create an individual view in the database model, you will need to create a
 view object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | :--- | :--- |
-| name | Name of the view is it would appear in the database | `name = "Users"` |
+| name | Name of the ORM object used to represent the view. | `name = "VW_User"` |
+| viewname | Name of the view is it would appear in the database | `viewname = "Users"` |
 | title | Comment title for the view. This should be only a couple of keywords that describe the purpose of the view | `title = "User Accounts"` |
 | desc | Long-winded description of the view. This should be a single paragraph explaining the purpose of the view. | `desc = "Contains all of the user accounts for the application."` |
 | columns | Contains a list of all columns in the view, in the order that they should be created in the database. See [Creating a Column](#creating-a-column) for information on how to create each column. | `columns = [...]` |
@@ -207,7 +212,8 @@ view object with the following values:
 ``` json file=example.json
 "views": [
     {
-        "name": "Users",
+        "name": "VW_User",
+        "viewname": "Users",
         "title": "User Accounts",
         "desc": "Contains all of the user accounts for the application.",
         "columns": [
@@ -238,7 +244,8 @@ view object with the following values:
 ``` xml file=example.xml
 <views>
     <view>
-        <name>Users</name>
+        <name>VW_User</name>
+        <viewname>Users</viewname>
         <title>User Accounts</title>
         <desc>Contains all of the user accounts for the application.</desc>
         <columns>
@@ -269,7 +276,8 @@ view object with the following values:
 ``` yaml file=example.yaml
 views:
     -
-        - name: "Users"
+        - name: "VW_User"
+        - viewname: "Users"
         - title: "User Accounts"
         - desc: "Contains all of the user accounts for the application."
         - columns:
@@ -443,6 +451,7 @@ need to create a method object with the following values:
 | methodtype | **OPTIONAL** Type of method that is being created. Defaults to "instance", however other valid options are "static" and "class". | `methodtype = "static"` |
 | params | Contains an ordered list of parameters that the method has. See [Creating an Object Method Parameter](#creating-an-object-method-parameter) for information on how to create each parameter. | `params = [...]` |
 | default | **OPTIONAL** Default return value for the method. If not specified, the method will raise a custom exception stating that it's functionality has not yet been defined. | `default = "0"` |
+| flag_constructor | **OPTIONAL** Flag indicating that the current method is a constructor method. Defaults to `"False"`. | `flag_constructor = "True"` |
 
 ### Creating an Object Method in JSON
 ``` json file=example.json
@@ -458,7 +467,8 @@ need to create a method object with the following values:
                 "param1": "See `Creating an Object Method Parameter` for information on creating method parameters."
             }
         ],
-        "default": "0" // OPTIONAL
+        "default": "0", // OPTIONAL
+        "flag_constructor": "False" // OPTIONAL
     }
 ]
 ```
@@ -478,6 +488,7 @@ need to create a method object with the following values:
             </param>
         </params>
         <default>0</default> <!-- OPTIONAL -->
+        <flag_constructor>False</flag_constructor> <!-- OPTIONAL -->
     </method>
 </methods>
 ```
@@ -494,6 +505,7 @@ methods:
         - params:
             - param1: "See `Creating an Object Method Parameter` for information on creating method parameters."
         - default: "0" # OPTIONAL
+        - flag_constructor: "False" # OPTIONAL
 ```
 
 ## Creating an Object Method Parameter
@@ -551,6 +563,7 @@ will need to create a property object with the following values:
 | desc | Description of the ORM property. | `desc = "ID of the current user as an integer."` |
 | title | Comment title of the ORM property, used as a comment block for the property definition. | `title = "User ID"` |
 | default | **OPTIONAL** The default return value for the property. If not defined, a custom exception stating that the property has not been defined will be created. | `default = "0"` |
+| readonly | **OPTIONAL** Flag for whether or not the parameter is readonly. Defaults to `"False"`, meaning that the property can be written to. | `readonly = "True"` |
 
 ### Creating an Object Property in JSON
 ``` json file=example.json
@@ -560,7 +573,8 @@ will need to create a property object with the following values:
         "type_": "int",
         "desc": "ID of the current user as an integer.",
         "title": "User ID",
-        "default": "0" // OPTIONAL
+        "default": "0", // OPTIONAL
+        "readonly": "True" // OPTIONAL
     }
 ]
 ```
@@ -574,6 +588,7 @@ will need to create a property object with the following values:
         <desc>ID of the current user as an integer.</desc>
         <title>User ID</title>
         <default>0</default>
+        <readonly>True</readonly>
     </prop>
 </props>
 ```
@@ -587,4 +602,5 @@ props:
         - desc: "ID of the current user as an integer."
         - title: "User ID"
         - default: "0"
+        - readonly: "True"
 ```

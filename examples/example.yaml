@@ -49,13 +49,15 @@ tables:
 						- desc: "Flag for whether or not to add 1 to the value."
 						- default: "False"
 				- default: "0" # OPTIONAL
+				- flag_constructor: "False" # OPTIONAL
         - props:
 			-
 				- name: "id"
 				- type_: "int"
 				- desc: "ID of the current user as an integer."
 				- title: "User ID"
-				- default: "0"
+				- default: "0" # OPTIONAL
+				- readonly: "True" # OPTIONAL
 views:
     -
         - name: "Users"
@@ -104,10 +106,12 @@ views:
 						- desc: "Flag for whether or not to add 1 to the value."
 						- default: "False"
 				- default: "0" # OPTIONAL
+				- flag_constructor: "False" # OPTIONAL
         - props:
 			-
 				- name: "id"
 				- type_: "int"
 				- desc: "ID of the current user as an integer."
 				- title: "User ID"
-				- default: "0"
+				- default: "0" # OPTIONAL
+				- readonly: "True" # OPTIONAL

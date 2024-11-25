@@ -633,6 +633,7 @@ class ORM_Table(ORM_TV):
 
     Fields
     -
+    - _tablename : `CompValue_Name`
     - _trigger_update : `bool`
 
     Methods
@@ -651,6 +652,7 @@ class ORM_Table(ORM_TV):
         return (
             super().__eq__(other)
             and (isinstance(other, self.__class__))
+            and (self._tablename == other._tablename)
             and (self._trigger_update == other._trigger_update)
         )
 
@@ -659,6 +661,7 @@ class ORM_Table(ORM_TV):
     def __init__(
             self,
             name: str,
+            tablename: str,
             title: str,
             desc: str,
             trigger_update: bool,
@@ -675,7 +678,9 @@ class ORM_Table(ORM_TV):
         Parameters
         -
         - name : `str`
-            - Name of the table.
+            - Name of the table ORM object.
+        - tablename : `str`
+            - Name of the table as seen in the database.
         - title : `str`
             - Comment title of the table.
         - desc : `str`
@@ -708,6 +713,8 @@ class ORM_Table(ORM_TV):
         )
 
         # set fields
+        self._tablename = CompValue_Name(tablename)
+        ''' Name of the table as seen in the database. '''
         self._trigger_update = trigger_update
         ''' Whether or not an update trigger and table should be created to
             track the data changes in this table. '''
@@ -717,6 +724,7 @@ class ORM_Table(ORM_TV):
     def Duplicate(self) -> 'ORM_Table':
         return ORM_Table(
             name = self.name,
+            tablename = self._tablename.data,
             title = self._title.data,
             desc = self._desc.data,
             trigger_update = self._trigger_update,
@@ -734,10 +742,12 @@ class ORM_Table(ORM_TV):
             pass
         elif lvl == VerbosityLevel.LONG:
             data.extend([
+                '_tablename',
                 '_trigger_update',
             ])
         else:
             data.extend([
+                '_tablename',
                 '_trigger_update',
             ])
         return data
@@ -776,10 +786,11 @@ class ORM_View(ORM_TV):
 
     Fields
     -
-    None
+    - _viewname : `CompValue_Name`
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ORM_View` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - ORM_View(...) << constructor >>
@@ -787,11 +798,21 @@ class ORM_View(ORM_TV):
     - WriteOrm(comment : `bool`) : `str` << override >>
     '''
 
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._viewname == other._viewname)
+        )
+
     # ====================
     # Method - Constructor
     def __init__(
             self,
             name: str,
+            viewname: str,
             title: str,
             desc: str,
             cols: List['ORM_Column'],
@@ -807,7 +828,9 @@ class ORM_View(ORM_TV):
         Parameters
         -
         - name : `str`
-            - Name of the view.
+            - Name of the view ORM object.
+        - viewname : `str`
+            - Name of the view as it appears in the database.
         - title : `str`
             - Comment title of the view.
         - desc : `str`
@@ -836,11 +859,16 @@ class ORM_View(ORM_TV):
             props = props
         )
 
+        # set fields
+        self._viewname = CompValue_Name(viewname)
+        ''' Name of the view as it appears in the database. '''
+
     # =========================
     # Method - Duplicate Object
     def Duplicate(self) -> 'ORM_View':
         return ORM_View(
             name = self.name,
+            viewname = self._viewname.data,
             title = self._title.data,
             desc = self._desc.data,
             cols = [col.Duplicate() for col in self._cols],
@@ -856,9 +884,13 @@ class ORM_View(ORM_TV):
         if lvl == VerbosityLevel.SHORT:
             pass
         elif lvl == VerbosityLevel.LONG:
-            pass
+            data.extend([
+                '_viewname',
+            ])
         else:
-            pass
+            data.extend([
+                '_viewname',
+            ])
         return data
     
     # =================

@@ -386,6 +386,7 @@ class ObjComp_Method(ObjComp):
 
     Fields
     -
+    - _flag_constructor : `bool`
     - _method_type : `MethodType`
     - _params : `List<ObjComp_MethodParam>`
     - valid : `bool` << override, readonly >>
@@ -405,6 +406,7 @@ class ObjComp_Method(ObjComp):
         return (
             super().__eq__(other)
             and (isinstance(other, self.__class__))
+            and (self._flag_constructor == other._flag_constructor)
             and (self._method_type == other._method_type)
             and (self._params == other._params)
         )
@@ -419,7 +421,8 @@ class ObjComp_Method(ObjComp):
             title: str,
             methodtype: MethodType,
             params: List['ObjComp_MethodParam'],
-            default: Optional[str] = None
+            default: Optional[str] = None,
+            flag_constructor: bool = False
     ) -> None:
         '''
         Object Property Constructor
@@ -438,6 +441,9 @@ class ObjComp_Method(ObjComp):
             - Comment title of the object property.
         - default : `str | None`
             - Default value of the object property, if required.
+        - flag_constructor : `bool`
+            - Whether or not the method is an object constructor method (e.g.
+                `__init__`).
 
         Returns
         -
@@ -453,6 +459,9 @@ class ObjComp_Method(ObjComp):
         )
 
         # set fields
+        self._flag_constructor = flag_constructor
+        ''' Whether or not the method is an object constructor method (e.g.
+            `__init__`). '''
         self._method_type = methodtype
         ''' Type of method this object represents. '''
         self._params = params
@@ -462,14 +471,12 @@ class ObjComp_Method(ObjComp):
     # Property - Valid
     @property
     def valid(self) -> bool:
-        return all([
-            self.valid_default,
-            self.valid_desc,
-            self.valid_name,
-            self.valid_params,
-            self.valid_title,
-            self.valid_type,
-        ])
+        return (
+            super().valid
+            and all([
+                self.valid_params,
+            ])
+        )
 
     # ====================================
     # Property - Valid - Method Parameters
@@ -488,7 +495,8 @@ class ObjComp_Method(ObjComp):
             title = self._title.data if self._title else '',
             methodtype = self._method_type,
             params = [param.Duplicate() for param in self._params],
-            default = self._default.data if self._default else None
+            default = self._default.data if self._default else None,
+            flag_constructor = self._flag_constructor
         )
 
     # ===================
@@ -587,7 +595,7 @@ class ObjComp_Property(ObjComp):
 
     Fields
     -
-    None
+    - _readonly : `bool`
 
     Methods
     -
@@ -595,6 +603,15 @@ class ObjComp_Property(ObjComp):
     - ObjComp_Property(...) << constructor >>
     - Write(comment : `bool`) : `str` << override >>
     '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._readonly == other._readonly)
+        )
 
     # ====================
     # Method - Constructor
@@ -604,7 +621,8 @@ class ObjComp_Property(ObjComp):
             type_: str,
             desc: str,
             title: str,
-            default: Optional[str] = None
+            default: Optional[str] = None,
+            readonly: bool = False
     ) -> None:
         '''
         Object Property Constructor
@@ -623,6 +641,8 @@ class ObjComp_Property(ObjComp):
             - Comment title of the object property.
         - default : `str | None`
             - Default value of the object property, if required.
+        - readonly : `bool`
+            - Whether or not the object property is read-only.
 
         Returns
         -
@@ -637,6 +657,10 @@ class ObjComp_Property(ObjComp):
             title = title
         )
 
+        # set fields
+        self._readonly = readonly
+        ''' Whether or not the object property is read-only. '''
+
     # =========================
     # Method - Duplicate Object
     def Duplicate(self) -> 'ObjComp_Property':
@@ -645,7 +669,8 @@ class ObjComp_Property(ObjComp):
             type_ = self._type.data,
             desc = self._desc.data,
             title = self._title.data if self._title else '',
-            default = self._default.data if self._default else None
+            default = self._default.data if self._default else None,
+            readonly = self._readonly
         )
 
     # ===================
