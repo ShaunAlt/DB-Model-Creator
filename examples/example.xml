@@ -1,210 +1,144 @@
 <?xml version="1.0" encoding="UTF-8">
 <database>
-    <type>mssql</type>
-    <language>python3</language>
-    <orm>python-sqlalchemy</orm>
+    <lang_db>mssql</lang_db>
+    <lang_orm>python-sqlalchemy</lang_orm>
     <tables>
         <table>
             <name>Users</name>
-            <trigger-update>true</trigger-update>
-            <desc>
-                Contains a collection of all users in the database.
-            </desc>
+            <title>User Accounts</title>
+            <desc>Contains all of the user accounts for the application.</desc>
+            <trigger_update>1</trigger_update>
             <columns>
                 <column>
                     <name>user_id</name>
-                    <type>int</type>
-                    <primary-key>true</primary-key>
-                    <identity>true</identity>
-                    <desc>
-                        Unique identifier for each user.
-                    </desc>
+                    <type_>bigint</type_>
+                    <title>User ID</title>
+                    <desc>Primary Key Identifier for all Users.</desc>
+                    <pk>True</pk>
+                    <identity>True</identity>
                 </column>
                 <column>
-                    <name>user_name_first</name>
-                    <type>nvarchar(50)</type>
-                    <nullable>false</nullable>
-                    <desc>
-                        First name of the user.
-                    </desc>
+                    <name>status_id</name>
+                    <type_>tinyint</type_>
+                    <title>User Status</title>
+                    <desc>Status of the User.</desc>
+                    <nullable>False</nullable>
+                    <fk>Statuses.status_id</fk>
                 </column>
                 <column>
-                    <name>user_name_last</name>
-                    <type>nvarchar(50)</type>
-                    <nullable>false</nullable>
-                    <desc>
-                        Last name of the user.
-                    </desc>
+                    <name>username</name>
+                    <type_>nvarchar(100)</type_>
+                    <title>User Username</title>
+                    <desc>Username of the current user (must be unique).</desc>
+                    <nullable>False</nullable>
+                    <unique>True</unique>
                 </column>
             </columns>
             <constants>
-                <const>
-                    <name>TEST_USER_ID</name>
-                    <type>int | null</type>
-                    <desc>
-                        ID of the user that is used for testing purposes.
-                    </desc>
-                </const>
+                <constant>
+                    <name>STATUS_ACTIVE</name>
+                    <type_>int</type_>
+                    <desc>Contains the active status ID.</desc>
+                    <title>Active Status</title>
+                    <default>1</default> <!-- OPTIONAL -->
+                </constant>
             </constants>
             <methods>
                 <method>
-                    <type>instance</type>
-                    <name>get_id</name>
-                    <params></params>
-                    <returns>int</returns>
-                    <desc>
-                        Gets the id of the current user.
-                    </desc>
-                </method>
-                <method>
-                    <type>instance</type>
-                    <name>get_name</name>
-                    <params></params>
-                    <returns>str</returns>
-                    <desc>
-                        Gets the full name of the current user.
-                    </desc>
+                    <name>GetId</name>
+                    <type_>int</type_>
+                    <desc>Get the ID of the current user.</desc>
+                    <title>Get ID</title>
+                    <methodtype>instance</methodtype> <!-- OPTIONAL -->
+                    <params>
+                        <param>
+                            <name>add_one</name>
+                            <type_>bool</type_>
+                            <desc>Flag for whether or not to add 1 to the value.</desc>
+                            <default>False</default> <!-- OPTIONAL -->
+                        </param>
+                    </params>
+                    <default>0</default> <!-- OPTIONAL -->
                 </method>
             </methods>
-            <properties>
-                <property>
-                    <name>orders</name>
-                    <returns>list</returns>
-                    <desc>
-                        All orders associated with the current user.
-                    </desc>
-                </property>
-                <property>
-                    <name>username</name>
-                    <returns>str</returns>
-                    <desc>
-                        Username of the current user.
-                    </desc>
-                </property>
-            </properties>
-        </table>
-        <table>
-            <name>Orders</name>
-            <trigger-update>true</trigger-update>
-            <desc>
-                Contains a collection of all orders in the database.
-            </desc>
-            <columns>
-                <column>
-                    <name>order_id</name>
-                    <type>bigint</type>
-                    <primary-key>true</primary-key>
-                    <identity>true</identity>
-                    <desc>
-                        Unique identifier for each order.
-                    </desc>
-                </column>
-                <column>
-                    <name>order_dt</name>
-                    <type>datetime</type>
-                    <nullable>false</nullable>
-                    <desc>
-                        Date/Time at which the order was created.
-                    </desc>
-                </column>
-            </columns>
-            <constants></constants>
-            <methods>
-                <method>
-                    <type>instance</type>
-                    <name>get_id</name>
-                    <params></params>
-                    <returns>int</returns>
-                    <desc>
-                        Gets the id of the current order.
-                    </desc>
-                </method>
-            </methods>
-            <properties>
-                <property>
-                    <name>users</name>
-                    <returns>list</returns>
-                    <desc>
-                        All users associated with the current order.
-                    </desc>
-                </property>
-            </properties>
-        </table>
-        <table>
-            <name>Users_Orders</name>
-            <trigger-update>true</trigger-update>
-            <desc>
-                Contains a collection of all orders associated to each user.
-            </desc>
-            <columns>
-                <column>
-                    <name>user_id</name>
-                    <type>int</type>
-                    <foreign-key>Users.user_id</foreign-key>
-                    <primary-key>true</primary-key>
-                    <desc>
-                        The user that the order is associated with.
-                    </desc>
-                </column>
-                <column>
-                    <name>order_id</name>
-                    <type>bigint</type>
-                    <foreign-key>Orders.order_id</foriegn-key>
-                    <primary-key>true</primary-key>
-                    <desc>
-                        The order that the user is associated with.
-                    </desc>
-                </column>
-            </columns>
-            <constants></constants>
-            <methods></methods>
-            <properties></properties>
+            <props>
+                <prop>
+                    <name>id</name>
+                    <type_>int</type_>
+                    <desc>ID of the current user as an integer.</desc>
+                    <title>User ID</title>
+                    <default>0</default>
+                </prop>
+            </props>
         </table>
     </tables>
     <views>
         <view>
-            <name>Users_Number_Orders</name>
-            <desc>
-                Contains the number of orders each user is associated with.
-            </desc>
+            <name>Users</name>
+            <title>User Accounts</title>
+            <desc>Contains all of the user accounts for the application.</desc>
             <columns>
                 <column>
                     <name>user_id</name>
-                    <type>int</type>
-                    <nullable>false</nullable>
-                    <desc>
-                        The user that the order tally is being calculated for.
-                    </desc>
+                    <type_>bigint</type_>
+                    <title>User ID</title>
+                    <desc>Primary Key Identifier for all Users.</desc>
+                    <pk>True</pk>
+                    <identity>True</identity>
                 </column>
                 <column>
-                    <name>number_orders</name>
-                    <type>int</type>
-                    <nullable>false</nullable>
-                    <desc>
-                        The number of orders associated to the current user.
-                    </desc>
+                    <name>status_id</name>
+                    <type_>tinyint</type_>
+                    <title>User Status</title>
+                    <desc>Status of the User.</desc>
+                    <nullable>False</nullable>
+                    <fk>Statuses.status_id</fk>
+                </column>
+                <column>
+                    <name>username</name>
+                    <type_>nvarchar(100)</type_>
+                    <title>User Username</title>
+                    <desc>Username of the current user (must be unique).</desc>
+                    <nullable>False</nullable>
+                    <unique>True</unique>
                 </column>
             </columns>
-            <constants></constants>
+            <constants>
+                <constant>
+                    <name>STATUS_ACTIVE</name>
+                    <type_>int</type_>
+                    <desc>Contains the active status ID.</desc>
+                    <title>Active Status</title>
+                    <default>1</default> <!-- OPTIONAL -->
+                </constant>
+            </constants>
             <methods>
                 <method>
-                    <type>static</type>
-                    <name>get_num_orders</name>
+                    <name>GetId</name>
+                    <type_>int</type_>
+                    <desc>Get the ID of the current user.</desc>
+                    <title>Get ID</title>
+                    <methodtype>instance</methodtype> <!-- OPTIONAL -->
                     <params>
                         <param>
-                            <name>user_id</name>
-                            <type>int</type>
-                            <desc>
-                                ID of the user to get the number of orders for.
-                            </desc>
+                            <name>add_one</name>
+                            <type_>bool</type_>
+                            <desc>Flag for whether or not to add 1 to the value.</desc>
+                            <default>False</default> <!-- OPTIONAL -->
                         </param>
                     </params>
-                    <returns>int</returns>
-                    <desc>
-                    </desc>
+                    <default>0</default> <!-- OPTIONAL -->
                 </method>
             </methods>
-            <properties></properties>
+            <props>
+                <prop>
+                    <name>id</name>
+                    <type_>int</type_>
+                    <desc>ID of the current user as an integer.</desc>
+                    <title>User ID</title>
+                    <default>0</default>
+                </prop>
+            </props>
         </view>
     </views>
 </database>
