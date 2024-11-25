@@ -175,7 +175,8 @@ table object with the following values:
 ### Creating a Table in YAML
 ``` yaml file=example.yaml
 tables:
-    - Users:
+    -
+        - name: "Users"
         - title: "User Accounts"
         - desc: "Contains all of the user accounts for the application."
         - trigger_update: "1"
@@ -267,7 +268,8 @@ view object with the following values:
 ### Creating a View in YAML
 ``` yaml file=example.yaml
 views:
-    - Users:
+    -
+        - name: "Users"
         - title: "User Accounts"
         - desc: "Contains all of the user accounts for the application."
         - columns:
@@ -285,10 +287,101 @@ To create a column for a particular table or view in the database model, you
 will need to create a column object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | | :--- | :--- |
+| name | Column name (as it appears in the database). | `name = "user_id"` |
+| type_ | Column data type (database language). | `type_ = "bigint"` |
+| title | Column comment title, used in a comment block when defining the column. | `title = "User ID"` |
+| desc | Column description. | `desc = "Unique identifier ID for the User."` |
+| nullable | **OPTIONAL** Whether or not the column is nullable. Defaults to `True`, meaning that the column will accept null values. This is overwritten to `False` if the column is a primary key. | `nullable = "False"` |
+| pk | **OPTIONAL** Whether or not the column is part of the primary key for the table. Defaults to `False`. | `pk = "True"` |
+| identity | **OPTIONAL** Whether or not the column is an identity (AKA auto-increment) column. Defaults to `False`, however this value will only be checked if the `pk` flag is `True`. | `identity = "True"` |
+| fk | **OPTIONAL** If not specified, then the current column does not have a foreign key reference to another primary key. If specified, it should be in the format "<Table>.<Column>", where the string contains the name of the table and primary key column that it is referencing. | `fk = "Users.user_id"` |
+| unique | **OPTIONAL** Whether or not the column has a unique key constraint. Defaults to `False`, and overwritten to `False` if the `pk` flag is `True`. | `unique = "True"` |
 
 ### Creating a Column in JSON
+``` json file=example.json
+"columns": [
+    {
+        "name": "user_id",
+        "type_": "bigint",
+        "title": "User ID",
+        "desc": "Primary Key Identifier for all Users.",
+        "pk": "True",
+        "identity": "True"
+    },
+    {
+        "name": "status_id",
+        "type_": "tinyint",
+        "title": "User Status",
+        "desc": "Status of the User.",
+        "nullable": "False",
+        "fk": "Statuses.status_id"
+    },
+    {
+        "name": "username",
+        "type_": "nvarchar(100)",
+        "title": "User Username",
+        "desc": "Username of the current user (must be unique).",
+        "nullable": "False",
+        "unique": "True"
+    }
+]
+```
+
 ### Creating a Column in XML
+``` xml file=example.xml
+<columns>
+    <column>
+        <name>user_id</name>
+        <type_>bigint</type_>
+        <title>User ID</title>
+        <desc>Primary Key Identifier for all Users.</desc>
+        <pk>True</pk>
+        <identity>True</identity>
+    </column>
+    <column>
+        <name>status_id</name>
+        <type_>tinyint</type_>
+        <title>User Status</title>
+        <desc>Status of the User.</desc>
+        <nullable>False</nullable>
+        <fk>Statuses.status_id</fk>
+    </column>
+    <column>
+        <name>username</name>
+        <type_>nvarchar(100)</type_>
+        <title>User Username</title>
+        <desc>Username of the current user (must be unique).</desc>
+        <nullable>False</nullable>
+        <unique>True</unique>
+    </column>
+</columns>
+```
+
 ### Creating a Column in YAML
+``` yaml file=example.yaml
+columns:
+    -
+        - name: "user_id"
+        - type_: "bigint"
+        - title: "User ID"
+        - desc: "Primary Key Identifier for all Users."
+        - pk: "True"
+        - identity: "True"
+    -
+        - name: "status_id"
+        - type_: "tinyint"
+        - title: "User Status"
+        - desc: "Status of the User."
+        - nullable: "False"
+        - fk: "Statuses.status_id"
+    -
+        - name: "username"
+        - type_: "nvarchar(100)"
+        - title: "User Username"
+        - desc: "Username of the current user (must be unique)."
+        - nullable: "False"
+        - unique: "True"
+```
 
 ## Creating an Object Constant
 To create a constant for a particular ORM object in the database model, you
@@ -330,7 +423,8 @@ will need to create a constant object with the following values:
 ### Creating an Object Constant in YAML
 ``` yaml file=example.yaml
 constants:
-    - STATUS_ACTIVE:
+    -
+        - name: "STATUS_ACTIVE"
         - type_: "int"
         - desc: "Contains the active status ID."
         - title: "Active Status"
@@ -391,7 +485,8 @@ need to create a method object with the following values:
 ### Creating an Object Method in YAML
 ``` yaml file=example.yaml
 methods:
-    - GetId:
+    -
+        - name: "GetId"
         - type_: "int"
         - desc: "Get the ID of the current user."
         - title: "Get ID"
@@ -439,7 +534,8 @@ following values:
 ### Creating an Object Method Parameter in YAML
 ``` yaml file=example.yaml
 params:
-    - add_one:
+    -
+        - name: "add_one"
         - type_: "bool"
         - desc: "Flag for whether or not to add 1 to the value."
         - default: "False"
@@ -485,7 +581,8 @@ will need to create a property object with the following values:
 ### Creating an Object Property in YAML
 ``` yaml file=example.yaml
 props:
-    - id:
+    -
+        - name: "id"
         - type_: "int"
         - desc: "ID of the current user as an integer."
         - title: "User ID"
