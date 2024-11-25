@@ -102,7 +102,7 @@ table object with the following values:
 | name | Name of the table is it would appear in the database | `name = "Users"` |
 | title | Comment title for the table. This should be only a couple of keywords that describe the purpose of the table | `title = "User Accounts"` |
 | desc | Long-winded description of the table. This should be a single paragraph explaining the purpose of the table. | `desc = "Contains all of the user accounts for the application."` |
-| trigger_update | Boolean flag indicating whether or not the table should have an Update table created for it. An update table is a table with the same name (with `UPDATE_` prefixed) with a trigger which stores any data changes to the original table in the update table. | `trigger_update = 1` |
+| trigger_update | Boolean flag indicating whether or not the table should have an Update table created for it. An update table is a table with the same name (with `UPDATE_` prefixed) with a trigger which stores any data changes to the original table in the update table. | `trigger_update = True` |
 | columns | Contains a list of all columns in the table, in the order that they should be created in the database. See [Creating a Column](#creating-a-column) for information on how to create each column. | `columns = [...]` |
 | constants | Contains a list of all constants that the ORM object referencing the database table should contain. See [Creating an Object Constant](#creating-an-object-constant) for information on how to create each constant. | `constants = [...]` |
 | methods | Contains a list of all methods that the ORM object referencing the database table should contain. See [Creating an Object Method](#creating-an-object-method) for information on how to create each method. | `methods = [...]` |
