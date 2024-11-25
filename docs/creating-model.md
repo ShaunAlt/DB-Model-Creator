@@ -331,7 +331,7 @@ will need to create a constant object with the following values:
 ``` yaml file=example.yaml
 constants:
     - STATUS_ACTIVE:
-        - type_: "int",
+        - type_: "int"
         - desc: "Contains the active status ID."
         - title: "Active Status"
         - default: 1 # OPTIONAL
@@ -450,7 +450,44 @@ To create a property for a particular ORM object in the database model, you
 will need to create a property object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | | :--- | :--- |
+| name | Name of the ORM property. | `name = "id"` |
+| type_ | Return data type of the ORM property (in the ORM language). | `type_ = "int"` |
+| desc | Description of the ORM property. | `desc = "ID of the current user as an integer."` |
+| title | Comment title of the ORM property, used as a comment block for the property definition. | `title = "User ID"` |
+| default | **OPTIONAL** The default return value for the property. If not defined, a custom exception stating that the property has not been defined will be created. | `default = "0"` |
 
 ### Creating an Object Property in JSON
+``` json file=example.json
+"props": [
+    {
+        "name": "id",
+        "type_": "int",
+        "desc": "ID of the current user as an integer.",
+        "title": "User ID",
+        "default": "0" // OPTIONAL
+    }
+]
+```
+
 ### Creating an Object Property in XML
+``` xml file=example.xml
+<props>
+    <prop>
+        <name>id</name>
+        <type_>int</type_>
+        <desc>ID of the current user as an integer.</desc>
+        <title>User ID</title>
+        <default>0</default>
+    </prop>
+</props>
+```
+
 ### Creating an Object Property in YAML
+``` yaml file=example.yaml
+props:
+    - id:
+        - type_: "int"
+        - desc: "ID of the current user as an integer."
+        - title: "User ID"
+        - default: "0"
+```
