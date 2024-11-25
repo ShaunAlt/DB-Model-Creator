@@ -294,7 +294,7 @@ will need to create a column object with the following values:
 | nullable | **OPTIONAL** Whether or not the column is nullable. Defaults to `True`, meaning that the column will accept null values. This is overwritten to `False` if the column is a primary key. | `nullable = "False"` |
 | pk | **OPTIONAL** Whether or not the column is part of the primary key for the table. Defaults to `False`. | `pk = "True"` |
 | identity | **OPTIONAL** Whether or not the column is an identity (AKA auto-increment) column. Defaults to `False`, however this value will only be checked if the `pk` flag is `True`. | `identity = "True"` |
-| fk | **OPTIONAL** If not specified, then the current column does not have a foreign key reference to another primary key. If specified, it should be in the format "<Table>.<Column>", where the string contains the name of the table and primary key column that it is referencing. | `fk = "Users.user_id"` |
+| fk | **OPTIONAL** If not specified, then the current column does not have a foreign key reference to another primary key. If specified, it should be in the format "\<Table>.\<Column>", where the string contains the name of the table and primary key column that it is referencing. | `fk = "Users.user_id"` |
 | unique | **OPTIONAL** Whether or not the column has a unique key constraint. Defaults to `False`, and overwritten to `False` if the `pk` flag is `True`. | `unique = "True"` |
 
 ### Creating a Column in JSON
