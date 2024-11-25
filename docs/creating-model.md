@@ -295,10 +295,47 @@ To create a constant for a particular ORM object in the database model, you
 will need to create a constant object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | | :--- | :--- |
+| name | Variable name of the ORM object constant. | `name = "CONSTANT_1"` |
+| type_ | Data type of the ORM object constant. | `type_ = "str"` |
+| desc | Description of the ORM object constant. | `desc = "A short description about this constant."` |
+| title | Comment title of the ORM object constant. This title will be placed above the constant as a comment. | `title = "Constant Title"` |
+| default | **OPTIONAL**. If not specified, a `None` or `null` value will be assigned to the constant. If specified, this should contain the value of the constant. | `default = "Default Constant Value"` |
 
 ### Creating an Object Constant in JSON
+``` json file=example.json
+"constants": [
+    {
+        "name": "STATUS_ACTIVE",
+        "type_": "int",
+        "desc": "Contains the active status ID.",
+        "title": "Active Status",
+        "default": "1" // not required - defaults to `None`
+    }
+]
+```
+
 ### Creating an Object Constant in XML
+``` xml file=example.xml
+<constants>
+    <constant>
+        <name>STATUS_ACTIVE</name>
+        <type_>int</type_>
+        <desc>Contains the active status ID.</desc>
+        <title>Active Status</title>
+        <default>1</default> <!-- not required - defaults to `None` -->
+    </constant>
+</constants>
+```
+
 ### Creating an Object Constant in YAML
+``` yaml file=example.yaml
+constants:
+    - STATUS_ACTIVE:
+        - type_: "int",
+        - desc: "Contains the active status ID."
+        - title: "Active Status"
+        - default: 1 # not required - defaults to `None`
+```
 
 ## Creating an Object Method
 To create a method for a particular ORM object in the database model, you will
