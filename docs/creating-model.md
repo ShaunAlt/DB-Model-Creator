@@ -309,7 +309,7 @@ will need to create a constant object with the following values:
         "type_": "int",
         "desc": "Contains the active status ID.",
         "title": "Active Status",
-        "default": "1" // not required - defaults to `None`
+        "default": "1" // OPTIONAL
     }
 ]
 ```
@@ -322,7 +322,7 @@ will need to create a constant object with the following values:
         <type_>int</type_>
         <desc>Contains the active status ID.</desc>
         <title>Active Status</title>
-        <default>1</default> <!-- not required - defaults to `None` -->
+        <default>1</default> <!-- OPTIONAL -->
     </constant>
 </constants>
 ```
@@ -334,7 +334,7 @@ constants:
         - type_: "int",
         - desc: "Contains the active status ID."
         - title: "Active Status"
-        - default: 1 # not required - defaults to `None`
+        - default: 1 # OPTIONAL
 ```
 
 ## Creating an Object Method
@@ -342,10 +342,64 @@ To create a method for a particular ORM object in the database model, you will
 need to create a method object with the following values:
 | Data Label | Purpose | Example Value |
 | :---: | | :--- | :--- |
+| name | Name of the method in the ORM object. | `name = "GetId"` |
+| type_ | Return datatype of the method. | `type_ = "int"` |
+| desc | Description of the method. | `desc = "Get the ID of the current user."` |
+| title | Comment title of the model. Used in a comment block for the method. | `title = "Get ID"` |
+| methodtype | **OPTIONAL** Type of method that is being created. Defaults to "instance", however other valid options are "static" and "class". | `methodtype = "static"` |
+| params | Contains an ordered list of parameters that the method has. See [Creating an Object Method Parameter](#creating-an-object-method-parameter) for information on how to create each parameter. | `params = [...]` |
+| default | **OPTIONAL** Default return value for the method. If not specified, the method will raise a custom exception stating that it's functionality has not yet been defined. | `default = "0"` |
 
 ### Creating an Object Method in JSON
+``` json file=example.json
+"methods": [
+    {
+        "name": "GetId",
+        "type_": "int",
+        "desc": "Get the ID of the current user.",
+        "title": "Get ID",
+        "methodtype": "instance", // OPTIONAL
+        "params": [
+            {
+                "param1": "See `Creating an Object Method Parameter` for information on creating method parameters."
+            }
+        ],
+        "default": "0" // OPTIONAL
+    }
+]
+```
+
 ### Creating an Object Method in XML
+``` xml file=example.xml
+<methods>
+    <method>
+        <name>GetId</name>
+        <type_>int</type_>
+        <desc>Get the ID of the current user.</desc>
+        <title>Get ID</title>
+        <methodtype>instance</methodtype> <!-- OPTIONAL -->
+        <params>
+            <param>
+                See `Creating an Object Method Parameter` for information on creating method parameters.
+            </param>
+        </params>
+        <default>0</default> <!-- OPTIONAL -->
+    </method>
+</methods>
+```
+
 ### Creating an Object Method in YAML
+``` yaml file=example.yaml
+methods:
+    - GetId:
+        - type_: "int"
+        - desc: "Get the ID of the current user."
+        - title: "Get ID"
+        - methodtype: "instance" # OPTIONAL
+        - params:
+            - param1: "See `Creating an Object Method Parameter` for information on creating method parameters."
+        - default: "0" # OPTIONAL
+```
 
 ## Creating an Object Method Parameter
 To create a parameter for a particular method within an ORM object in the
@@ -353,10 +407,43 @@ database model, you will need to create a method parameter object with the
 following values:
 | Data Label | Purpose | Example Value |
 | :---: | | :--- | :--- |
+| name | Parameter name. | `name = "add_one"` |
+| type_ | Parameter data type (in the ORM language). | `type_ = "bool"` |
+| desc | Parameter description. | `desc = "Flag for whether or not to add 1 to the value."` |
+| default | **OPTIONAL** Default value for the parameter. If not specified, it means the parameter is a positional argument with no default value. If specified, the parameter is a keyword argument with the specified default value. | `default = "False"` |
 
 ### Creating an Object Method Parameter in JSON
+``` json file=example.json
+"params": [
+    {
+        "name": "add_one",
+        "type_": "bool",
+        "desc": "Flag for whether or not to add 1 to the value.",
+        "default": "False", // OPTIONAL
+    }
+]
+```
+
 ### Creating an Object Method Parameter in XML
+``` xml file=example.xml
+<params>
+    <param>
+        <name>add_one</name>
+        <type_>bool</type_>
+        <desc>Flag for whether or not to add 1 to the value.</desc>
+        <default>False</default> <!-- OPTIONAL -->
+    </param>
+</params>
+```
+
 ### Creating an Object Method Parameter in YAML
+``` yaml file=example.yaml
+params:
+    - add_one:
+        - type_: "bool"
+        - desc: "Flag for whether or not to add 1 to the value."
+        - default: "False"
+```
 
 ## Creating an Object Property
 To create a property for a particular ORM object in the database model, you
