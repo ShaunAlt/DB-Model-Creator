@@ -1,0 +1,377 @@
+{
+    "lang_db": "mssql",
+    "lang_orm": "python-sqlalchemy",
+    "tables": [
+        {
+            "name": "DB_Status",
+            "tablename": "Statuses",
+            "title": "Statuses Table",
+            "desc": "Contains all of the statuses (e.g. 'active', 'archived') in the application.",
+            "trigger_update": "True",
+            "columns": [
+                {
+                    "name": "status_id",
+                    "type_": "tinyint",
+                    "title": "Primary Key ID",
+                    "desc": "Primary Key ID for the Status.",
+                    "pk": "True",
+                    "identity": "True"
+                },
+                {
+                    "name": "status_name",
+                    "type_": "nvarchar(50)",
+                    "title": "Status Name",
+                    "desc": "The name of the status.",
+                    "nullable": "False",
+                    "unique": "True"
+                }
+            ],
+            "constants": [
+                {
+                    "name": "STATUS_ACTIVE",
+                    "type_": "str",
+                    "title": "Active Status",
+                    "desc": "Name of the `active` status in the application"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "DB_Status",
+                    "type_": "None",
+                    "desc": "Creates a new database `Statuses` row object.",
+                    "title": "Constructor",
+                    "params": [
+                        {
+                            "name": "id",
+                            "type_": "int",
+                            "desc": "ID of the new Status."
+                        },
+                        {
+                            "name": "name",
+                            "type_": "str",
+                            "desc": "Name of the new Status."
+                        }
+                    ],
+                    "flag_constructor": "True"
+                },
+                {
+                    "name": "GetStatus",
+                    "type_": "DB_Status",
+                    "desc": "Get the status that matches the given status name.",
+                    "title": "Get Status from Name",
+                    "methodtype": "class",
+                    "params": [
+                        {
+                            "name": "name",
+                            "type_": "str",
+                            "desc": "Name of the status to get."
+                        }
+                    ]
+                }
+            ],
+            "props": [
+                {
+                    "name": "id",
+                    "type_": "int",
+                    "desc": "ID of the current status.",
+                    "title": "Status ID",
+                    "readonly": "True"
+                },
+                {
+                    "name": "name",
+                    "type_": "str",
+                    "desc": "Name of the current status.",
+                    "title": "Status Name",
+                    "readonly": "True"
+                }
+            ]
+        },
+        {
+            "name": "DB_User",
+            "tablename": "Users",
+            "title": "Users Table",
+            "desc": "Contains all of the users within the application.",
+            "trigger_update": "True",
+            "columns": [
+                {
+                    "name": "user_id",
+                    "type_": "bigint",
+                    "title": "Primary Key ID",
+                    "desc": "Primary Key ID for the User.",
+                    "pk": "True",
+                    "identity": "True"
+                },
+                {
+                    "name": "user_name_first",
+                    "type_": "nvarchar(50)",
+                    "title": "User's First Name",
+                    "desc": "First name of the user.",
+                    "nullable": "False"
+                },
+                {
+                    "name": "user_name_last",
+                    "type_": "nvarchar(50)",
+                    "title": "User's Last Name",
+                    "desc": "Last name of the user.",
+                    "nullable": "False"
+                },
+                {
+                    "name": "status_id",
+                    "type_": "tinyint",
+                    "title": "User Status",
+                    "desc": "Status of the user.",
+                    "fk": "Statuses.status_id",
+                    "nullable": "False"
+                }
+            ],
+            "constants": [],
+            "methods": [
+                {
+                    "name": "DB_User",
+                    "type_": "None",
+                    "desc": "Creates a new database `Users` row object.",
+                    "title": "Constructor",
+                    "params": [
+                        {
+                            "name": "id",
+                            "type_": "int",
+                            "desc": "ID of the new User."
+                        },
+                        {
+                            "name": "name_first",
+                            "type_": "str",
+                            "desc": "First name of the new User."
+                        },
+                        {
+                            "name": "name_last",
+                            "type_": "str",
+                            "desc": "Last name of the new User."
+                        },
+                        {
+                            "name": "status",
+                            "type_": "DB_Status",
+                            "desc": "Status of the new User."
+                        }
+                    ],
+                    "flag_constructor": "True"
+                },
+                {
+                    "name": "GetView",
+                    "type_": "VW_Table_User",
+                    "desc": "Gets the table view row corresponding to the current user.",
+                    "title": "Get Table View",
+                    "params": [],
+                    "default": "None"
+                }
+            ],
+            "props": [
+                {
+                    "name": "id",
+                    "type_": "int",
+                    "desc": "ID of the current user.",
+                    "readonly": "True"
+                },
+                {
+                    "name": "name_first",
+                    "type_": "str",
+                    "desc": "First name of the current user."
+                },
+                {
+                    "name": "name_full",
+                    "type_": "str",
+                    "desc": "Full name of the current user.",
+                    "readonly": "True"
+                },
+                {
+                    "name": "name_last",
+                    "type_": "str",
+                    "desc": "Last name of the current user."
+                },
+                {
+                    "name": "status",
+                    "type_": "DB_Status",
+                    "desc": "Status of the current user."
+                }
+            ]
+        },
+        {
+            "name": "DB_Order",
+            "tablename": "Orders",
+            "title": "Orders Table",
+            "desc": "Contains all of the orders within the application.",
+            "trigger_update": "True",
+            "columns": [
+                {
+                    "name": "order_id",
+                    "type_": "bigint",
+                    "title": "Primary Key ID",
+                    "desc": "Primary Key ID for the Order.",
+                    "pk": "True",
+                    "identity": "True"
+                },
+                {
+                    "name": "order_code",
+                    "type_": "nvarchar(100)",
+                    "title": "Order Code",
+                    "desc": "Unique code for the order.",
+                    "unique": "True",
+                    "nullable": "True"
+                },
+                {
+                    "name": "status_id",
+                    "type_": "tinyint",
+                    "title": "Order Status",
+                    "desc": "Status of the order.",
+                    "fk": "Statuses.status_id",
+                    "nullable": "False"
+                }
+            ],
+            "constants": [],
+            "methods": [
+                {
+                    "name": "DB_Order",
+                    "type_": "None",
+                    "desc": "Creates a new database `Orders` row object.",
+                    "title": "Constructor",
+                    "params": [
+                        {
+                            "name": "id",
+                            "type_": "int",
+                            "desc": "ID of the new Order."
+                        },
+                        {
+                            "name": "status",
+                            "type_": "DB_Status",
+                            "desc": "Status of the new Order."
+                        },
+                        {
+                            "name": "code",
+                            "type_": "str | None",
+                            "desc": "Code of the new Order.",
+                            "default": "None"
+                        }
+                    ],
+                    "flag_constructor": "True"
+                }
+            ],
+            "props": [
+                {
+                    "name": "id",
+                    "type_": "int",
+                    "desc": "ID of the current order.",
+                    "readonly": "True"
+                },
+                {
+                    "name": "code",
+                    "type_": "str | None",
+                    "desc": "Code of the current order."
+                },
+                {
+                    "name": "status",
+                    "type_": "DB_Status",
+                    "desc": "Status of the current order."
+                }
+            ]
+        },
+        {
+            "name": "DB_UserOrder",
+            "tablename": "UsersOrders",
+            "title": "Users and Orders Linking Table",
+            "desc": "Contains a list of all orders associated with all of the required users.",
+            "trigger_update": "False",
+            "columns": [
+                {
+                    "name": "user_id",
+                    "type_": "bigint",
+                    "title": "User ID",
+                    "desc": "User that placed the order.",
+                    "fk": "Users.user_id",
+                    "pk": "True"
+                },
+                {
+                    "name": "order_id",
+                    "type_": "bigint",
+                    "title": "Order ID",
+                    "desc": "Order placed by the user.",
+                    "fk": "Orders.order_id",
+                    "pk": "True"
+                }
+            ],
+            "constants": [],
+            "methods": [
+                {
+                    "name": "DB_UserOrder",
+                    "type_": "None",
+                    "desc": "Creates a new database `UsersOrders` row object.",
+                    "title": "Constructor",
+                    "params": [
+                        {
+                            "name": "user_id",
+                            "type_": "int",
+                            "desc": "ID of the User."
+                        },
+                        {
+                            "name": "order_id",
+                            "type_": "int",
+                            "desc": "ID of the Order."
+                        }
+                    ],
+                    "flag_constructor": "True"
+                }
+            ],
+            "props": []
+        }
+    ],
+    "views": [
+        {
+            "name": "VW_Table_User",
+            "viewname": "vwTable_Users",
+            "title": "View - Users Table",
+            "desc": "Contains information calculated for the users table.",
+            "columns": [
+                {
+                    "name": "user_id",
+                    "type_": "bigint",
+                    "title": "User ID",
+                    "desc": "User the data is calculated for.",
+                    "nullable": "False"
+                },
+                {
+                    "name": "num_orders",
+                    "type_": "int",
+                    "title": "Number of Orders",
+                    "desc": "Number of orders placed by the user.",
+                    "nullable": "False"
+                }
+            ],
+            "constants": [],
+            "methods": [],
+            "props": []
+        },
+        {
+            "name": "VW_Table_Order",
+            "viewname": "vwTable_Orders",
+            "title": "View - Orders Table",
+            "desc": "Contains information calculated for the orders table.",
+            "columns": [
+                {
+                    "name": "order_id",
+                    "type_": "bigint",
+                    "title": "Order ID",
+                    "desc": "Order the data is calculated for.",
+                    "nullable": "False"
+                },
+                {
+                    "name": "num_users",
+                    "type_": "int",
+                    "title": "Number of Users",
+                    "desc": "Number of users that placed the order.",
+                    "nullable": "False"
+                }
+            ],
+            "constants": [],
+            "methods": [],
+            "props": []
+        }
+    ]
+}
