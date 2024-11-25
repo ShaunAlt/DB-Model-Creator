@@ -76,6 +76,7 @@ class ORM(OBJ):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ORM` << override >>
     - GetData(lvl : VerbosityLevel) : `List<str>` << override >>
     - LoadData(...) << static >>
@@ -95,6 +96,16 @@ class ORM(OBJ):
     ''' Collection of all tables in the database. '''
     views: List['ORM_View'] = []
     ''' Collection of all views in the database. '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            (isinstance(other, self.__class__))
+            and (self._desc == other._desc)
+            and (self._title == other._title)
+            and (self.name == other.name)
+        )
 
     # ====================
     # Method - Constructor
@@ -299,12 +310,27 @@ class ORM_Column(ORM):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ORM_Column` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - ORM_Column(...) << constructor >>
     - WriteDb(comment : `bool`) : `str`
     - WriteOrm(comment : `bool`) : `str`
     '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._fk == other._fk)
+            and (self._identity == other._identity)
+            and (self._nullable == other._nullable)
+            and (self._pk == other._pk)
+            and (self._type == other._type)
+            and (self._unique == other._unique)
+        )
 
     # ====================
     # Method - Constructor
@@ -461,12 +487,25 @@ class ORM_TV(ORM):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ORM_TV` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - ORM_TV(...) << constructor >>
     - WriteDb(comment : `bool`) : `str` << virtual >>
     - WriteOrm(comment : `bool`) : `str` << virtual >>
     '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._cols == other._cols)
+            and (self._constants == other._constants)
+            and (self._methods == other._methods)
+            and (self._props == other._props)
+        )
 
     # ====================
     # Method - Constructor
@@ -598,12 +637,22 @@ class ORM_Table(ORM_TV):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ORM_Table` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - ORM_Table(...) << constructor >>
     - WriteDb(comment : `bool`) : `str` << override >>
     - WriteOrm(comment : `bool`) : `str` << override >>
     '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._trigger_update == other._trigger_update)
+        )
 
     # ====================
     # Method - Constructor

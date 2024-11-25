@@ -74,6 +74,7 @@ class ObjComp(OBJ):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ObjComp` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - LoadData(lang_orm : `LangOrm`) : `None` << static >>
@@ -85,6 +86,18 @@ class ObjComp(OBJ):
     # Static Fields
     lang_orm: Optional[LangOrm] = None
     ''' ORM Language the object component will be created in. '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            (isinstance(other, self.__class__))
+            and (self._name == other._name)
+            and (self._type == other._type)
+            and (self._desc == other._desc)
+            and (self._default == other._default)
+            and (self._title == other._title)
+        )
 
     # ====================
     # Method - Constructor
@@ -380,10 +393,21 @@ class ObjComp_Method(ObjComp):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - Duplicate() : `ObjComp_Method` << override >>
     - ObjComp_Method(...) << constructor >>
     - Write(comment : `bool`) : `str` << override >>
     '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            super().__eq__(other)
+            and (isinstance(other, self.__class__))
+            and (self._method_type == other._method_type)
+            and (self._params == other._params)
+        )
 
     # ====================
     # Method - Constructor

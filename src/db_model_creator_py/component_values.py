@@ -59,6 +59,7 @@ class CompValue(OBJ):
 
     Methods
     -
+    - __eq__(other) << equality check >>
     - CompValue(data : `str`) << constructor >>
     - Duplicate() : `CompValue` << override >>
     - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
@@ -76,6 +77,14 @@ class CompValue(OBJ):
     ''' All tables in the database model. '''
     views: List[ORM_View] = []
     ''' ALl views in the database model. '''
+
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        return (
+            (isinstance(other, self.__class__))
+            and (self.data == other.data)
+        )
 
     # ====================
     # Method - Constructor
