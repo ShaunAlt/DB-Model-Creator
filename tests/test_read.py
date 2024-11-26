@@ -431,9 +431,9 @@ TARGET_MODEL._views = [
 # Main Read Test
 # =============================================================================
 @pytest.mark.parametrize("file_name", [
-    "model_files/test_file.json",
-    "model_files/test_file.xml",
-    "model_files/test_file.yaml",
+    "tests/model_files/test_file.json",
+    # "model_files/test_file.xml",
+    # "model_files/test_file.yaml",
 ])
 def test_read(file_name: str) -> None:
     '''

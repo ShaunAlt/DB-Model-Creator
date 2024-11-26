@@ -19,6 +19,7 @@ from .errors import (
     FileTypeError, # file type error
     LangDbError, # invalid database language error
     LangOrmError, # invalid orm language error
+    ReadError, # file read error
     UndefFuncError, # undefined functionality error
 )
 
@@ -40,6 +41,9 @@ from .supported_languages import (
     LangDb, # supported database languages
     LangOrm, # supported ORM languages
 )
+
+# used for reading json data
+import json
 
 # used for type hinting
 from typing import (
@@ -73,6 +77,7 @@ class Database(OBJ):
     Methods
     -
     - Database(...) << constructor >>
+    - GetData(lvl : `VerbosityLevel`) : `List<str>` << override >>
     - Read()
     - Read_JSON()
     - Read_XML()
@@ -157,6 +162,42 @@ class Database(OBJ):
                 + f'valid extension supported by {FileType}'
             )
 
+    # =================
+    # Method - Get Data
+    def GetData(self, lvl: VerbosityLevel) -> List[str]:
+        if lvl == VerbosityLevel.SHORT:
+            return [
+                '_file_name',
+                '_lang_db',
+                '_lang_orm',
+            ]
+        elif lvl == VerbosityLevel.LONG:
+            return [
+                '_file_name',
+                '_file_type',
+                '_lang_db',
+                '_lang_orm',
+                '_prefix_orm_table',
+                '_prefix_orm_view',
+                '_save_dir_db',
+                '_save_dir_orm',
+                '_tables',
+                '_views',
+            ]
+        else:
+            return [
+                '_file_name',
+                '_file_type',
+                '_lang_db',
+                '_lang_orm',
+                '_prefix_orm_table',
+                '_prefix_orm_view',
+                '_save_dir_db',
+                '_save_dir_orm',
+                '_tables',
+                '_views',
+            ]
+    
     # ========================
     # Read Database Model File
     def Read(self) -> None:
@@ -212,6 +253,54 @@ class Database(OBJ):
                 'Database().Read_JSON() was called but `self._file_type = ' \
                 + f'{self._file_type!r}`'
             )
+
+        # read file
+        try:
+            with open(self._file_name, 'r') as file:
+                data = json.load(file)
+        except:
+            raise FileNotFoundError(
+                f'Database().Read_JSON() could not find file ' \
+                + f'`{self._file_name}`'
+            )
+        
+        # set the database language
+        try:
+            data_lang_db: str = data.get('lang_db', '')
+            self._lang_db = None
+            for lang_db_option in LangDb:
+                if lang_db_option.value == data_lang_db:
+                    self._lang_db = lang_db_option
+                    break
+            else:
+                raise ValueError(
+                    'Database().Read_JSON() unable to identify Database ' \
+                    + f'Language from JSON `lang_db` data, got {data_lang_db}'
+                )
+        except:
+            raise ReadError(
+                'Database().Read_JSON() unable to read Database Language'
+            )
+        
+        # set the orm language
+        try:
+            data_lang_orm: str = data.get('lang_orm', '')
+            self._lang_orm = None
+            for lang_orm_option in LangOrm:
+                if lang_orm_option.value == data_lang_orm:
+                    self._lang_orm = lang_orm_option
+                    break
+            else:
+                raise ValueError(
+                    'Database().Read_JSON() unable to identify ORM Language ' \
+                    + f'from JSON `lang_orm` data, got {data_lang_orm}'
+                )
+        except:
+            raise ReadError(
+                'Database().Read_JSON() unable to read ORM Language'
+            )
+        
+        # create tables
 
         raise UndefFuncError('Database().Read_JSON() not defined')
 

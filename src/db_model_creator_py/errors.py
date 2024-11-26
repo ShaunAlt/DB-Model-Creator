@@ -41,6 +41,14 @@ class LangOrmError(Exception):
 
 
 # =============================================================================
+# Read Error
+# =============================================================================
+class ReadError(Exception):
+    ''' File Read Error. Used when the database model file being read is
+        invalid. '''
+
+
+# =============================================================================
 # Undefined Functionality Error
 # =============================================================================
 class UndefFuncError(Exception):
