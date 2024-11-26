@@ -168,28 +168,33 @@
                 {
                     "name": "id",
                     "type_": "int",
+                    "title": "User ID",
                     "desc": "ID of the current user.",
                     "readonly": "True"
                 },
                 {
                     "name": "name_first",
                     "type_": "str",
+                    "title": "User's First Name",
                     "desc": "First name of the current user."
                 },
                 {
                     "name": "name_full",
                     "type_": "str",
+                    "title": "User's Full Name",
                     "desc": "Full name of the current user.",
                     "readonly": "True"
                 },
                 {
                     "name": "name_last",
                     "type_": "str",
+                    "title": "User's Last Name",
                     "desc": "Last name of the current user."
                 },
                 {
                     "name": "status",
                     "type_": "DB_Status",
+                    "title": "User Status",
                     "desc": "Status of the current user."
                 }
             ]
@@ -259,15 +264,18 @@
                     "name": "id",
                     "type_": "int",
                     "desc": "ID of the current order.",
+                    "title": "Order ID",
                     "readonly": "True"
                 },
                 {
                     "name": "code",
                     "type_": "str | None",
+                    "title": "Order Code",
                     "desc": "Code of the current order."
                 },
                 {
                     "name": "status",
+                    "title": "Order Status",
                     "type_": "DB_Status",
                     "desc": "Status of the current order."
                 }

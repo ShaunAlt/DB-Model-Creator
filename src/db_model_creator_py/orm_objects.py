@@ -340,7 +340,7 @@ class ORM_Column(ORM):
             type_: str,
             title: str,
             desc: str,
-            nullable: bool = False,
+            nullable: bool = True,
             pk: bool = False,
             identity: bool = False,
             fk: Optional[str] = None,
@@ -363,7 +363,7 @@ class ORM_Column(ORM):
             - Description of the column.
         - nullable : `bool`
             - Whether or not `NULL` values are allowed in the column. Defaults
-                to `False`, meaning the column is `NOT NULL`.
+                to `True`, meaning the column is `NULL`.
         - pk : `bool`
             - Whether or not the column is a primary key.
         - identity : `bool`
