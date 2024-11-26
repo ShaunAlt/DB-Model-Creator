@@ -14,14 +14,6 @@ the database.
 # Imports
 # =============================================================================
 
-# component values
-from .component_values import (
-    CompValue_Desc, # object description
-    CompValue_Fk, # column foreign key
-    CompValue_Name, # object name
-    CompValue_Title, # object comment title
-)
-
 # custom errors
 from .errors import (
     AbstractError, # abstract method error
@@ -32,13 +24,6 @@ from .errors import (
 from .generic_objects import (
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
-)
-
-# object components
-from .object_components import (
-    ObjComp_Constant, # object constant
-    ObjComp_Method, # object method
-    ObjComp_Property, # object property
 )
 
 # supported languagges
@@ -913,6 +898,26 @@ class ORM_View(ORM_TV):
         raise UndefFuncError(
             f'ORM_View().WriteOrm(comment = {comment}) not defined'
         )
+
+
+# =============================================================================
+# Back-Reference Import
+# =============================================================================
+
+# component values
+from .component_values import (
+    CompValue_Desc, # object description
+    CompValue_Fk, # column foreign key
+    CompValue_Name, # object name
+    CompValue_Title, # object comment title
+)
+
+# object components
+from .object_components import (
+    ObjComp_Constant, # object constant
+    ObjComp_Method, # object method
+    ObjComp_Property, # object property
+)
 
 
 # =============================================================================

@@ -73,9 +73,9 @@ class CompValue(OBJ):
     ''' Database Language (e.g. MSSQL). '''
     lang_orm: Optional[LangOrm] = None
     ''' ORM Language (e.g. Python-SQLAlchemy). '''
-    tables: List[ORM_Table] = []
+    tables: List['ORM_Table'] = []
     ''' All tables in the database model. '''
-    views: List[ORM_View] = []
+    views: List['ORM_View'] = []
     ''' ALl views in the database model. '''
 
     # =======================
@@ -136,8 +136,8 @@ class CompValue(OBJ):
     def LoadData(
             lang_db: LangDb,
             lang_orm: LangOrm,
-            tables: List[ORM_Table],
-            views: List[ORM_View]
+            tables: List['ORM_Table'],
+            views: List['ORM_View']
     ) -> None:
         '''
         Load Static Data
@@ -502,7 +502,6 @@ class CompValue_Type(CompValue):
     # Method - Validate Data
     def Validate(self) -> bool:
         raise UndefFuncError('CompValue_Type.Validate() not defined')
-
 
 
 # =============================================================================

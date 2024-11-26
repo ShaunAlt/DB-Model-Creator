@@ -1,11 +1,12 @@
 # =============================================================================
-# Database Model Creator - Testing File Reading - Target
+# Database Model Creator - Testing File Reading
 # Created by: Shaun Altmann
 # =============================================================================
 '''
-Databsase Model Creator - Testing File Reading - Target
+Databsase Model Creator - Testing File Reading
 -
-Contains the database model that each of the tests should re-create.
+Contains all of the objects that are used for testing the ability of this
+package to read and process database models being read from a file.
 '''
 # =============================================================================
 
@@ -13,7 +14,10 @@ Contains the database model that each of the tests should re-create.
 # Imports
 # =============================================================================
 
-# used for creating the target database model
+# used for automatic testing
+import pytest
+
+# used for creating the database models
 from src.db_model_creator_py import (
     Database,
     LangDb,
@@ -32,7 +36,7 @@ from src.db_model_creator_py import (
 # =============================================================================
 # Target Database Model
 # =============================================================================
-TARGET_MODEL = Database('')
+TARGET_MODEL = Database('placeholder.json')
 ''' Database model that the reading tests should re-create. '''
 TARGET_MODEL._lang_db = LangDb.MSSQL
 TARGET_MODEL._lang_orm = LangOrm.PYTHON_SQLALCHEMY
@@ -197,6 +201,7 @@ TARGET_MODEL._tables = [
                 type_ = 'VW_Table_User',
                 desc = 'Gets the table view row corresponding to the current user.',
                 title = 'Get Table View',
+                methodtype = MethodType.INSTANCE,
                 params = [],
                 default = 'None'
             ),
@@ -324,7 +329,7 @@ TARGET_MODEL._tables = [
         title = 'Users and Orders Linking Table',
         desc = 'Contains a list of all orders associated with all of the required users.',
         trigger_update = False,
-        columns = [
+        cols = [
             ORM_Column(
                 name = 'user_id',
                 type_ = 'bigint',
@@ -374,7 +379,7 @@ TARGET_MODEL._views = [
         viewname = 'vwTable_Users',
         title = 'View - Users Table',
         desc = 'Contains information calculated for the users table.',
-        columns = [
+        cols = [
             ORM_Column(
                 name = 'user_id',
                 type_ = 'bigint',
@@ -399,7 +404,7 @@ TARGET_MODEL._views = [
         viewname = 'vwTable_Orders',
         title = 'View - Orders Table',
         desc = 'Contains information calculated for the orders table.',
-        columns = [
+        cols = [
             ORM_Column(
                 name = 'order_id',
                 type_ = 'bigint',
@@ -420,6 +425,45 @@ TARGET_MODEL._views = [
         props = []
     )
 ]
+
+
+# =============================================================================
+# Main Read Test
+# =============================================================================
+@pytest.mark.parametrize("file_name", [
+    "model_files/test_file.json",
+    "model_files/test_file.xml",
+    "model_files/test_file.yaml",
+])
+def test_read(file_name: str) -> None:
+    '''
+    Test Read
+    -
+    Reads a file, attempts to create a database model out of it, and then
+    asserts that the database model created contains all of the correct data.
+
+    This method is used to test that the package is able to successfully read a
+    database model from a file and convert it into a group of database model
+    objects.
+
+    Parameters
+    -
+    - file_name : `str`
+        - The directory + file name of the file to read.
+
+    Returns
+    -
+    None
+    '''
+
+    # create base database object
+    db = Database(file_name = file_name)
+
+    # create database model from file
+    db.Read()
+
+    # validate against target model
+    assert db == TARGET_MODEL
 
 
 # =============================================================================

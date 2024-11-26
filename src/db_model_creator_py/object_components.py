@@ -14,15 +14,6 @@ objects (e.g. constants, properties).
 # Imports
 # =============================================================================
 
-# component values
-from .component_values import (
-    CompValue_Default, # default component value
-    CompValue_Desc, # component description
-    CompValue_Name, # component name
-    CompValue_Title, # component comment title
-    CompValue_Type, # component return type
-)
-
 # custom error definitions
 from .errors import (
     AbstractError, # abstract method error
@@ -679,6 +670,20 @@ class ObjComp_Property(ObjComp):
         raise UndefFuncError(
             f'ObjComp_Property.Write(comment = {comment}) not defined'
         )
+
+
+# =============================================================================
+# Back-Reference Import
+# =============================================================================
+
+# component values
+from .component_values import (
+    CompValue_Default, # default component value
+    CompValue_Desc, # component description
+    CompValue_Name, # component name
+    CompValue_Title, # component comment title
+    CompValue_Type, # component return type
+)
 
 
 # =============================================================================
