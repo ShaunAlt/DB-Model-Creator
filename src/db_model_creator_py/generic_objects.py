@@ -138,6 +138,10 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
         if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
             output = str(obj)
         else: output = repr(obj)
+    elif isinstance(obj, Enum): # enumeration object
+        if lvl == VerbosityLevel.SHORT:
+            output = str(obj)
+        else: output = repr(obj)
     else: # unknown object type
         if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
             output = f'Unknown Object Type: {obj}'
