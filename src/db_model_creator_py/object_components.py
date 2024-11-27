@@ -686,7 +686,7 @@ class ObjComp_Method(ObjComp):
             )
         
         # get the constructor flag value of the method
-        _flag_constructor: object = data.get('flag_constructor', 'False')
+        _flag_constructor: object = str(data.get('flag_constructor', 'False'))
         if _flag_constructor not in ['True', 'False']: # validate flag value
             raise ValueError(
                 'Method Flag-Constructor Value (`flag_constructor`) expected' \
@@ -1006,7 +1006,7 @@ class ObjComp_Property(ObjComp):
             )
         
         # get the readonly status of the property
-        _readonly: object = data.get('readonly', 'False')
+        _readonly: object = str(data.get('readonly', 'False'))
         if _readonly not in ['True', 'False']: # validate readonly value
             raise ValueError(
                 'Property Read-Only Status (`readonly`) expected a `str` ' \

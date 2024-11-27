@@ -486,7 +486,7 @@ class ORM_Column(ORM):
             raise ValueError('Column Description (`desc`) must not be empty')
         
         # get the nullable status of the column
-        _nullable: object = data.get('nullable', 'True')
+        _nullable: object = str(data.get('nullable', 'True'))
         if _nullable not in ['True', 'False']: # validate nullable value
             raise ValueError(
                 'Column Nullable Status (`nullable`) expected a `str` value ' \
@@ -495,7 +495,7 @@ class ORM_Column(ORM):
         _nullable = True if _nullable == 'True' else False
 
         # get the primary key status of the column
-        _pk: object = data.get('pk', 'False')
+        _pk: object = str(data.get('pk', 'False'))
         if _pk not in ['True', 'False']: # validate pk value
             raise ValueError(
                 'Column Primary Key Status (`pk`) expected a `str` value ' \
@@ -504,7 +504,7 @@ class ORM_Column(ORM):
         _pk = True if _pk == 'True' else False
 
         # get the identity / auto-increment status of the column
-        _identity: object = data.get('identity', 'False')
+        _identity: object = str(data.get('identity', 'False'))
         if _identity not in ['True', 'False']: # validate identity value
             raise ValueError(
                 'Column Identity / Auto-Increment Status (`identity`) ' \
@@ -514,7 +514,7 @@ class ORM_Column(ORM):
         _identity = True if _identity == 'True' else False
 
         # get the unique status of the column
-        _unique: object = data.get('unique', 'False')
+        _unique: object = str(data.get('unique', 'False'))
         if _unique not in ['True', 'False']: # validate unique value
             raise ValueError(
                 'Column Unique Key Status (`unique`) expected a `str` value ' \
@@ -921,6 +921,7 @@ class ORM_Table(ORM_TV):
             raise ValueError(
                 'Failed to read Table Trigger-Update Flag (`trigger_update`)'
             )
+        _tu = str(_tu)
         if _tu not in ['True', 'False']: # validate trigger-update value
             raise ValueError(
                 'Table Trigger-Update Flag (`trigger_update`) expected a ' \

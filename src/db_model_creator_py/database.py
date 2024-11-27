@@ -357,14 +357,12 @@ class Database(OBJ):
         # read file
         try:
             with open(self._file_name, 'r') as file:
-                data = yaml.load_all(file)
+                data = yaml.safe_load(file)
         except:
             raise ReadError(
                 f'Database().Read_YAML() could not parse file ' \
                 + f'`{self._file_name}`'
             )
-        
-        print(data)
         
         # set the database language
         self.SetLangDb(data.get('lang_db', None))
