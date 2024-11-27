@@ -131,7 +131,7 @@ TARGET_MODEL._tables = [
         tablename = 'Users',
         title = 'Users Table',
         desc = 'Contains all of the users within the application.',
-        trigger_update = 'True',
+        trigger_update = True,
         cols = [
             ORM_Column(
                 name = 'user_id',
@@ -179,12 +179,12 @@ TARGET_MODEL._tables = [
                         desc = 'ID of the new User.'
                     ),
                     ObjComp_MethodParam(
-                        name = 'first_name',
+                        name = 'name_first',
                         type_ = 'str',
                         desc = 'First name of the new User.'
                     ),
                     ObjComp_MethodParam(
-                        name = 'last_name',
+                        name = 'name_last',
                         type_ = 'str',
                         desc = 'Last name of the new User.'
                     ),
@@ -224,7 +224,8 @@ TARGET_MODEL._tables = [
                 name = 'name_full',
                 type_ = 'str',
                 desc = 'Full name of the current user.',
-                title = 'User\'s Full Name'
+                title = 'User\'s Full Name',
+                readonly = True
             ),
             ObjComp_Property(
                 name = 'name_last',
@@ -474,6 +475,7 @@ def test_read(file_name: str) -> None:
             assert table._tablename == target_table._tablename
             assert table._title == target_table._title
             assert table._desc == target_table._desc
+            assert table._trigger_update == target_table._trigger_update
             assert len(table._cols) == len(target_table._cols)
             for col in table._cols:
                 for target_col in target_table._cols:
@@ -566,7 +568,103 @@ def test_read(file_name: str) -> None:
                 f'Table {table} had no matches in {TARGET_MODEL._tables}'
             )
     for view in db._views:
-        assert view in TARGET_MODEL._views
+        for target_view in TARGET_MODEL._views:
+            if view._viewname != target_view._viewname:
+                continue
+            assert view._viewname == target_view._viewname
+            assert view._title == target_view._title
+            assert view._desc == target_view._desc
+            assert len(view._cols) == len(target_view._cols)
+            for col in view._cols:
+                for target_col in target_view._cols:
+                    if col._name != target_col._name:
+                        continue
+                    assert col._title == target_col._title
+                    assert col._desc == target_col._desc
+                    assert col._fk == target_col._fk
+                    assert col._identity == target_col._identity
+                    assert col._nullable == target_col._nullable
+                    assert col._pk == target_col._pk
+                    assert col._type == target_col._type
+                    assert col._unique == target_col._unique
+                    break
+                else:
+                    raise AssertionError(
+                        f'Column {col} in view {view} had no matches in ' \
+                        + f'{target_view._cols} in view {target_view}'
+                    )
+            assert len(view._constants) == len(target_view._constants)
+            for const in view._constants:
+                for target_const in target_view._constants:
+                    if const._name != target_const._name:
+                        continue
+                    assert const._type == target_const._type
+                    assert const._title == target_const._title
+                    assert const._desc == target_const._desc
+                    assert const._default == target_const._default
+                    break
+                else:
+                    raise AssertionError(
+                        f'Constant {const} in view {view} had no matches ' \
+                        + f'in {target_view._constants} in view ' \
+                        + f'{target_view}'
+                    )
+            assert len(view._methods) == len(target_view._methods)
+            for method in view._methods:
+                for target_method in target_view._methods:
+                    if method._name != target_method._name:
+                        continue
+                    assert method._type == target_method._type
+                    assert method._title == target_method._title
+                    assert method._desc == target_method._desc
+                    assert method._default == target_method._default
+                    assert method._flag_constructor \
+                        == target_method._flag_constructor
+                    assert method._method_type == target_method._method_type
+                    assert len(method._params) == len(target_method._params)
+                    for param in method._params:
+                        for target_param in target_method._params:
+                            if param._name != target_param._name:
+                                continue
+                            assert param._type == target_param._type
+                            assert param._title == target_param._title
+                            assert param._desc == target_param._desc
+                            assert param._default == target_param._default
+                            break
+                        else:
+                            raise AssertionError(
+                                f'Parameter {param} in method {method} in ' \
+                                + f'view {view} had no matches in ' \
+                                + f'{target_method._params} in method ' \
+                                + f'{target_method} in view {target_view}'
+                            )
+                    break
+                else:
+                    raise AssertionError(
+                        f'Method {method} in view {view} had no matches in' \
+                        + f' {target_view._methods} in view {target_view}'
+                    )
+            assert len(view._props) == len(target_view._props)
+            for prop in view._props:
+                for target_prop in target_view._props:
+                    if prop._name != target_prop._name:
+                        continue
+                    assert prop._type == target_prop._type
+                    assert prop._title == target_prop._title
+                    assert prop._desc == target_prop._desc
+                    assert prop._default == target_prop._default
+                    assert prop._readonly == target_prop._readonly
+                    break
+                else:
+                    raise AssertionError(
+                        f'Property {prop} in view {view} had no matches in' \
+                        + f' {target_view._props} in view {target_view}'
+                    )
+            break
+        else:
+            raise AssertionError(
+                f'View {view} had no matches in {TARGET_MODEL._views}'
+            )
 
 
 # =============================================================================

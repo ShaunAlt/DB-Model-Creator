@@ -263,7 +263,7 @@
                 {
                     "name": "id",
                     "type_": "int",
-                    "desc": "ID of the current order.",
+                    "desc": "ID of the current Order.",
                     "title": "Order ID",
                     "readonly": "True"
                 },
@@ -271,13 +271,13 @@
                     "name": "code",
                     "type_": "str | None",
                     "title": "Order Code",
-                    "desc": "Code of the current order."
+                    "desc": "Code of the current Order."
                 },
                 {
                     "name": "status",
                     "title": "Order Status",
                     "type_": "DB_Status",
-                    "desc": "Status of the current order."
+                    "desc": "Status of the current Order."
                 }
             ]
         },

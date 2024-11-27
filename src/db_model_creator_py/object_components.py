@@ -230,7 +230,7 @@ class ObjComp(OBJ):
     # Method - Get Data
     def GetData(self, lvl: VerbosityLevel) -> List[str]:
         if lvl == VerbosityLevel.SHORT:
-            return ['lang_orm', 'valid']
+            return ['_name', 'valid']
         elif lvl == VerbosityLevel.LONG:
             return [
                 '_default',
@@ -661,7 +661,7 @@ class ObjComp_Method(ObjComp):
                 + f'{type(_params)}'
             )
         params: list[ObjComp_MethodParam] = []
-        for i, param in enumerate(params):
+        for i, param in enumerate(_params):
             # validate parameter data is a dict
             if not isinstance(param, dict):
                 raise TypeError(
