@@ -1205,19 +1205,19 @@ class ORM_View(ORM_TV):
             raise ValueError('View ORM Name (`name`) must not be empty')
 
         # get the name of the view (database name)
-        _tablename: object = data.get('tablename', None)
-        if _tablename is None: # validate tablename existence
+        _viewname: object = data.get('viewname', None)
+        if _viewname is None: # validate viewname existence
             raise ValueError(
-                'Failed to read View Database Name (`tablename`)'
+                'Failed to read View Database Name (`viewname`)'
             )
-        if not isinstance(_tablename, str): # validate tablename type
+        if not isinstance(_viewname, str): # validate viewname type
             raise TypeError(
-                'View Database Name (`tablename`) expected a `str` type, ' \
-                + f'got {type(_tablename)}'
+                'View Database Name (`viewname`) expected a `str` type, ' \
+                + f'got {type(_viewname)}'
             )
-        if _tablename == '': # validate tablename data
+        if _viewname == '': # validate viewname data
             raise ValueError(
-                'View Database Name (`tablename`) must not be empty'
+                'View Database Name (`viewname`) must not be empty'
             )
         
         # get the title of the view orm object
@@ -1355,7 +1355,7 @@ class ORM_View(ORM_TV):
         # create ORM_View object
         return cls(
             name = _name,
-            tablename = _tablename,
+            viewname = _viewname,
             title = _title,
             desc = _desc,
             cols = cols,
