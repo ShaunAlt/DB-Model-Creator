@@ -637,9 +637,7 @@ class ObjComp_Method(ObjComp):
             raise ValueError('Method Title (`title`) must not be empty')
         
         # get the method type of the method
-        _methodtype: object = data.get('methodtype', None)
-        if _methodtype is None: # validate method type existence
-            raise ValueError('Failed to read Method Type (`methodtype`)')
+        _methodtype: object = data.get('methodtype', 'instance')
         if not isinstance(_methodtype, str): # validate method type type
             raise TypeError(
                 'Method Type (`methodtype`) expected a `str` type, got ' \
