@@ -493,7 +493,8 @@ class ObjComp_Method(ObjComp):
             and (isinstance(other, self.__class__))
             and (self._flag_constructor == other._flag_constructor)
             and (self._method_type == other._method_type)
-            and (self._params == other._params)
+            and (len(self._params) == len(other._params))
+            and (all([param in other._params for param in self._params]))
         )
 
     # ====================

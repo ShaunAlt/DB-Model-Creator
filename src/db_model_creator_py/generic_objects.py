@@ -136,7 +136,7 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
     elif callable(obj): # function
         output = obj.__name__
     elif isinstance(obj, OBJ): # custom object
-        if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
+        if lvl in [VerbosityLevel.SHORT]:
             output = str(obj)
         else: output = repr(obj)
     elif isinstance(obj, Enum): # enumeration object
@@ -144,7 +144,7 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
             output = str(obj)
         else: output = repr(obj)
     else: # unknown object type
-        if lvl in [VerbosityLevel.SHORT, VerbosityLevel.LONG]:
+        if lvl in [VerbosityLevel.SHORT]:
             output = f'Unknown Object Type: {obj}'
         else: output = f'Unknown Object Type: {obj!r}'
 

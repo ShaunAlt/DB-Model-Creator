@@ -523,8 +523,8 @@ class ORM_Column(ORM):
         _unique = True if _unique == 'True' else False
 
         # get the foreign key status of the column
-        _fk: object = data.get('title', '')
-        if not isinstance(_fk, str): # validate title type
+        _fk: object = data.get('fk', '')
+        if not isinstance(_fk, str): # validate foreign key type
             raise TypeError(
                 'Column Foreign Key Status (`fk`) expected a `str | None` ' \
                 + f'type, got {type(_fk)}'
@@ -622,10 +622,14 @@ class ORM_TV(ORM):
         return (
             super().__eq__(other)
             and (isinstance(other, self.__class__))
-            and (self._cols == other._cols)
-            and (self._constants == other._constants)
-            and (self._methods == other._methods)
-            and (self._props == other._props)
+            and (len(self._cols) == len(other._cols))
+            and (all([col in other._cols for col in self._cols]))
+            and (len(self._constants) == len(other._constants))
+            and (all([constant in other._constants for constant in self._constants]))
+            and (len(self._methods) == len(other._methods))
+            and (all([method in other._methods for method in self._methods]))
+            and (len(self._props) == len(other._props))
+            and (all([prop in other._props for prop in self._props]))
         )
 
     # ====================

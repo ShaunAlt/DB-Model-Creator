@@ -31,7 +31,7 @@
                     "name": "STATUS_ACTIVE",
                     "type_": "str",
                     "title": "Active Status",
-                    "desc": "Name of the `active` status in the application"
+                    "desc": "Name of the `active` status in the application."
                 }
             ],
             "methods": [

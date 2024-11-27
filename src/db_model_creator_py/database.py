@@ -98,6 +98,19 @@ class Database(OBJ):
     - Write_ORM_PYTHON()
     '''
 
+    # =======================
+    # Method - Equality Check
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Database): return False
+        return (
+            (self._lang_db == other._lang_db)
+            and (self._lang_orm == other._lang_orm)
+            and (len(self._tables) == len(other._tables))
+            and (len(self._views) == len(other._views))
+            and all([table in other._tables for table in self._tables])
+            and all([view in other._views for view in self._views])
+        )
+
     # ====================
     # Method - Constructor
     def __init__(
