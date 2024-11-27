@@ -52,9 +52,6 @@ from .supported_languages import (
     LangOrm, # supported ORM languages
 )
 
-# used for reading json data
-import json
-
 # used for type hinting
 from typing import (
     List, # list data type
@@ -277,13 +274,16 @@ class Database(OBJ):
                 + f'{self._file_type!r}`'
             )
 
+        # import json module
+        import json
+
         # read file
         try:
             with open(self._file_name, 'r') as file:
                 data = json.load(file)
         except:
-            raise FileNotFoundError(
-                f'Database().Read_JSON() could not find file ' \
+            raise ReadError(
+                f'Database().Read_JSON() could not parse file ' \
                 + f'`{self._file_name}`'
             )
         
@@ -350,8 +350,33 @@ class Database(OBJ):
                 'Database().Read_YAML() was called but `self._file_type = ' \
                 + f'{self._file_type!r}`'
             )
+        
+        # import yaml module
+        import yaml # type: ignore
 
-        raise UndefFuncError('Database().Read_YAML() not defined')
+        # read file
+        try:
+            with open(self._file_name, 'r') as file:
+                data = yaml.load_all(file)
+        except:
+            raise ReadError(
+                f'Database().Read_YAML() could not parse file ' \
+                + f'`{self._file_name}`'
+            )
+        
+        print(data)
+        
+        # set the database language
+        self.SetLangDb(data.get('lang_db', None))
+
+        # set the orm language
+        self.SetLangOrm(data.get('lang_orm', None))
+
+        # set the tables
+        self.SetTables(data.get('tables', None))
+
+        # set the views
+        self.SetViews(data.get('views', None))
     
     # =====================
     # Set Database Language
