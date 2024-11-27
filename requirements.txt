@@ -5,7 +5,9 @@ mypy-extensions==1.0.0
 packaging==24.2
 pluggy==1.5.0
 pytest==8.3.3
+PyYAML==6.0.2
 regex==2024.11.6
 tomli==2.0.2
 types-regex==2024.11.6.20241108
 typing_extensions==4.12.2
+xmltodict==0.14.2
