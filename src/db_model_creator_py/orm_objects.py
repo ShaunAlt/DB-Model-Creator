@@ -925,17 +925,17 @@ class ORM_Table(ORM_TV):
         _tu = True if _tu == 'True' else False
 
         # get the columns data for the table
-        _cols: object = data.get('cols', None)
+        _cols: object = data.get('columns', None)
         if _cols is None: # validate columns existence
-            raise ValueError('Failed to read Table Columns (`cols`)')
+            raise ValueError('Failed to read Table Columns (`columns`)')
         if not isinstance(_cols, list): # validate columns type
             raise TypeError(
-                'Table Columns (`cols`) expected a `list` type, got ' \
+                'Table Columns (`columns`) expected a `list` type, got ' \
                 + f'{type(_cols)}'
             )
         if len(_cols) < 1: # validate columns data
             raise ValueError(
-                'Table Columns (`cols`) must contain at least one column'
+                'Table Columns (`columns`) must contain at least one column'
             )
         cols: list[ORM_Column] = []
         for i, col in enumerate(_cols):
@@ -1245,17 +1245,17 @@ class ORM_View(ORM_TV):
             raise ValueError('View Description (`desc`) must not be empty')
 
         # get the columns data for the view
-        _cols: object = data.get('cols', None)
+        _cols: object = data.get('columns', None)
         if _cols is None: # validate columns existence
-            raise ValueError('Failed to read View Columns (`cols`)')
+            raise ValueError('Failed to read View Columns (`columns`)')
         if not isinstance(_cols, list): # validate columns type
             raise TypeError(
-                'View Columns (`cols`) expected a `list` type, got ' \
+                'View Columns (`columns`) expected a `list` type, got ' \
                 + f'{type(_cols)}'
             )
         if len(_cols) < 1: # validate columns data
             raise ValueError(
-                'View Columns (`cols`) must contain at least one column'
+                'View Columns (`columns`) must contain at least one column'
             )
         cols: list[ORM_Column] = []
         for i, col in enumerate(_cols):
