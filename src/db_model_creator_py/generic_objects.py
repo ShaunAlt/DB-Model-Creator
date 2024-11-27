@@ -22,6 +22,7 @@ from .errors import (
 # used for creating enumerators
 from enum import (
     Enum, # regular enumerator
+    EnumMeta,
     IntEnum, # enumerator for integers
 )
 
@@ -160,9 +161,29 @@ def to_str(obj: Any, lvl: 'VerbosityLevel') -> str:
 
 
 # =============================================================================
+# Generic Enum
+# =============================================================================
+class EnumParentMeta(EnumMeta):
+    '''
+    Generic Enum Meta
+    -
+    Contains additional functionality that other `Enum` classes require.
+    '''
+
+    # ===============
+    # Contains (`in`)
+    def __contains__(cls, item: object) -> bool:
+        try: cls(item)
+        except ValueError: return False
+        return True
+class EnumParent(Enum, metaclass=EnumParentMeta):
+    pass
+
+
+# =============================================================================
 # File Types Enum
 # =============================================================================
-class FileType(Enum):
+class FileType(EnumParent):
     '''
     File Types Enum
     -
@@ -183,7 +204,7 @@ class FileType(Enum):
 # =============================================================================
 # Method Types Enum
 # =============================================================================
-class MethodType(Enum):
+class MethodType(EnumParent):
     '''
     Method Types Enum
     -

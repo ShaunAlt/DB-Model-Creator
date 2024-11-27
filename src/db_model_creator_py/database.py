@@ -26,12 +26,22 @@ from .errors import (
 # generic objects
 from .generic_objects import (
     FileType, # supported file types
+    MethodType, # object method type
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
 )
 
+# object components
+from .object_components import (
+    ObjComp_Constant,
+    ObjComp_Method,
+    ObjComp_MethodParam,
+    ObjComp_Property,
+)
+
 # orm objects
 from .orm_objects import (
+    ORM_Column,
     ORM_Table, # orm table
     ORM_View, # orm view
 )
@@ -265,44 +275,16 @@ class Database(OBJ):
             )
         
         # set the database language
-        try:
-            data_lang_db: str = data.get('lang_db', '')
-            self._lang_db = None
-            for lang_db_option in LangDb:
-                if lang_db_option.value == data_lang_db:
-                    self._lang_db = lang_db_option
-                    break
-            else:
-                raise ValueError(
-                    'Database().Read_JSON() unable to identify Database ' \
-                    + f'Language from JSON `lang_db` data, got {data_lang_db}'
-                )
-        except:
-            raise ReadError(
-                'Database().Read_JSON() unable to read Database Language'
-            )
-        
-        # set the orm language
-        try:
-            data_lang_orm: str = data.get('lang_orm', '')
-            self._lang_orm = None
-            for lang_orm_option in LangOrm:
-                if lang_orm_option.value == data_lang_orm:
-                    self._lang_orm = lang_orm_option
-                    break
-            else:
-                raise ValueError(
-                    'Database().Read_JSON() unable to identify ORM Language ' \
-                    + f'from JSON `lang_orm` data, got {data_lang_orm}'
-                )
-        except:
-            raise ReadError(
-                'Database().Read_JSON() unable to read ORM Language'
-            )
-        
-        # create tables
+        self.SetLangDb(data.get('lang_db', None))
 
-        raise UndefFuncError('Database().Read_JSON() not defined')
+        # set the orm language
+        self.SetLangOrm(data.get('lang_orm', None))
+
+        # set the tables
+        self.SetTables(data.get('tables', None))
+
+        # set the views
+        self.SetViews(data.get('views', None))
 
     # ==============================
     # Read Database Model File - XML
@@ -357,6 +339,192 @@ class Database(OBJ):
             )
 
         raise UndefFuncError('Database().Read_YAML() not defined')
+    
+    # =====================
+    # Set Database Language
+    def SetLangDb(self, val: object) -> None:
+        '''
+        Set Database Language
+        -
+        Gets a value from the read file, and attempts to set the database
+        language from this value.
+
+        Parameters
+        -
+        - val : `object`
+            - The value to set the database language to.
+
+        Returns
+        -
+        None
+        '''
+
+        # validate the data exists
+        if val is None:
+            raise ValueError('Failed to read Database Language (`lang_db`)')
+
+        # validate the data is a string
+        if not isinstance(val, str):
+            raise TypeError(
+                'Database Language (`lang_db`) expected a `str` type, got ' \
+                + f'`{type(val)}`'
+            )
+        
+        # validate the data value
+        if val not in LangDb:
+            raise ValueError(
+                'Invalid Database Language (`lang_db`) - expected one of ' \
+                + f'`{[lang.value for lang in LangDb]!r}`, got `{val!r}`'
+            )
+
+        # set the database language
+        self._lang_db = LangDb(val)
+    
+    # ================
+    # Set ORM Language
+    def SetLangOrm(self, val: object) -> None:
+        '''
+        Set ORM Language
+        -
+        Gets a value from the read file, and attempts to set the ORM language
+        from this value.
+
+        Parameters
+        -
+        - val : `object`
+            - The value to set the ORM language to.
+
+        Returns
+        -
+        None
+        '''
+
+        # validate the data exists
+        if val is None:
+            raise ValueError('Failed to read ORM Language (`lang_orm`)')
+
+        # validate the data is a string
+        if not isinstance(val, str):
+            raise TypeError(
+                'ORM Language (`lang_orm`) expected a `str` type, got ' \
+                + f'`{type(val)}`'
+            )
+        
+        # validate the data value
+        if val not in LangOrm:
+            raise ValueError(
+                'Invalid ORM Language (`lang_orm`) - expected one of ' \
+                + f'`{[lang.value for lang in LangOrm]!r}`, got `{val!r}`'
+            )
+
+        # set the orm language
+        self._lang_orm = LangOrm(val)
+
+    # ==========
+    # Set Tables
+    def SetTables(self, val: object) -> None:
+        '''
+        Set Tables
+        -
+        Gets a value from the read file, and attempts to set the tables from
+        this value.
+
+        Parameters
+        -
+        - val : `object`
+            - The value to create the tables from.
+
+        Returns
+        -
+        None
+        '''
+
+        # validate the data exists
+        if val is None:
+            raise ValueError('Failed to read Tables (`tables`)')
+        
+        # validate the data is a list
+        if not isinstance(val, list):
+            raise TypeError(
+                'Tables (`tables`) expected a `list` type, got ' \
+                + f'`{type(val)}`'
+            )
+
+        # validate there are 1+ tables
+        if len(val) < 1:
+            raise ValueError(
+                'Tables (`tables`) must contain at least one table'
+            )
+
+        # set the tables
+        for i, table in enumerate(val):
+            # validate the table data is a dict
+            if not isinstance(table, dict):
+                raise TypeError(
+                    f'Table at index `{i}` expected a `dict` type, got ' \
+                    + f'`{type(table)}`'
+                )
+            
+            # create table
+            try:
+                self._tables.append(ORM_Table.FromDict(table))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create table at index `{i}`: {e!r}'
+                )
+
+    # =========
+    # Set Views
+    def SetViews(self, val: object) -> None:
+        '''
+        Set Views
+        -
+        Gets a value from the read file, and attempts to set the views from
+        this value.
+
+        Parameters
+        -
+        - val : `object`
+            - The value to create the views from.
+
+        Returns
+        -
+        None
+        '''
+
+        # validate the data exists
+        if val is None:
+            raise ValueError('Failed to read Views (`views`)')
+        
+        # validate the data is a list
+        if not isinstance(val, list):
+            raise TypeError(
+                'Views (`views`) expected a `list` type, got ' \
+                + f'`{type(val)}`'
+            )
+
+        # validate there are 1+ views
+        if len(val) < 1:
+            raise ValueError(
+                'Views (`views`) must contain at least one view'
+            )
+
+        # set the views
+        for i, view in enumerate(val):
+            # validate the view data is a dict
+            if not isinstance(view, dict):
+                raise TypeError(
+                    f'View at index `{i}` expected a `dict` type, got ' \
+                    + f'`{type(view)}`'
+                )
+            
+            # create view
+            try:
+                self._views.append(ORM_View.FromDict(view))
+            except Exception as e:
+                raise RuntimeError(
+                    f'View at index `{i}` failed to create: {e!r}'
+                )
 
     # ========
     # Validate

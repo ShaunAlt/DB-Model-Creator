@@ -63,6 +63,7 @@ class ORM(OBJ):
     -
     - __eq__(other) << equality check >>
     - Duplicate() : `ORM` << override >>
+    - FromDict(data) : `ORM` << class, abstract >>
     - GetData(lvl : VerbosityLevel) : `List<str>` << override >>
     - LoadData(...) << static >>
     - ORM(name : str, title : str, desc : str) << constructor >>
@@ -138,6 +139,31 @@ class ORM(OBJ):
             desc = self._desc.data
         )
     
+    # ===============================
+    # Method - Create from Dictionary
+    @classmethod
+    def FromDict(cls, data: dict) -> 'ORM':
+        '''
+        Create from Dictionary
+        -
+        Creates a new `ORM` object from a given dictionary.
+
+        Parametes
+        -
+        - data : `dict`
+            - Dictionary containing the data required to create the new `ORM`
+                object.
+
+        Returns
+        -
+        - `ORM`
+            - New `ORM` object from the dictionary data.
+        '''
+
+        raise AbstractError(
+            f'ORM.FromDict(data = {data}) not defined in {cls}'
+        )
+
     # =================
     # Method - Get Data
     def GetData(self, lvl: VerbosityLevel) -> List[str]:
@@ -407,6 +433,116 @@ class ORM_Column(ORM):
             unique = self._unique
         )
     
+    # ===============================
+    # Method - Create from Dictionary
+    @classmethod
+    def FromDict(cls, data: dict) -> 'ORM_Column':
+        # get the name of the column
+        _name: object = data.get('name', None)
+        if _name is None: # validate name existence
+            raise ValueError('Failed to read Column Name (`name`)')
+        if not isinstance(_name, str): # validate name type
+            raise TypeError(
+                'Column Name (`name`) expected a `str` type, got ' \
+                + f'{type(_name)}'
+            )
+        if _name == '': # validate name data
+            raise ValueError('Column Name (`name`) must not be empty')
+        
+        # get the type of the column
+        _type: object = data.get('type_', None)
+        if _type is None: # validate type existence
+            raise ValueError('Failed to read Column Type (`type_`)')
+        if not isinstance(_type, str): # validate type type
+            raise TypeError(
+                'Column Type (`type_`) expected a `str` type, got ' \
+                + f'{type(_type)}'
+            )
+        if _type == '': # validate type data
+            raise ValueError('Column Type (`type_`) must not be empty')
+        
+        # get the comment title of the column
+        _title: object = data.get('title', None)
+        if _title is None: # validate title existence
+            raise ValueError('Failed to read Column Title (`title`)')
+        if not isinstance(_title, str): # validate title type
+            raise TypeError(
+                'Column Title (`title`) expected a `str` type, got ' \
+                + f'{type(_title)}'
+            )
+        if _title == '': # validate title data
+            raise ValueError('Column Title (`title`) must not be empty')
+        
+        # get the description of the column
+        _desc: object = data.get('desc', None)
+        if _desc is None: # validate description existence
+            raise ValueError('Failed to read Column Description (`desc`)')
+        if not isinstance(_desc, str): # validate description type
+            raise TypeError(
+                'Column Description (`desc`) expected a `str` type, got ' \
+                + f'{type(_desc)}'
+            )
+        if _desc == '': # validate description data
+            raise ValueError('Column Description (`desc`) must not be empty')
+        
+        # get the nullable status of the column
+        _nullable: object = data.get('nullable', 'True')
+        if _nullable not in ['True', 'False']: # validate nullable value
+            raise ValueError(
+                'Column Nullable Status (`nullable`) expected a `str` value ' \
+                + f'of either "True" or "False", got {_nullable!r}'
+            )
+        _nullable = True if _nullable == 'True' else False
+
+        # get the primary key status of the column
+        _pk: object = data.get('pk', 'False')
+        if _pk not in ['True', 'False']: # validate pk value
+            raise ValueError(
+                'Column Primary Key Status (`pk`) expected a `str` value ' \
+                + f'of either "True" or "False", got {_pk!r}'
+            )
+        _pk = True if _pk == 'True' else False
+
+        # get the identity / auto-increment status of the column
+        _identity: object = data.get('identity', 'False')
+        if _identity not in ['True', 'False']: # validate identity value
+            raise ValueError(
+                'Column Identity / Auto-Increment Status (`identity`) ' \
+                + 'expected a `str` value of either "True" or "False", got ' \
+                + f'{_identity!r}'
+            )
+        _identity = True if _identity == 'True' else False
+
+        # get the unique status of the column
+        _unique: object = data.get('unique', 'False')
+        if _unique not in ['True', 'False']: # validate unique value
+            raise ValueError(
+                'Column Unique Key Status (`unique`) expected a `str` value ' \
+                + f'of either "True" or "False", got {_unique!r}'
+            )
+        _unique = True if _unique == 'True' else False
+
+        # get the foreign key status of the column
+        _fk: object = data.get('title', '')
+        if not isinstance(_fk, str): # validate title type
+            raise TypeError(
+                'Column Foreign Key Status (`fk`) expected a `str | None` ' \
+                + f'type, got {type(_fk)}'
+            )
+        
+        # create the ORM_Column object
+        return cls(
+            name = _name,
+            type_ = _type,
+            title = _title,
+            desc = _desc,
+            nullable = _nullable,
+            pk = _pk,
+            identity = _identity,
+            fk = _fk,
+            unique = _unique,
+        )
+
     # =================
     # Method - Get Data
     def GetData(self, lvl: VerbosityLevel) -> List[str]:
@@ -719,6 +855,196 @@ class ORM_Table(ORM_TV):
             props = [prop.Duplicate() for prop in self._props]
         )
     
+    # ===============================
+    # Method - Create from Dictionary
+    @classmethod
+    def FromDict(cls, data: dict) -> 'ORM_Column':
+        # get the name of the table orm object
+        _name: object = data.get('name', None)
+        if _name is None: # validate name existence
+            raise ValueError('Failed to read Table ORM Name (`name`)')
+        if not isinstance(_name, str): # validate name type
+            raise TypeError(
+                'Table ORM Name (`name`) expected a `str` type, got ' \
+                + f'{type(_name)}'
+            )
+        if _name == '': # validate name data
+            raise ValueError('Table ORM Name (`name`) must not be empty')
+
+        # get the name of the table (database name)
+        _tablename: object = data.get('tablename', None)
+        if _tablename is None: # validate tablename existence
+            raise ValueError(
+                'Failed to read Table Database Name (`tablename`)'
+            )
+        if not isinstance(_tablename, str): # validate tablename type
+            raise TypeError(
+                'Table Database Name (`tablename`) expected a `str` type, ' \
+                + f'got {type(_tablename)}'
+            )
+        if _tablename == '': # validate tablename data
+            raise ValueError(
+                'Table Database Name (`tablename`) must not be empty'
+            )
+        
+        # get the title of the table orm object
+        _title: object = data.get('title', None)
+        if _title is None: # validate title existence
+            raise ValueError('Failed to read Table Title (`title`)')
+        if not isinstance(_title, str): # validate title type
+            raise TypeError(
+                'Table Title (`title`) expected a `str` type, got ' \
+                + f'{type(_title)}'
+            )
+        if _title == '': # validate title data
+            raise ValueError('Table Title (`title`) must not be empty')
+        
+        # get the description of the table orm object
+        _desc: object = data.get('desc', None)
+        if _desc is None: # validate description existence
+            raise ValueError('Failed to read Table Description (`desc`)')
+        if not isinstance(_desc, str): # validate description type
+            raise TypeError(
+                'Table Description (`desc`) expected a `str` type, got ' \
+                + f'{type(_desc)}'
+            )
+        if _desc == '': # validate description data
+            raise ValueError('Table Description (`desc`) must not be empty')
+
+        # get the trigger-update flag for the table
+        _tu: object = data.get('trigger_update', None)
+        if _tu is None: # validate trigger-update flag existence
+            raise ValueError(
+                'Failed to read Table Trigger-Update Flag (`trigger_update`)'
+            )
+        if _tu not in ['True', 'False']: # validate trigger-update value
+            raise ValueError(
+                'Table Trigger-Update Flag (`trigger_update`) expected a ' \
+                + f'`str` value of either "True" or "False", got {_tu!r}'
+            )
+        _tu = True if _tu == 'True' else False
+
+        # get the columns data for the table
+        _cols: object = data.get('cols', None)
+        if _cols is None: # validate columns existence
+            raise ValueError('Failed to read Table Columns (`cols`)')
+        if not isinstance(_cols, list): # validate columns type
+            raise TypeError(
+                'Table Columns (`cols`) expected a `list` type, got ' \
+                + f'{type(_cols)}'
+            )
+        if len(_cols) < 1: # validate columns data
+            raise ValueError(
+                'Table Columns (`cols`) must contain at least one column'
+            )
+        cols: list[ORM_Column] = []
+        for i, col in _cols:
+            # validate column data is a dict
+            if not isinstance(col, dict):
+                raise TypeError(
+                    f'Column at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(col)}'
+                )
+            
+            # create column
+            try:
+                cols.append(ORM_Column.FromDict(col))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create column at index `{i}`: {e!r}'
+                )
+
+        # get the constants data for the table
+        _consts: object = data.get('constants', None)
+        if _consts is None: # validate constants existence
+            raise ValueError('Failed to read Table Constants (`constants`)')
+        if not isinstance(_consts, list): # validate constants type
+            raise TypeError(
+                'Table Constants (`constants`) expected a `list` type, got ' \
+                + f'{type(_consts)}'
+            )
+        consts: list[ObjComp_Constant] = []
+        for i, const in _consts:
+            # validate constant data is a dict
+            if not isinstance(const, dict):
+                raise TypeError(
+                    f'Constant at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(const)}'
+                )
+            
+            # create constant
+            try:
+                consts.append(ObjComp_Constant.FromDict(const))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create constant at index `{i}`: {e!r}'
+                )
+
+        # get the methods data for the table
+        _methods: object = data.get('methods', None)
+        if _methods is None: # validate methods existence
+            raise ValueError('Failed to read Table Methods (`methods`)')
+        if not isinstance(_methods, list): # validate methods type
+            raise TypeError(
+                'Table Methods (`methods`) expected a `list` type, got ' \
+                + f'{type(_methods)}'
+            )
+        methods: list[ObjComp_Method] = []
+        for i, method in _methods:
+            # validate method data is a dict
+            if not isinstance(method, dict):
+                raise TypeError(
+                    f'Method at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(method)}'
+                )
+            
+            # create method
+            try:
+                methods.append(ObjComp_Method.FromDict(method))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create method at index `{i}`: {e!r}'
+                )
+
+        # get the properties data for the table
+        _props: object = data.get('props', None)
+        if _props is None: # validate properties existence
+            raise ValueError('Failed to read Table Properties (`props`)')
+        if not isinstance(_props, list): # validate properties type
+            raise TypeError(
+                'Table Properties (`props`) expected a `list` type, got ' \
+                + f'{type(_props)}'
+            )
+        props: list[ObjComp_Property] = []
+        for i, prop in _props:
+            # validate property data is a dict
+            if not isinstance(prop, dict):
+                raise TypeError(
+                    f'Property at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(prop)}'
+                )
+            
+            # create property
+            try:
+                props.append(ObjComp_Property.FromDict(prop))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create property at index `{i}`: {e!r}'
+                )
+            
+        # create ORM_Table object
+        return cls(
+            name = _name,
+            tablename = _tablename,
+            title = _title,
+            desc = _desc,
+            trigger_update = _tu,
+            cols = cols,
+            constants = consts,
+            methods = methods,
+            props = props
+        )
+
     # =================
     # Method - Get Data
     def GetData(self, lvl: VerbosityLevel) -> List[str]:
@@ -862,6 +1188,182 @@ class ORM_View(ORM_TV):
             props = [prop.Duplicate() for prop in self._props]
         )
     
+    # ===============================
+    # Method - Create from Dictionary
+    @classmethod
+    def FromDict(cls, data: dict) -> 'ORM_Column':
+        # get the name of the table orm object
+        _name: object = data.get('name', None)
+        if _name is None: # validate name existence
+            raise ValueError('Failed to read Table ORM Name (`name`)')
+        if not isinstance(_name, str): # validate name type
+            raise TypeError(
+                'Table ORM Name (`name`) expected a `str` type, got ' \
+                + f'{type(_name)}'
+            )
+        if _name == '': # validate name data
+            raise ValueError('Table ORM Name (`name`) must not be empty')
+
+        # get the name of the table (database name)
+        _tablename: object = data.get('tablename', None)
+        if _tablename is None: # validate tablename existence
+            raise ValueError(
+                'Failed to read Table Database Name (`tablename`)'
+            )
+        if not isinstance(_tablename, str): # validate tablename type
+            raise TypeError(
+                'Table Database Name (`tablename`) expected a `str` type, ' \
+                + f'got {type(_tablename)}'
+            )
+        if _tablename == '': # validate tablename data
+            raise ValueError(
+                'Table Database Name (`tablename`) must not be empty'
+            )
+        
+        # get the title of the table orm object
+        _title: object = data.get('title', None)
+        if _title is None: # validate title existence
+            raise ValueError('Failed to read Table Title (`title`)')
+        if not isinstance(_title, str): # validate title type
+            raise TypeError(
+                'Table Title (`title`) expected a `str` type, got ' \
+                + f'{type(_title)}'
+            )
+        if _title == '': # validate title data
+            raise ValueError('Table Title (`title`) must not be empty')
+        
+        # get the description of the table orm object
+        _desc: object = data.get('desc', None)
+        if _desc is None: # validate description existence
+            raise ValueError('Failed to read Table Description (`desc`)')
+        if not isinstance(_desc, str): # validate description type
+            raise TypeError(
+                'Table Description (`desc`) expected a `str` type, got ' \
+                + f'{type(_desc)}'
+            )
+        if _desc == '': # validate description data
+            raise ValueError('Table Description (`desc`) must not be empty')
+
+        # get the columns data for the table
+        _cols: object = data.get('cols', None)
+        if _cols is None: # validate columns existence
+            raise ValueError('Failed to read Table Columns (`cols`)')
+        if not isinstance(_cols, list): # validate columns type
+            raise TypeError(
+                'Table Columns (`cols`) expected a `list` type, got ' \
+                + f'{type(_cols)}'
+            )
+        if len(_cols) < 1: # validate columns data
+            raise ValueError(
+                'Table Columns (`cols`) must contain at least one column'
+            )
+        cols: list[ORM_Column] = []
+        for i, col in _cols:
+            # validate column data is a dict
+            if not isinstance(col, dict):
+                raise TypeError(
+                    f'Column at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(col)}'
+                )
+            
+            # create column
+            try:
+                cols.append(ORM_Column.FromDict(col))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create column at index `{i}`: {e!r}'
+                )
+
+        # get the constants data for the table
+        _consts: object = data.get('constants', None)
+        if _consts is None: # validate constants existence
+            raise ValueError('Failed to read Table Constants (`constants`)')
+        if not isinstance(_consts, list): # validate constants type
+            raise TypeError(
+                'Table Constants (`constants`) expected a `list` type, got ' \
+                + f'{type(_consts)}'
+            )
+        consts: list[ObjComp_Constant] = []
+        for i, const in _consts:
+            # validate constant data is a dict
+            if not isinstance(const, dict):
+                raise TypeError(
+                    f'Constant at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(const)}'
+                )
+            
+            # create constant
+            try:
+                consts.append(ObjComp_Constant.FromDict(const))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create constant at index `{i}`: {e!r}'
+                )
+
+        # get the methods data for the table
+        _methods: object = data.get('methods', None)
+        if _methods is None: # validate methods existence
+            raise ValueError('Failed to read Table Methods (`methods`)')
+        if not isinstance(_methods, list): # validate methods type
+            raise TypeError(
+                'Table Methods (`methods`) expected a `list` type, got ' \
+                + f'{type(_methods)}'
+            )
+        methods: list[ObjComp_Method] = []
+        for i, method in _methods:
+            # validate method data is a dict
+            if not isinstance(method, dict):
+                raise TypeError(
+                    f'Method at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(method)}'
+                )
+            
+            # create method
+            try:
+                methods.append(ObjComp_Method.FromDict(method))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create method at index `{i}`: {e!r}'
+                )
+
+        # get the properties data for the table
+        _props: object = data.get('props', None)
+        if _props is None: # validate properties existence
+            raise ValueError('Failed to read Table Properties (`props`)')
+        if not isinstance(_props, list): # validate properties type
+            raise TypeError(
+                'Table Properties (`props`) expected a `list` type, got ' \
+                + f'{type(_props)}'
+            )
+        props: list[ObjComp_Property] = []
+        for i, prop in _props:
+            # validate property data is a dict
+            if not isinstance(prop, dict):
+                raise TypeError(
+                    f'Property at index `{i}` expected a `dict` type, got ' \
+                    + f'{type(prop)}'
+                )
+            
+            # create property
+            try:
+                props.append(ObjComp_Property.FromDict(prop))
+            except Exception as e:
+                raise RuntimeError(
+                    f'Failed to create property at index `{i}`: {e!r}'
+                )
+            
+        # create ORM_Table object
+        return cls(
+            name = _name,
+            tablename = _tablename,
+            title = _title,
+            desc = _desc,
+            cols = cols,
+            constants = consts,
+            methods = methods,
+            props = props
+        )
+
     # =================
     # Method - Get Data
     def GetData(self, lvl: VerbosityLevel) -> List[str]:

@@ -15,15 +15,15 @@ package.
 # =============================================================================
 
 # used for creating enumerators
-from enum import (
-    Enum, # regular enumerator
+from .generic_objects import (
+    EnumParent, # parent enum class
 )
 
 
 # =============================================================================
 # Supported Database Languages Enum
 # =============================================================================
-class LangDb(Enum):
+class LangDb(EnumParent):
     '''
     Supported Database Languages Enum
     -
@@ -38,7 +38,7 @@ class LangDb(Enum):
 # =============================================================================
 # Supported ORM Languages Enum
 # =============================================================================
-class LangOrm(Enum):
+class LangOrm(EnumParent):
     '''
     Supported ORM Languages Enum
     -
