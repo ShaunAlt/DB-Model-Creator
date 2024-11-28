@@ -324,8 +324,100 @@ class Database(OBJ):
                 + f'{self._file_type!r}`'
             )
 
-        raise UndefFuncError('Database().Read_XML() not defined')
+        # import yaml module
+        import xmltodict # type: ignore
 
+        # read file
+        try:
+            with open(self._file_name, 'r') as file:
+                data = xmltodict.parse(
+                    ''.join(file.readlines()[1:]) # skip xml declaration
+                )['database'] # get database data
+        except:
+            raise ReadError(
+                f'Database().Read_XML() could not parse file ' \
+                + f'`{self._file_name}`'
+            )
+        
+        print(f'Original: {data}')
+
+        # convert data into required formats
+        for key, subkey in [('tables', 'table'), ('views', 'view')]:
+            # validate it is a dict with the required sub-key
+            if not (
+                    (isinstance(data.get(key, None), dict))
+                    and (subkey in data[key])
+            ): continue
+
+            # convert tables and views into lists
+            data[key] = data[key][subkey]
+
+            # only continue if this is now a list
+            if not isinstance(data[key], list): continue
+
+            # convert data in each into lists
+            for table_view in data[key]:
+                # skip if not a dict
+                if not isinstance(table_view, dict): continue
+
+                # go through columns, constants, properties
+                for key2, subkey2 in [
+                        ('columns', 'column'),
+                        ('constants', 'constant'),
+                        ('props', 'prop'),
+                ]:
+                    if (
+                            (key2 in table_view)
+                            and (isinstance(table_view[key2], dict))
+                            and (subkey2 in table_view[key2])
+                    ):
+                        if isinstance(table_view[key2][subkey2], list):
+                            table_view[key2] = table_view[key2][subkey2]
+                        else:
+                            table_view[key2] = [table_view[key2][subkey2]]
+
+                # convert methods into lists
+                if (
+                        ('methods' in table_view)
+                        and (isinstance(table_view['methods'], dict))
+                        and ('method' in table_view['methods'])
+                ):
+                    if isinstance(table_view['methods']['method'], list):
+                        table_view['methods'] \
+                            = table_view['methods']['method']
+                    else:
+                        table_view['methods'] \
+                            = [table_view['methods']['method']]
+
+                    # convert parameters into lists
+                    if isinstance(table_view['methods'], list):
+                        for method in table_view['methods']:
+                            if (
+                                    ('params' in method)
+                                    and (isinstance(method['params'], dict))
+                                    and ('param' in method['params'])
+                            ):
+                                if isinstance(method['params']['param'], list):
+                                    method['params'] \
+                                        = method['params']['param']
+                                else:
+                                    method['params'] \
+                                        = [method['params']['param']]
+
+        print(f'Parsed: {data}')
+        
+        # set the database language
+        self.SetLangDb(data.get('lang_db', None))
+
+        # set the orm language
+        self.SetLangOrm(data.get('lang_orm', None))
+
+        # set the tables
+        self.SetTables(data.get('tables', None))
+
+        # set the views
+        self.SetViews(data.get('views', None))
+    
     # ===============================
     # Read Database Model File - YAML
     def Read_YAML(self) -> None:

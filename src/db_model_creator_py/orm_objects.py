@@ -961,8 +961,8 @@ class ORM_Table(ORM_TV):
 
         # get the constants data for the table
         _consts: object = data.get('constants', None)
-        if _consts is None: # validate constants existence
-            raise ValueError('Failed to read Table Constants (`constants`)')
+        if _consts is None: # convert to empty list
+            _consts = []
         if not isinstance(_consts, list): # validate constants type
             raise TypeError(
                 'Table Constants (`constants`) expected a `list` type, got ' \
@@ -987,8 +987,8 @@ class ORM_Table(ORM_TV):
 
         # get the methods data for the table
         _methods: object = data.get('methods', None)
-        if _methods is None: # validate methods existence
-            raise ValueError('Failed to read Table Methods (`methods`)')
+        if _methods is None: # convert to empty list
+            _methods = []
         if not isinstance(_methods, list): # validate methods type
             raise TypeError(
                 'Table Methods (`methods`) expected a `list` type, got ' \
@@ -1013,8 +1013,8 @@ class ORM_Table(ORM_TV):
 
         # get the properties data for the table
         _props: object = data.get('props', None)
-        if _props is None: # validate properties existence
-            raise ValueError('Failed to read Table Properties (`props`)')
+        if _props is None: # convert to empty list
+            _props = []
         if not isinstance(_props, list): # validate properties type
             raise TypeError(
                 'Table Properties (`props`) expected a `list` type, got ' \
@@ -1281,8 +1281,8 @@ class ORM_View(ORM_TV):
 
         # get the constants data for the view
         _consts: object = data.get('constants', None)
-        if _consts is None: # validate constants existence
-            raise ValueError('Failed to read View Constants (`constants`)')
+        if _consts is None: # convert to empty list
+            _consts = []
         if not isinstance(_consts, list): # validate constants type
             raise TypeError(
                 'View Constants (`constants`) expected a `list` type, got ' \
@@ -1307,8 +1307,8 @@ class ORM_View(ORM_TV):
 
         # get the methods data for the view
         _methods: object = data.get('methods', None)
-        if _methods is None: # validate methods existence
-            raise ValueError('Failed to read View Methods (`methods`)')
+        if _methods is None: # convert to empty list
+            _methods = []
         if not isinstance(_methods, list): # validate methods type
             raise TypeError(
                 'View Methods (`methods`) expected a `list` type, got ' \
@@ -1333,8 +1333,8 @@ class ORM_View(ORM_TV):
 
         # get the properties data for the view
         _props: object = data.get('props', None)
-        if _props is None: # validate properties existence
-            raise ValueError('Failed to read View Properties (`props`)')
+        if _props is None: # convert to empty list
+            _props = []
         if not isinstance(_props, list): # validate properties type
             raise TypeError(
                 'View Properties (`props`) expected a `list` type, got ' \

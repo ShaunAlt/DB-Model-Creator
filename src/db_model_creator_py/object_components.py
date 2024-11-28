@@ -653,8 +653,8 @@ class ObjComp_Method(ObjComp):
         
         # get the parameters of the method
         _params: object = data.get('params', None)
-        if _params is None: # validate parameters existence
-            raise ValueError('Failed to read Method Parameters (`params`)')
+        if _params is None: # convert to empty list
+            _params = []
         if not isinstance(_params, list): # validate parameters type
             raise TypeError(
                 'Method Parameters (`params`) expected a `list` type, got ' \
