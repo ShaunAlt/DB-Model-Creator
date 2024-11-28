@@ -879,76 +879,88 @@ class ORM_Table(ORM_TV):
         _tablename: object = data.get('tablename', None)
         if _tablename is None: # validate tablename existence
             raise ValueError(
-                'Failed to read Table Database Name (`tablename`)'
+                f'Failed to read Table "{_name}" Database Name (`tablename`)'
             )
         if not isinstance(_tablename, str): # validate tablename type
             raise TypeError(
-                'Table Database Name (`tablename`) expected a `str` type, ' \
-                + f'got {type(_tablename)}'
+                f'Table "{_name}" Database Name (`tablename`) expected a ' \
+                + f'`str` type, got {type(_tablename)}'
             )
         if _tablename == '': # validate tablename data
             raise ValueError(
-                'Table Database Name (`tablename`) must not be empty'
+                f'Table "{_name}" Database Name (`tablename`) must not be ' \
+                + 'empty'
             )
         
         # get the title of the table orm object
         _title: object = data.get('title', None)
         if _title is None: # validate title existence
-            raise ValueError('Failed to read Table Title (`title`)')
+            raise ValueError(f'Failed to read Table "{_name}" Title (`title`)')
         if not isinstance(_title, str): # validate title type
             raise TypeError(
-                'Table Title (`title`) expected a `str` type, got ' \
-                + f'{type(_title)}'
+                f'Table "{_name}" Title (`title`) expected a `str` type, got' \
+                + f' {type(_title)}'
             )
         if _title == '': # validate title data
-            raise ValueError('Table Title (`title`) must not be empty')
+            raise ValueError(
+                f'Table "{_name}" Title (`title`) must not be empty'
+            )
         
         # get the description of the table orm object
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
-            raise ValueError('Failed to read Table Description (`desc`)')
+            raise ValueError(
+                f'Failed to read Table "{_name}" Description (`desc`)'
+            )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'Table Description (`desc`) expected a `str` type, got ' \
-                + f'{type(_desc)}'
+                f'Table "{_name}" Description (`desc`) expected a `str` ' \
+                + f'type, got {type(_desc)}'
             )
         if _desc == '': # validate description data
-            raise ValueError('Table Description (`desc`) must not be empty')
+            raise ValueError(
+                f'Table "{_name}" Description (`desc`) must not be empty'
+            )
 
         # get the trigger-update flag for the table
         _tu: object = data.get('trigger_update', None)
         if _tu is None: # validate trigger-update flag existence
             raise ValueError(
-                'Failed to read Table Trigger-Update Flag (`trigger_update`)'
+                f'Failed to read Table "{_name}" Trigger-Update Flag ' \
+                + '(`trigger_update`)'
             )
         _tu = str(_tu)
         if _tu not in ['True', 'False']: # validate trigger-update value
             raise ValueError(
-                'Table Trigger-Update Flag (`trigger_update`) expected a ' \
-                + f'`str` value of either "True" or "False", got {_tu!r}'
+                f'Table "{_name}" Trigger-Update Flag (`trigger_update`) ' \
+                + 'expected a `str` value of either "True" or "False", got ' \
+                + f'{_tu!r}'
             )
         _tu = True if _tu == 'True' else False
 
         # get the columns data for the table
         _cols: object = data.get('columns', None)
         if _cols is None: # validate columns existence
-            raise ValueError('Failed to read Table Columns (`columns`)')
+            raise ValueError(
+                f'Failed to read Table "{_name}" Columns (`columns`)'
+            )
         if not isinstance(_cols, list): # validate columns type
             raise TypeError(
-                'Table Columns (`columns`) expected a `list` type, got ' \
-                + f'{type(_cols)}'
+                f'Table "{_name}" Columns (`columns`) expected a `list` ' \
+                + f'type, got {type(_cols)}'
             )
         if len(_cols) < 1: # validate columns data
             raise ValueError(
-                'Table Columns (`columns`) must contain at least one column'
+                f'Table "{_name}" Columns (`columns`) must contain at least ' \
+                + 'one column'
             )
         cols: list[ORM_Column] = []
         for i, col in enumerate(_cols):
             # validate column data is a dict
             if not isinstance(col, dict):
                 raise TypeError(
-                    f'Column at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(col)}'
+                    f'Table "{_name}" column at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(col)}'
                 )
             
             # create column
@@ -956,7 +968,8 @@ class ORM_Table(ORM_TV):
                 cols.append(ORM_Column.FromDict(col))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create column at index `{i}`: {e!r}'
+                    f'Table "{_name}" failed to create column at index `{i}`' \
+                    + f': {e!r}'
                 )
 
         # get the constants data for the table
@@ -965,16 +978,16 @@ class ORM_Table(ORM_TV):
             _consts = []
         if not isinstance(_consts, list): # validate constants type
             raise TypeError(
-                'Table Constants (`constants`) expected a `list` type, got ' \
-                + f'{type(_consts)}'
+                f'Table "{_name}" Constants (`constants`) expected a `list` ' \
+                + f'type, got {type(_consts)}'
             )
         consts: list[ObjComp_Constant] = []
         for i, const in enumerate(_consts):
             # validate constant data is a dict
             if not isinstance(const, dict):
                 raise TypeError(
-                    f'Constant at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(const)}'
+                    f'Table "{_name}" constant at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(const)}'
                 )
             
             # create constant
@@ -982,7 +995,8 @@ class ORM_Table(ORM_TV):
                 consts.append(ObjComp_Constant.FromDict(const))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create constant at index `{i}`: {e!r}'
+                    f'Table "{_name}" failed to create constant at index ' \
+                    + f'`{i}`: {e!r}'
                 )
 
         # get the methods data for the table
@@ -991,16 +1005,16 @@ class ORM_Table(ORM_TV):
             _methods = []
         if not isinstance(_methods, list): # validate methods type
             raise TypeError(
-                'Table Methods (`methods`) expected a `list` type, got ' \
-                + f'{type(_methods)}'
+                f'Table "{_name}" methods (`methods`) expected a `list` ' \
+                + f'type, got {type(_methods)}'
             )
         methods: list[ObjComp_Method] = []
         for i, method in enumerate(_methods):
             # validate method data is a dict
             if not isinstance(method, dict):
                 raise TypeError(
-                    f'Method at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(method)}'
+                    f'Table "{_name}" method at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(method)}'
                 )
             
             # create method
@@ -1008,25 +1022,25 @@ class ORM_Table(ORM_TV):
                 methods.append(ObjComp_Method.FromDict(method))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create method at index `{i}`: {e!r}'
+                    f'Table "{_name}" failed to create method at index `{i}`' \
+                    + f': {e!r}'
                 )
-
         # get the properties data for the table
         _props: object = data.get('props', None)
         if _props is None: # convert to empty list
             _props = []
         if not isinstance(_props, list): # validate properties type
             raise TypeError(
-                'Table Properties (`props`) expected a `list` type, got ' \
-                + f'{type(_props)}'
+                f'Table "{_name}" properties (`props`) expected a `list` ' \
+                + f'type, got {type(_props)}'
             )
         props: list[ObjComp_Property] = []
         for i, prop in enumerate(_props):
             # validate property data is a dict
             if not isinstance(prop, dict):
                 raise TypeError(
-                    f'Property at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(prop)}'
+                    f'Table  "{_name}" property at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(prop)}'
                 )
             
             # create property
@@ -1034,7 +1048,8 @@ class ORM_Table(ORM_TV):
                 props.append(ObjComp_Property.FromDict(prop))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create property at index `{i}`: {e!r}'
+                    f'Table "{_name}" failed to create property at index ' \
+                    + f'`{i}`: {e!r}'
                 )
             
         # create ORM_Table object
@@ -1213,62 +1228,71 @@ class ORM_View(ORM_TV):
         _viewname: object = data.get('viewname', None)
         if _viewname is None: # validate viewname existence
             raise ValueError(
-                'Failed to read View Database Name (`viewname`)'
+                f'Failed to read View "{_name}" Database Name (`viewname`)'
             )
         if not isinstance(_viewname, str): # validate viewname type
             raise TypeError(
-                'View Database Name (`viewname`) expected a `str` type, ' \
-                + f'got {type(_viewname)}'
+                f'View "{_name}" Database Name (`viewname`) expected a `str`' \
+                + f' type, got {type(_viewname)}'
             )
         if _viewname == '': # validate viewname data
             raise ValueError(
-                'View Database Name (`viewname`) must not be empty'
+                f'View "{_name}" Database Name (`viewname`) must not be empty'
             )
         
         # get the title of the view orm object
         _title: object = data.get('title', None)
         if _title is None: # validate title existence
-            raise ValueError('Failed to read View Title (`title`)')
+            raise ValueError(f'Failed to read View "{_name}" Title (`title`)')
         if not isinstance(_title, str): # validate title type
             raise TypeError(
-                'View Title (`title`) expected a `str` type, got ' \
+                f'View "{_name}" Title (`title`) expected a `str` type, got ' \
                 + f'{type(_title)}'
             )
         if _title == '': # validate title data
-            raise ValueError('View Title (`title`) must not be empty')
+            raise ValueError(
+                f'View "{_name}" Title (`title`) must not be empty'
+            )
         
         # get the description of the view orm object
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
-            raise ValueError('Failed to read View Description (`desc`)')
+            raise ValueError(
+                f'Failed to read View "{_name}" Description (`desc`)'
+            )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'View Description (`desc`) expected a `str` type, got ' \
-                + f'{type(_desc)}'
+                f'View "{_name}" Description (`desc`) expected a `str` type,' \
+                + f' got {type(_desc)}'
             )
         if _desc == '': # validate description data
-            raise ValueError('View Description (`desc`) must not be empty')
+            raise ValueError(
+                f'View "{_name}" Description (`desc`) must not be empty'
+            )
 
         # get the columns data for the view
         _cols: object = data.get('columns', None)
         if _cols is None: # validate columns existence
-            raise ValueError('Failed to read View Columns (`columns`)')
+            raise ValueError(
+                f'Failed to read View "{_name}" Columns (`columns`)'
+            )
         if not isinstance(_cols, list): # validate columns type
             raise TypeError(
-                'View Columns (`columns`) expected a `list` type, got ' \
-                + f'{type(_cols)}'
+                f'View "{_name}" Columns (`columns`) expected a `list` type,' \
+                + f' got {type(_cols)}'
             )
         if len(_cols) < 1: # validate columns data
             raise ValueError(
-                'View Columns (`columns`) must contain at least one column'
+                f'View "{_name}" Columns (`columns`) must contain at least ' \
+                + 'one column'
             )
         cols: list[ORM_Column] = []
         for i, col in enumerate(_cols):
             # validate column data is a dict
             if not isinstance(col, dict):
                 raise TypeError(
-                    f'Column at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(col)}'
+                    f'View "{_name}" column at index `{i}` expected a `dict`' \
+                    + f'type, got {type(col)}'
                 )
             
             # create column
@@ -1276,7 +1300,8 @@ class ORM_View(ORM_TV):
                 cols.append(ORM_Column.FromDict(col))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create column at index `{i}`: {e!r}'
+                    f'View "{_name}" failed to create column at index `{i}`:' \
+                    + f'{e!r}'
                 )
 
         # get the constants data for the view
@@ -1285,16 +1310,16 @@ class ORM_View(ORM_TV):
             _consts = []
         if not isinstance(_consts, list): # validate constants type
             raise TypeError(
-                'View Constants (`constants`) expected a `list` type, got ' \
-                + f'{type(_consts)}'
+                f'View "{_name}" constants (`constants`) expected a `list` ' \
+                + f'type, got {type(_consts)}'
             )
         consts: list[ObjComp_Constant] = []
         for i, const in enumerate(_consts):
             # validate constant data is a dict
             if not isinstance(const, dict):
                 raise TypeError(
-                    f'Constant at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(const)}'
+                    f'View "{_name}" constant at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(const)}'
                 )
             
             # create constant
@@ -1302,7 +1327,8 @@ class ORM_View(ORM_TV):
                 consts.append(ObjComp_Constant.FromDict(const))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create constant at index `{i}`: {e!r}'
+                    f'View "{_name}" failed to create constant at index ' \
+                    + f'`{i}`: {e!r}'
                 )
 
         # get the methods data for the view
@@ -1311,16 +1337,16 @@ class ORM_View(ORM_TV):
             _methods = []
         if not isinstance(_methods, list): # validate methods type
             raise TypeError(
-                'View Methods (`methods`) expected a `list` type, got ' \
-                + f'{type(_methods)}'
+                f'View "{_name}" Methods (`methods`) expected a `list` type,' \
+                + f'got {type(_methods)}'
             )
         methods: list[ObjComp_Method] = []
         for i, method in enumerate(_methods):
             # validate method data is a dict
             if not isinstance(method, dict):
                 raise TypeError(
-                    f'Method at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(method)}'
+                    f'View "{_name}" method at index `{i}` expected a `dict`' \
+                    + f'type, got {type(method)}'
                 )
             
             # create method
@@ -1328,7 +1354,8 @@ class ORM_View(ORM_TV):
                 methods.append(ObjComp_Method.FromDict(method))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create method at index `{i}`: {e!r}'
+                    f'View "{_name}" failed to create method at index `{i}`:' \
+                    + f'{e!r}'
                 )
 
         # get the properties data for the view
@@ -1337,16 +1364,16 @@ class ORM_View(ORM_TV):
             _props = []
         if not isinstance(_props, list): # validate properties type
             raise TypeError(
-                'View Properties (`props`) expected a `list` type, got ' \
-                + f'{type(_props)}'
+                f'View  "{_name}" properties (`props`) expected a `list` ' \
+                + f'type, got {type(_props)}'
             )
         props: list[ObjComp_Property] = []
         for i, prop in enumerate(_props):
             # validate property data is a dict
             if not isinstance(prop, dict):
                 raise TypeError(
-                    f'Property at index `{i}` expected a `dict` type, got ' \
-                    + f'{type(prop)}'
+                    f'View "{_name}" property at index `{i}` expected a ' \
+                    + f'`dict` type, got {type(prop)}'
                 )
             
             # create property
@@ -1354,7 +1381,8 @@ class ORM_View(ORM_TV):
                 props.append(ObjComp_Property.FromDict(prop))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create property at index `{i}`: {e!r}'
+                    f'View "{_name}" failed to create property at index ' \
+                    + f'`{i}`: {e!r}'
                 )
             
         # create ORM_View object

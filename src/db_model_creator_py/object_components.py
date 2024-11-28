@@ -403,45 +403,57 @@ class ObjComp_Constant(ObjComp):
         # get the type of the constant
         _type: object = data.get('type_', None)
         if _type is None: # validate type existence
-            raise ValueError('Failed to read Constant Data Type (`type_`)')
+            raise ValueError(
+                f'Failed to read Constant "{_name}" Data Type (`type_`)'
+            )
         if not isinstance(_type, str): # validate type type
             raise TypeError(
-                'Constant Data Type (`type_`) expected a `str` type, got ' \
-                + f'{type(_type)}'
+                f'Constant "{_name}" Data Type (`type_`) expected a `str` ' \
+                + f'type, got {type(_type)}'
             )
         if _type == '': # validate type data
-            raise ValueError('Constant Data Type (`type_`) must not be empty')
+            raise ValueError(
+                f'Constant "{_name}" Data Type (`type_`) must not be empty'
+            )
         
         # get the desc of the constant
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
-            raise ValueError('Failed to read Constant Description (`desc`)')
+            raise ValueError(
+                f'Failed to read Constant "{_name}" Description (`desc`)'
+            )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'Constant Description (`desc`) expected a `str` type, got ' \
-                + f'{type(_desc)}'
+                f'Constant "{_name}" Description (`desc`) expected a `str` ' \
+                + f'type, got {type(_desc)}'
             )
         if _desc == '': # validate description data
-            raise ValueError('Constant Description (`desc`) must not be empty')
+            raise ValueError(
+                f'Constant "{_name}" Description (`desc`) must not be empty'
+            )
         
         # get the title of the constant
         _title: object = data.get('title', None)
         if _title is None: # validate title existence
-            raise ValueError('Failed to read Constant Title (`title`)')
+            raise ValueError(
+                f'Failed to read Constant "{_name}" Title (`title`)'
+            )
         if not isinstance(_title, str): # validate title type
             raise TypeError(
-                'Constant Title (`title`) expected a `str` type, got ' \
-                + f'{type(_title)}'
+                f'Constant "{_name}" Title (`title`) expected a `str` type, ' \
+                + f'got {type(_title)}'
             )
         if _title == '': # validate title data
-            raise ValueError('Constant Title (`title`) must not be empty')
+            raise ValueError(
+                f'Constant "{_name}" Title (`title`) must not be empty'
+            )
         
         # get the default value of the constant
         _default: object = data.get('default', '')
         if not isinstance(_default, str): # validate default value type
             raise TypeError(
-                'Constant Default Value (`default`) expected a `str` type, ' \
-                + f'got {type(_default)}'
+                f'Constant "{_name}" Default Value (`default`) expected a ' \
+                + f'`str` type, got {type(_default)}'
             )
         
         return cls(
@@ -604,50 +616,63 @@ class ObjComp_Method(ObjComp):
         # get the type of the method
         _type: object = data.get('type_', None)
         if _type is None: # validate type existence
-            raise ValueError('Failed to read Method Data Type (`type_`)')
+            raise ValueError(
+                f'Failed to read Method "{_name}" Data Type (`type_`)'
+            )
         if not isinstance(_type, str): # validate type type
             raise TypeError(
-                'Method Data Type (`type_`) expected a `str` type, got ' \
-                + f'{type(_type)}'
+                f'Method "{_name}" Data Type (`type_`) expected a `str` ' \
+                + f'type, got {type(_type)}'
             )
         if _type == '': # validate type data
-            raise ValueError('Method Data Type (`type_`) must not be empty')
+            raise ValueError(
+                f'Method "{_name}" Data Type (`type_`) must not be empty'
+            )
         
         # get the desc of the method
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
-            raise ValueError('Failed to read Method Description (`desc`)')
+            raise ValueError(
+                f'Failed to read Method "{_name}" Description (`desc`)'
+            )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'Method Description (`desc`) expected a `str` type, got ' \
-                + f'{type(_desc)}'
+                f'Method "{_name}" Description (`desc`) expected a `str` ' \
+                + f'type, got {type(_desc)}'
             )
         if _desc == '': # validate description data
-            raise ValueError('Method Description (`desc`) must not be empty')
+            raise ValueError(
+                f'Method "{_name}" Description (`desc`) must not be empty'
+            )
         
         # get the title of the method
         _title: object = data.get('title', None)
         if _title is None: # validate title existence
-            raise ValueError('Failed to read Method Title (`title`)')
+            raise ValueError(
+                f'Failed to read Method "{_name}" Title (`title`)'
+            )
         if not isinstance(_title, str): # validate title type
             raise TypeError(
-                'Method Title (`title`) expected a `str` type, got ' \
-                + f'{type(_title)}'
+                f'Method "{_name}" Title (`title`) expected a `str` type, ' \
+                + f'got {type(_title)}'
             )
         if _title == '': # validate title data
-            raise ValueError('Method Title (`title`) must not be empty')
+            raise ValueError(
+                f'Method "{_name}" Title (`title`) must not be empty'
+            )
         
         # get the method type of the method
         _methodtype: object = data.get('methodtype', 'instance')
         if not isinstance(_methodtype, str): # validate method type type
             raise TypeError(
-                'Method Type (`methodtype`) expected a `str` type, got ' \
-                + f'{type(_methodtype)}'
+                f'Method "{_name}" Type (`methodtype`) expected a `str` ' \
+                + f'type, got {type(_methodtype)}'
             )
         if _methodtype not in MethodType: # validate method type data
             raise ValueError(
-                'Invalid Method Type (`methodtype`) - expected on of ' \
-                + f'{[mt.value for mt in MethodType]!r}, got `{_methodtype!r}`'
+                f'Invalid Method "{_name}" Type (`methodtype`) - expected on' \
+                + f' of {[mt.value for mt in MethodType]!r}, got ' \
+                + f'`{_methodtype!r}`'
             )
         _methodtype = MethodType(_methodtype)
         
@@ -657,16 +682,16 @@ class ObjComp_Method(ObjComp):
             _params = []
         if not isinstance(_params, list): # validate parameters type
             raise TypeError(
-                'Method Parameters (`params`) expected a `list` type, got ' \
-                + f'{type(_params)}'
+                f'Method "{_name}" Parameters (`params`) expected a `list` ' \
+                + f'type, got {type(_params)}'
             )
         params: list[ObjComp_MethodParam] = []
         for i, param in enumerate(_params):
             # validate parameter data is a dict
             if not isinstance(param, dict):
                 raise TypeError(
-                    f'Method Parameter at index {i} expected a `dict` type, ' \
-                    + f'got {type(param)}'
+                    f'Method "{_name}" method parameter at index {i} ' \
+                    + f'expected a `dict` type, got {type(param)}'
                 )
             
             # create parameter
@@ -674,24 +699,25 @@ class ObjComp_Method(ObjComp):
                 params.append(ObjComp_MethodParam.FromDict(param))
             except Exception as e:
                 raise RuntimeError(
-                    f'Failed to create parameter at index {i}: {e!r}'
+                    f'Method "{_name}" failed to create parameter at index ' \
+                    + f'{i}: {e!r}'
                 )
         
         # get the default value of the method
         _default: object = data.get('default', '')
         if not isinstance(_default, str): # validate default value type
             raise TypeError(
-                'Method Default Value (`default`) expected a `str` type, ' \
-                + f'got {type(_default)}'
+                f'Method "{_name}" Default Value (`default`) expected a ' \
+                + f'`str` type, got {type(_default)}'
             )
         
         # get the constructor flag value of the method
         _flag_constructor: object = str(data.get('flag_constructor', 'False'))
         if _flag_constructor not in ['True', 'False']: # validate flag value
             raise ValueError(
-                'Method Flag-Constructor Value (`flag_constructor`) expected' \
-                + 'a `str` value of either "True" or "False", got ' \
-                + f'{_flag_constructor!r}'
+                f'Method "{_name}" Flag-Constructor Value ' \
+                + '(`flag_constructor`) expected a `str` value of either ' \
+                + f'"True" or "False", got {_flag_constructor!r}'
             )
         _flag_constructor = _flag_constructor == 'True'
         
@@ -805,40 +831,44 @@ class ObjComp_MethodParam(ObjComp):
         _type: object = data.get('type_', None)
         if _type is None: # validate type existence
             raise ValueError(
-                'Failed to read Method Parameter Data Type (`type_`)'
+                f'Failed to read Method Parameter "{_name}" Data Type ' \
+                + '(`type_`)'
             )
         if not isinstance(_type, str): # validate type type
             raise TypeError(
-                'Method Parameter Data Type (`type_`) expected a `str` type,' \
-                + f' got {type(_type)}'
+                f'Method Parameter "{_name}" Data Type (`type_`) expected a ' \
+                + f'`str` type, got {type(_type)}'
             )
         if _type == '': # validate type data
             raise ValueError(
-                'Method Parameter Data Type (`type_`) must not be empty'
+                f'Method Parameter "{_name}" Data Type (`type_`) must not be' \
+                + ' empty'
             )
         
         # get the desc of the method parameter
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
             raise ValueError(
-                'Failed to read Method Parameter Description (`desc`)'
+                f'Failed to read Method Parameter "{_name}" Description ' \
+                + '(`desc`)'
             )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'Method Parameter Description (`desc`) expected a `str` ' \
-                + f'type, got {type(_desc)}'
+                f'Method Parameter "{_name}" Description (`desc`) expected a' \
+                + f' `str` type, got {type(_desc)}'
             )
         if _desc == '': # validate description data
             raise ValueError(
-                'Method Parameter Description (`desc`) must not be empty'
+                f'Method Parameter "{_name}" Description (`desc`) must not ' \
+                + 'be empty'
             )
         
         # get the default value of the method parameter
         _default: object = data.get('default', '')
         if not isinstance(_default, str): # validate default value type
             raise TypeError(
-                'Method Parameter Default Value (`default`) expected a `str`' \
-                + f' type, got {type(_default)}'
+                f'Method Parameter "{_name}" Default Value (`default`) ' \
+                + f'expected a `str` type, got {type(_default)}'
             )
         
         return cls(
@@ -964,53 +994,66 @@ class ObjComp_Property(ObjComp):
         # get the type of the property
         _type: object = data.get('type_', None)
         if _type is None: # validate type existence
-            raise ValueError('Failed to read Property Data Type (`type_`)')
+            raise ValueError(
+                f'Failed to read Property "{_name}" Data Type (`type_`)'
+            )
         if not isinstance(_type, str): # validate type type
             raise TypeError(
-                'Property Data Type (`type_`) expected a `str` type, got ' \
-                + f'{type(_type)}'
+                f'Property "{_name}" Data Type (`type_`) expected a `str` ' \
+                + f'type, got {type(_type)}'
             )
         if _type == '': # validate type data
-            raise ValueError('Property Data Type (`type_`) must not be empty')
+            raise ValueError(
+                f'Property "{_name}" Data Type (`type_`) must not be empty'
+            )
         
         # get the desc of the property
         _desc: object = data.get('desc', None)
         if _desc is None: # validate description existence
-            raise ValueError('Failed to read Property Description (`desc`)')
+            raise ValueError(
+                f'Failed to read Property "{_name}" Description (`desc`)'
+            )
         if not isinstance(_desc, str): # validate description type
             raise TypeError(
-                'Property Description (`desc`) expected a `str` type, got ' \
-                + f'{type(_desc)}'
+                f'Property "{_name}" Description (`desc`) expected a `str` ' \
+                + f'type, got {type(_desc)}'
             )
         if _desc == '': # validate description data
-            raise ValueError('Property Description (`desc`) must not be empty')
+            raise ValueError(
+                f'Property "{_name}" Description (`desc`) must not be empty'
+            )
         
         # get the title of the property
         _title: object = data.get('title', None)
         if _title is None: # validate title existence
-            raise ValueError('Failed to read Property Title (`title`)')
+            raise ValueError(
+                f'Failed to read Property "{_name}" Title (`title`)'
+            )
         if not isinstance(_title, str): # validate title type
             raise TypeError(
-                'Property Title (`title`) expected a `str` type, got ' \
-                + f'{type(_title)}'
+                f'Property "{_name}" Title (`title`) expected a `str` type, ' \
+                + f'got {type(_title)}'
             )
         if _title == '': # validate title data
-            raise ValueError('Property Title (`title`) must not be empty')
+            raise ValueError(
+                f'Property "{_name}" Title (`title`) must not be empty'
+            )
         
         # get the default value of the property
         _default: object = data.get('default', '')
         if not isinstance(_default, str): # validate default value type
             raise TypeError(
-                'Property Default Value (`default`) expected a `str` type, ' \
-                + f'got {type(_default)}'
+                f'Property "{_name}" Default Value (`default`) expected a ' \
+                + f'`str` type, got {type(_default)}'
             )
         
         # get the readonly status of the property
         _readonly: object = str(data.get('readonly', 'False'))
         if _readonly not in ['True', 'False']: # validate readonly value
             raise ValueError(
-                'Property Read-Only Status (`readonly`) expected a `str` ' \
-                + f'value of either "True" or "False", got {_readonly!r}'
+                f'Property "{_name}" Read-Only Status (`readonly`) expected ' \
+                + 'a `str` value of either "True" or "False", got ' \
+                + f'{_readonly!r}'
             )
         _readonly = _readonly == 'True'
         
