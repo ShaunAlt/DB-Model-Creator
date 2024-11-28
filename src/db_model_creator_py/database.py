@@ -14,6 +14,11 @@ given database.
 # Imports
 # =============================================================================
 
+# component value objects
+from .component_values import (
+    CompValue, # component value parent
+)
+
 # custom errors
 from .errors import (
     FileTypeError, # file type error
@@ -26,23 +31,19 @@ from .errors import (
 # generic objects
 from .generic_objects import (
     FileType, # supported file types
-    MethodType, # object method type
     OBJ, # base object model
     VerbosityLevel, # verbosity levels
 )
 
 # object components
 from .object_components import (
-    ObjComp_Constant,
-    ObjComp_Method,
-    ObjComp_MethodParam,
-    ObjComp_Property,
+    ObjComp, # object component parent
 )
 
 # orm objects
 from .orm_objects import (
-    ORM_Column,
     ORM_Table, # orm table
+    ORM_TV, # orm table / view parent
     ORM_View, # orm view
 )
 
@@ -248,6 +249,15 @@ class Database(OBJ):
                 'Database().Read() failed to find read function for ' \
                 + f'{self._file_type}'
             )
+        
+        # add static data to objects
+        CompValue.lang_db = self._lang_db
+        CompValue.lang_orm = self._lang_orm
+        CompValue.tables = self._tables
+        CompValue.views = self._views
+        ObjComp.lang_orm = self._lang_orm
+        ORM_TV.lang_db = self._lang_db
+        ORM_TV.lang_orm = self._lang_orm
 
     # ===============================
     # Read Database Model File - JSON
